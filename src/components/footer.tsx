@@ -17,6 +17,7 @@ export function Footer() {
                 className="size-7"
                 src="/assets/icons/logo.svg"
               />
+
               <h1 className="font-semibold text-2xl text-black md:text-2xl dark:text-white">
                 Terra & Tallow
               </h1>

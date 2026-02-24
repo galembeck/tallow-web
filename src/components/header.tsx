@@ -1,34 +1,74 @@
-import { Link } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
+import { scrollToSection } from "@/utils/scroll-to-section";
+import { Button } from "./ui/button";
 
 export function Header() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 right-0 left-0 z-50 bg-white shadow-sm">
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link className="text-2xl text-amber-900" to="/">
+          <Button
+            className="no-underline! cursor-pointer px-0! text-amber-900 text-lg"
+            onClick={
+              location.pathname === "/"
+                ? () => scrollToSection("intro")
+                : () => navigate({ to: "/" })
+            }
+            variant="link"
+          >
+            {/** biome-ignore lint/correctness/useImageSize: sized by @TailwindCSS */}
+            <img
+              alt="Terra & Tallow"
+              className="size-7"
+              src="/assets/icons/logo.svg"
+            />
             Terra & Tallow
-          </Link>
+          </Button>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            <Link
-              className="text-gray-700 transition-colors hover:text-amber-900"
-              to="/"
+          <nav className="hidden items-center md:flex">
+            <Button
+              className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+              onClick={() => scrollToSection("intro")}
+              variant="link"
             >
               Início
-            </Link>
-            <Link
-              className="text-gray-700 transition-colors hover:text-amber-900"
-              to="/"
+            </Button>
+
+            <Button
+              className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+              onClick={() => scrollToSection("features")}
+              variant="link"
+            >
+              Vantagens
+            </Button>
+
+            <Button
+              className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+              onClick={() => scrollToSection("about-tallow")}
+              variant="link"
+            >
+              Sobre o Tallow
+            </Button>
+
+            <Button
+              className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+              onClick={() => navigate({ to: "/" })}
+              variant="link"
             >
               Produtos
-            </Link>
-            <Link
-              className="relative text-gray-700 transition-colors hover:text-amber-900"
-              to="/"
+            </Button>
+
+            <Button
+              className="relative cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+              onClick={() => navigate({ to: "/cart" })}
+              variant="link"
             >
               <ShoppingCart className="h-6 w-6" />
               {/* {getTotalItems() > 0 && ( */}
@@ -36,7 +76,7 @@ export function Header() {
                 {/* {getTotalItems()} */}0
               </span>
               {/* )} */}
-            </Link>
+            </Button>
           </nav>
 
           <button
@@ -45,34 +85,55 @@ export function Header() {
             type="button"
           >
             {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-6 w-6 cursor-pointer" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-6 w-6 cursor-pointer" />
             )}
           </button>
         </div>
 
         {mobileMenuOpen && (
           <nav className="border-t py-4 md:hidden">
-            <div className="flex flex-col gap-4">
-              <Link
-                className="text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => setMobileMenuOpen(false)}
-                to="/"
+            <div className="flex flex-col items-start gap-4">
+              <Button
+                className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+                onClick={() => scrollToSection("intro")}
+                variant="link"
               >
                 Início
-              </Link>
-              <Link
-                className="text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => setMobileMenuOpen(false)}
-                to="/"
+              </Button>
+
+              <Button
+                className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+                onClick={() => scrollToSection("features")}
+                variant="link"
+              >
+                Vantagens
+              </Button>
+
+              <Button
+                className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+                onClick={() => scrollToSection("about-tallow")}
+                variant="link"
+              >
+                Sobre o Tallow
+              </Button>
+
+              <Button
+                className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+                onClick={() => navigate({ to: "/" })}
+                variant="link"
               >
                 Produtos
-              </Link>
-              <Link
-                className="flex items-center gap-2 text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => setMobileMenuOpen(false)}
-                to="/"
+              </Button>
+
+              <Button
+                className="flex cursor-pointer items-center gap-2 text-base text-gray-700 transition-colors hover:text-amber-900"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate({ to: "/cart" });
+                }}
+                variant="link"
               >
                 <ShoppingCart className="h-5 w-5" />
                 Carrinho
@@ -81,7 +142,7 @@ export function Header() {
                   {/* {getTotalItems()} */}0
                 </span>
                 {/* )} */}
-              </Link>
+              </Button>
             </div>
           </nav>
         )}
