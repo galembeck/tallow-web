@@ -30,7 +30,7 @@ export function IntroSection() {
         </p>
 
         <button
-          className="inline-flex items-center gap-2 rounded-full bg-amber-900 px-8 py-4 font-semibold text-white uppercase transition-colors hover:bg-amber-800"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-amber-900 px-8 py-4 font-semibold text-white uppercase transition-colors hover:bg-amber-800"
           onClick={() => scrollToSection("features")}
           type="button"
         >
