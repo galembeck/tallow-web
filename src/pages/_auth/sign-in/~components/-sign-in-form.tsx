@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { AlertCircle, Lock, Mail, Sparkles } from "lucide-react";
+import { AlertCircle, ArrowLeft, Lock, Mail, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -95,9 +95,11 @@ export function SignInForm() {
                 Terra & Tallow
               </Link>
 
-              <h1 className="mb-2 text-3xl text-gray-900">Entrar</h1>
+              <h1 className="mb-2 text-2xl text-gray-900">Entrar</h1>
 
-              <p className="text-gray-600">Acesse sua conta</p>
+              <p className="text-gray-600">
+                Retome sua jornada natural de cuidados
+              </p>
             </div>
 
             {serverError && (
@@ -184,10 +186,11 @@ export function SignInForm() {
 
             <div className="mt-6 border-t pt-6 text-center">
               <Link
-                className="text-gray-600 text-sm transition-colors hover:text-amber-900"
+                className="flex items-center justify-center gap-2 text-gray-600 text-sm hover:text-amber-900"
                 to="/"
               >
-                ← Voltar para home
+                <ArrowLeft className="size-4" />
+                Voltar para home
               </Link>
             </div>
           </div>

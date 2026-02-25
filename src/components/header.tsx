@@ -1,12 +1,15 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/services/use-auth";
 import { scrollToSection } from "@/utils/scroll-to-section";
 import { Button } from "./ui/button";
 
 export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { user } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -77,6 +80,8 @@ export function Header() {
               </span>
               {/* )} */}
             </Button>
+
+            {user && <p className="text-gray-700">{user.name}</p>}
           </nav>
 
           <button

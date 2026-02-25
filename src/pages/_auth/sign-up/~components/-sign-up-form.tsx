@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useAuth } from "@/hooks/services/use-auth";
+import { formatCPF, formatWhatsApp, removeFormat } from "@/utils/format-masks";
 
 const signUpSchema = z
   .object({
@@ -30,32 +31,6 @@ const signUpSchema = z
     }),
 
     confirmPassword: z.string(),
-
-    address: z.string().min(2, {
-      message: "Rua deve ter no mínimo 2 caracteres",
-    }),
-
-    number: z.string().min(1, {
-      message: "Número é obrigatório",
-    }),
-
-    complement: z.string().optional(),
-
-    neighborhood: z.string().min(2, {
-      message: "Bairro deve ter no mínimo 2 caracteres",
-    }),
-
-    zipcode: z.string().min(8, {
-      message: "CEP deve ter 8 dígitos",
-    }),
-
-    city: z.string().min(2, {
-      message: "Cidade deve ter no mínimo 2 caracteres",
-    }),
-
-    state: z.string().min(2, {
-      message: "Estado deve ter no mínimo 2 caracteres",
-    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem",
@@ -64,14 +39,12 @@ const signUpSchema = z
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: required, by now...
 export function SignUpForm() {
   const navigate = useNavigate();
 
   const { register, isRegistering, login } = useAuth();
 
   const [serverError, setServerError] = useState("");
-  const [step, setStep] = useState<1 | 2>(1);
 
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
@@ -83,33 +56,22 @@ export function SignUpForm() {
       document: "",
       password: "",
       confirmPassword: "",
-      address: "",
-      number: "",
-      complement: "",
-      neighborhood: "",
-      zipcode: "",
-      city: "",
-      state: "",
     },
   });
 
   async function onSubmit(values: SignUpFormData) {
     try {
+      const cleanCellphone = removeFormat(values.cellphone);
+      const cleanDocument = removeFormat(values.document);
+
       setServerError("");
 
       await register({
         name: values.name,
         email: values.email,
         password: values.password,
-        cellphone: values.cellphone,
-        document: values.document,
-        address: values.address,
-        number: values.number,
-        complement: values.complement,
-        neighborhood: values.neighborhood,
-        zipcode: values.zipcode,
-        city: values.city,
-        state: values.state,
+        cellphone: cleanCellphone,
+        document: cleanDocument,
       });
 
       await login({
@@ -170,22 +132,19 @@ export function SignUpForm() {
                 Terra & Tallow
               </Link>
 
-              <h1 className="mb-2 text-3xl text-gray-900">Registre-se</h1>
+              <h1 className="mb-2 text-2xl text-gray-900">Registre-se</h1>
               <p className="text-gray-600">
-                {step === 1
-                  ? "Informações Pessoais"
-                  : "Informações de Endereço"}
+                Comece sua jornada natural agora mesmo!
               </p>
 
-              {/* Progress indicator */}
-              <div className="mt-4 flex items-center justify-center gap-2">
+              {/* <div className="mt-4 flex items-center justify-center gap-2">
                 <div
                   className={`h-2 w-16 rounded-full ${step === 1 ? "bg-amber-900" : "bg-amber-300"}`}
                 />
                 <div
                   className={`h-2 w-16 rounded-full ${step === 2 ? "bg-amber-900" : "bg-gray-300"}`}
                 />
-              </div>
+              </div> */}
             </div>
 
             {serverError && (
@@ -197,353 +156,167 @@ export function SignUpForm() {
             )}
 
             <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
-              {/* Step 1: Personal Information */}
-              {step === 1 && (
-                <>
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="name"
-                    >
-                      Nome completo
-                    </label>
+              <div>
+                <label
+                  className="mb-2 block text-gray-700 text-sm"
+                  htmlFor="name"
+                >
+                  Nome completo
+                </label>
 
-                    <div className="relative">
-                      <User className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <div className="relative">
+                  <User className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
 
-                      <input
-                        {...form.register("name")}
-                        className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
-                        placeholder="Seu nome"
-                      />
-                    </div>
+                  <input
+                    {...form.register("name")}
+                    className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
+                    placeholder="Seu nome"
+                  />
+                </div>
 
-                    {form.formState.errors.name && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.name.message}
-                      </p>
-                    )}
-                  </div>
+                {form.formState.errors.name && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {form.formState.errors.name.message}
+                  </p>
+                )}
+              </div>
 
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="email"
-                    >
-                      E-mail
-                    </label>
+              <div>
+                <label
+                  className="mb-2 block text-gray-700 text-sm"
+                  htmlFor="email"
+                >
+                  E-mail
+                </label>
 
-                    <div className="relative">
-                      <Mail className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <div className="relative">
+                  <Mail className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
 
-                      <input
-                        {...form.register("email")}
-                        className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
-                        placeholder="seu@email.com"
-                        type="email"
-                      />
-                    </div>
+                  <input
+                    {...form.register("email")}
+                    className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
+                    placeholder="seu@email.com"
+                    type="email"
+                  />
+                </div>
 
-                    {form.formState.errors.email && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
+                {form.formState.errors.email && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {form.formState.errors.email.message}
+                  </p>
+                )}
+              </div>
 
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="cellphone"
-                    >
-                      Telefone
-                    </label>
+              <div>
+                <label
+                  className="mb-2 block text-gray-700 text-sm"
+                  htmlFor="cellphone"
+                >
+                  Telefone
+                </label>
 
-                    <input
-                      {...form.register("cellphone")}
-                      className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                      placeholder="(11) 99999-9999"
-                    />
+                <input
+                  {...form.register("cellphone")}
+                  className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
+                  onChange={(e) => {
+                    const formatted = formatWhatsApp(e.target.value);
+                    e.target.value = formatted;
+                  }}
+                  placeholder="(11) 99999-9999"
+                />
 
-                    {form.formState.errors.cellphone && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.cellphone.message}
-                      </p>
-                    )}
-                  </div>
+                {form.formState.errors.cellphone && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {form.formState.errors.cellphone.message}
+                  </p>
+                )}
+              </div>
 
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="document"
-                    >
-                      Documento
-                    </label>
+              <div>
+                <label
+                  className="mb-2 block text-gray-700 text-sm"
+                  htmlFor="document"
+                >
+                  Documento
+                </label>
 
-                    <input
-                      {...form.register("document")}
-                      className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                      placeholder="CPF ou CNPJ"
-                    />
+                <input
+                  {...form.register("document")}
+                  className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
+                  onChange={(e) => {
+                    const formatted = formatCPF(e.target.value);
+                    e.target.value = formatted;
+                  }}
+                  placeholder="CPF"
+                />
 
-                    {form.formState.errors.document && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.document.message}
-                      </p>
-                    )}
-                  </div>
+                {form.formState.errors.document && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {form.formState.errors.document.message}
+                  </p>
+                )}
+              </div>
 
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="password"
-                    >
-                      Senha
-                    </label>
+              <div>
+                <label
+                  className="mb-2 block text-gray-700 text-sm"
+                  htmlFor="password"
+                >
+                  Senha
+                </label>
 
-                    <div className="relative">
-                      <Lock className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <div className="relative">
+                  <Lock className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
 
-                      <input
-                        {...form.register("password")}
-                        className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
-                        placeholder="Mínimo 8 caracteres"
-                        type="password"
-                      />
-                    </div>
+                  <input
+                    {...form.register("password")}
+                    className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
+                    placeholder="Mínimo 8 caracteres"
+                    type="password"
+                  />
+                </div>
 
-                    {form.formState.errors.password && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
+                {form.formState.errors.password && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {form.formState.errors.password.message}
+                  </p>
+                )}
+              </div>
 
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="confirmPassword"
-                    >
-                      Confirmar senha
-                    </label>
+              <div>
+                <label
+                  className="mb-2 block text-gray-700 text-sm"
+                  htmlFor="confirmPassword"
+                >
+                  Confirmar senha
+                </label>
 
-                    <div className="relative">
-                      <Lock className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                <div className="relative">
+                  <Lock className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
 
-                      <input
-                        {...form.register("confirmPassword")}
-                        className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
-                        placeholder="Digite a senha novamente"
-                        type="password"
-                      />
-                    </div>
+                  <input
+                    {...form.register("confirmPassword")}
+                    className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
+                    placeholder="Digite a senha novamente"
+                    type="password"
+                  />
+                </div>
 
-                    {form.formState.errors.confirmPassword && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.confirmPassword.message}
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
+                {form.formState.errors.confirmPassword && (
+                  <p className="mt-1 text-red-500 text-sm">
+                    {form.formState.errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
 
-              {/* Step 2: Address Information */}
-              {step === 2 && (
-                <>
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="zipcode"
-                    >
-                      CEP
-                    </label>
-
-                    <input
-                      {...form.register("zipcode")}
-                      className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                      placeholder="00000-000"
-                    />
-
-                    {form.formState.errors.zipcode && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.zipcode.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="address"
-                    >
-                      Rua
-                    </label>
-
-                    <input
-                      {...form.register("address")}
-                      className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                      placeholder="Rua Exemplo"
-                    />
-
-                    {form.formState.errors.address && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.address.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        className="mb-2 block text-gray-700 text-sm"
-                        htmlFor="number"
-                      >
-                        Número
-                      </label>
-
-                      <input
-                        {...form.register("number")}
-                        className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                        placeholder="123"
-                      />
-
-                      {form.formState.errors.number && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {form.formState.errors.number.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label
-                        className="mb-2 block text-gray-700 text-sm"
-                        htmlFor="complement"
-                      >
-                        Complemento
-                      </label>
-
-                      <input
-                        {...form.register("complement")}
-                        className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                        placeholder="Apto 101"
-                      />
-
-                      {form.formState.errors.complement && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {form.formState.errors.complement.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label
-                      className="mb-2 block text-gray-700 text-sm"
-                      htmlFor="neighborhood"
-                    >
-                      Bairro
-                    </label>
-
-                    <input
-                      {...form.register("neighborhood")}
-                      className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                      placeholder="Centro"
-                    />
-
-                    {form.formState.errors.neighborhood && (
-                      <p className="mt-1 text-red-500 text-sm">
-                        {form.formState.errors.neighborhood.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        className="mb-2 block text-gray-700 text-sm"
-                        htmlFor="city"
-                      >
-                        Cidade
-                      </label>
-
-                      <input
-                        {...form.register("city")}
-                        className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                        placeholder="São Paulo"
-                      />
-
-                      {form.formState.errors.city && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {form.formState.errors.city.message}
-                        </p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label
-                        className="mb-2 block text-gray-700 text-sm"
-                        htmlFor="state"
-                      >
-                        Estado
-                      </label>
-
-                      <input
-                        {...form.register("state")}
-                        className="w-full rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-amber-900 focus:outline-none"
-                        placeholder="SP"
-                      />
-
-                      {form.formState.errors.state && (
-                        <p className="mt-1 text-red-500 text-sm">
-                          {form.formState.errors.state.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Navigation buttons */}
               <div className="flex gap-4">
-                {step === 2 && (
-                  <button
-                    className="w-full rounded-lg border-2 border-amber-900 py-3.5 font-semibold text-amber-900 uppercase transition-colors hover:bg-amber-50"
-                    onClick={() => setStep(1)}
-                    type="button"
-                  >
-                    Voltar
-                  </button>
-                )}
-
-                {step === 1 ? (
-                  <button
-                    className="w-full rounded-lg bg-amber-900 py-3.5 font-semibold text-white uppercase shadow-lg transition-colors hover:bg-amber-800"
-                    onClick={async () => {
-                      const isValid = await form.trigger([
-                        "name",
-                        "email",
-                        "cellphone",
-                        "document",
-                        "password",
-                        "confirmPassword",
-                      ]);
-                      if (isValid) {
-                        setStep(2);
-                      }
-                    }}
-                    type="button"
-                  >
-                    Próximo
-                  </button>
-                ) : (
-                  <button
-                    className="w-full rounded-lg bg-amber-900 py-3.5 font-semibold text-white uppercase shadow-lg transition-colors hover:bg-amber-800 disabled:opacity-70"
-                    disabled={isRegistering}
-                    type="submit"
-                  >
-                    {isRegistering ? "Criando conta..." : "Criar conta"}
-                  </button>
-                )}
+                <button
+                  className="w-full rounded-lg bg-amber-900 py-3.5 font-semibold text-white uppercase shadow-lg transition-colors hover:bg-amber-800 disabled:opacity-70"
+                  disabled={isRegistering}
+                  type="submit"
+                >
+                  {isRegistering ? "Criando conta..." : "Criar conta"}
+                </button>
               </div>
             </form>
 
