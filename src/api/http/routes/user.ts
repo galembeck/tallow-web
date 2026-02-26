@@ -13,7 +13,7 @@ export const userModule = {
   },
 
   async getMe(token: string): Promise<User> {
-    return API.fetch("/user", {
+    return await API.fetch("/user", {
       headers: { Authorization: `Bearer ${token}` },
     });
   },

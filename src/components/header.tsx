@@ -1,15 +1,16 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { Menu, ShoppingCart, X } from "lucide-react";
+import { LogIn, LogOut, Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/services/use-auth";
 import { scrollToSection } from "@/utils/scroll-to-section";
+import { ProfileDropdown } from "./profile-dropdown";
 import { Button } from "./ui/button";
 
 export function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -38,7 +39,11 @@ export function Header() {
           <nav className="hidden items-center md:flex">
             <Button
               className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-              onClick={() => scrollToSection("intro")}
+              onClick={
+                location.pathname === "/"
+                  ? () => scrollToSection("intro")
+                  : () => navigate({ to: "/" })
+              }
               variant="link"
             >
               Início
@@ -46,7 +51,11 @@ export function Header() {
 
             <Button
               className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-              onClick={() => scrollToSection("features")}
+              onClick={
+                location.pathname === "/"
+                  ? () => scrollToSection("features")
+                  : () => navigate({ to: "/", hash: "features" })
+              }
               variant="link"
             >
               Vantagens
@@ -54,7 +63,11 @@ export function Header() {
 
             <Button
               className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-              onClick={() => scrollToSection("about-tallow")}
+              onClick={
+                location.pathname === "/"
+                  ? () => scrollToSection("about-tallow")
+                  : () => navigate({ to: "/", hash: "about-tallow" })
+              }
               variant="link"
             >
               Sobre o Tallow
@@ -62,26 +75,13 @@ export function Header() {
 
             <Button
               className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-              onClick={() => navigate({ to: "/" })}
+              onClick={() => navigate({ to: "/products" })}
               variant="link"
             >
               Produtos
             </Button>
 
-            <Button
-              className="relative cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-              onClick={() => navigate({ to: "/cart" })}
-              variant="link"
-            >
-              <ShoppingCart className="h-6 w-6" />
-              {/* {getTotalItems() > 0 && ( */}
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-900 text-white text-xs">
-                {/* {getTotalItems()} */}0
-              </span>
-              {/* )} */}
-            </Button>
-
-            {user && <p className="text-gray-700">{user.name}</p>}
+            <ProfileDropdown />
           </nav>
 
           <button
@@ -102,7 +102,11 @@ export function Header() {
             <div className="flex flex-col items-start gap-4">
               <Button
                 className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => scrollToSection("intro")}
+                onClick={
+                  location.pathname === "/"
+                    ? () => scrollToSection("intro")
+                    : () => navigate({ to: "/" })
+                }
                 variant="link"
               >
                 Início
@@ -110,7 +114,11 @@ export function Header() {
 
               <Button
                 className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => scrollToSection("features")}
+                onClick={
+                  location.pathname === "/"
+                    ? () => scrollToSection("features")
+                    : () => navigate({ to: "/", hash: "features" })
+                }
                 variant="link"
               >
                 Vantagens
@@ -118,7 +126,11 @@ export function Header() {
 
               <Button
                 className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => scrollToSection("about-tallow")}
+                onClick={
+                  location.pathname === "/"
+                    ? () => scrollToSection("about-tallow")
+                    : () => navigate({ to: "/", hash: "about-tallow" })
+                }
                 variant="link"
               >
                 Sobre o Tallow
@@ -126,7 +138,7 @@ export function Header() {
 
               <Button
                 className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
-                onClick={() => navigate({ to: "/" })}
+                onClick={() => navigate({ to: "/products" })}
                 variant="link"
               >
                 Produtos
@@ -148,6 +160,30 @@ export function Header() {
                 </span>
                 {/* )} */}
               </Button>
+
+              {user ? (
+                <Button
+                  className="flex w-full cursor-pointer items-center gap-2 bg-amber-900 py-4! text-base text-white transition-colors hover:bg-amber-900/90"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                >
+                  <LogOut className="h-5 w-5" />
+                  Sair
+                </Button>
+              ) : (
+                <Button
+                  className="flex w-full cursor-pointer items-center gap-2 bg-amber-900 py-4! text-base text-white transition-colors hover:bg-amber-900/90"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate({ to: "/sign-in" });
+                  }}
+                >
+                  Entrar
+                  <LogIn className="h-5 w-5" />
+                </Button>
+              )}
             </div>
           </nav>
         )}

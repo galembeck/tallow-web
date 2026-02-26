@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/suspicious/noEmptyBlockStatements: handled by own files... */
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authModule } from "@/api/http/routes/auth";
 import { userModule } from "@/api/http/routes/user";
@@ -8,13 +10,12 @@ export function useAuth() {
 
   const registerMutation = useMutation({
     mutationFn: userModule.register,
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: handled by SignUpForm
     onSuccess: () => {},
   });
 
   const loginMutation = useMutation({
     mutationFn: authModule.login,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data?.accessToken) {
         cookies.set("AccessToken", data.accessToken, 7);
       }
@@ -23,9 +24,24 @@ export function useAuth() {
         cookies.set("RefreshToken", data.refreshToken, 30);
       }
 
-      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      await queryClient.refetchQueries({ queryKey: ["auth", "user"] });
     },
   });
+
+  const logout = async () => {
+    const token = cookies.get("AccessToken");
+
+    if (token) {
+      try {
+        await authModule.logout(token);
+      } catch (_error) {}
+    }
+
+    cookies.remove("AccessToken");
+    cookies.remove("RefreshToken");
+
+    queryClient.clear();
+  };
 
   const { data: user, isLoading } = useQuery({
     queryKey: ["auth", "user"],
@@ -49,6 +65,8 @@ export function useAuth() {
     },
     staleTime: 5 * 60 * 1000,
     retry: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
   return {
@@ -57,6 +75,8 @@ export function useAuth() {
 
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
+
+    logout,
 
     user,
     isLoading,

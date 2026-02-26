@@ -8,4 +8,11 @@ export const authModule = {
       body: JSON.stringify(data),
     });
   },
+
+  async logout(token: string) {
+    return await API.fetch("/auth/revoke", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  },
 };

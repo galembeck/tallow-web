@@ -8,7 +8,7 @@ export function Footer() {
         <div className="mb-10 flex flex-col justify-between gap-10 md:flex-row">
           <div>
             <Link
-              className="cursor-none flex items-center justify-center gap-2 sm:justify-start"
+              className="flex cursor-default items-center justify-center gap-2 sm:justify-start"
               to="/"
             >
               {/** biome-ignore lint/correctness/useImageSize: not required in this case */}

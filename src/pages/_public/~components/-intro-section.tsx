@@ -1,7 +1,9 @@
+import { useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { scrollToSection } from "@/utils/scroll-to-section";
 
 export function IntroSection() {
+  const navigate = useNavigate();
+
   return (
     <section
       className="relative flex min-h-screen items-center justify-center bg-linear-to-r from-amber-50 to-orange-50"
@@ -31,10 +33,10 @@ export function IntroSection() {
 
         <button
           className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-amber-900 px-8 py-4 font-semibold text-white uppercase transition-colors hover:bg-amber-800"
-          onClick={() => scrollToSection("features")}
+          onClick={() => navigate({ to: "/products" })}
           type="button"
         >
-          Descrubra nossos produtos
+          Descubra nossos produtos
           <ArrowRight className="h-5 w-5" />
         </button>
       </div>

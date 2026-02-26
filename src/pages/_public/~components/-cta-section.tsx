@@ -16,7 +16,7 @@ export function CTASection() {
 
         <Link
           className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-amber-900 uppercase transition-colors hover:bg-amber-50"
-          to="/"
+          to="/products"
         >
           Explorar produtos
           <ArrowRight className="h-5 w-5" />
