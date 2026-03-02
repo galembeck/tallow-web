@@ -1,10 +1,17 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useLocation,
+  useNavigate,
+} from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { QuestionsAccordion } from "@/components/questions-accordion";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/hooks/services/use-cart";
 import { useProduct } from "@/hooks/services/use-product";
+import { cookies } from "@/lib/cookies";
 import { AboutCompany } from "./~components/-about-company";
 import { ProductDetails } from "./~components/product-details/-product-details";
 import { ProductDetailsSkeleton } from "./~components/product-details/-product-details-skeleton";
@@ -14,7 +21,6 @@ import { RelatedProducts } from "./~components/product-details/~components/_rela
 import { ProductActions } from "./~components/product-details/~components/-product-actions";
 import { ProductCarousel } from "./~components/product-details/~components/-product-carousel";
 import { ProductIngredientsCard } from "./~components/product-details/~components/-product-ingredients-card";
-import { ProductPriceCard } from "./~components/product-details/~components/-product-price-card";
 import { ShippingDetails } from "./~components/product-details/shipping-details/-shipping-details";
 
 export const Route = createFileRoute("/_public/products/$productId/")({
@@ -26,11 +32,51 @@ export const Route = createFileRoute("/_public/products/$productId/")({
 
 function ProductDetailsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { productId } = Route.useParams();
+
   const { products, product, isLoading, error } = useProduct(productId);
+  const { addItem, isAddingItem } = useCart();
 
   const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCart = async () => {
+    const token = cookies.get("AccessToken");
+
+    if (!token) {
+      navigate({
+        to: "/sign-in",
+        search: {
+          redirect: location.href,
+        },
+      });
+
+      return;
+    }
+
+    try {
+      await addItem({
+        productId,
+        quantity,
+      });
+
+      setQuantity(1);
+
+      toast.success("Produto adicionado ao carrinho!", {
+        description:
+          "Acese a página do carrinho para visualizar seus produtos.",
+      });
+
+      navigate({
+        to: "/cart",
+      });
+    } catch (_error) {
+      toast.error("Erro ao adicionar produto!", {
+        description: "Tente adicioná-lo novamente ou contate o suporte.",
+      });
+    }
+  };
 
   useEffect(() => {
     if (error || !(isLoading || product)) {
@@ -75,14 +121,14 @@ function ProductDetailsPage() {
                 stockAmount={product.stockAmount}
               />
 
-              <ProductPriceCard
+              <ProductActions
+                handleAddToCart={handleAddToCart}
+                isAddingItem={isAddingItem}
                 price={product.price}
                 quantity={quantity}
                 setQuantity={setQuantity}
                 stockAmount={product.stockAmount}
               />
-
-              <ProductActions />
             </div>
           </div>
 

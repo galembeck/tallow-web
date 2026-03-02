@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import { LogIn, LogOut, Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/services/use-auth";
+import { useCart } from "@/hooks/services/use-cart";
 import { scrollToSection } from "@/utils/scroll-to-section";
 import { ProfileDropdown } from "./profile-dropdown";
 import { Button } from "./ui/button";
@@ -11,6 +12,9 @@ export function Header() {
   const location = useLocation();
 
   const { user, logout } = useAuth();
+
+  const { cart } = useCart();
+  const cartItemsCount = cart?.totalItems ?? 0;
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -178,11 +182,11 @@ export function Header() {
               >
                 <ShoppingCart className="h-5 w-5" />
                 Carrinho
-                {/* {getTotalItems() > 0 && ( */}
-                <span className="rounded-full bg-amber-900 px-2 py-1 text-white text-xs">
-                  {/* {getTotalItems()} */}0
-                </span>
-                {/* )} */}
+                {user && cartItemsCount > 0 && (
+                  <span className="rounded-full bg-amber-900 px-2 py-1 text-white text-xs">
+                    {cartItemsCount}
+                  </span>
+                )}
               </Button>
 
               {user ? (

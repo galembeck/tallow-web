@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Route = createFileRoute("/_public")({
   component: PublicLayout,
@@ -12,7 +13,9 @@ function PublicLayout() {
       <Header />
 
       <div>
-        <Outlet />
+        <TooltipProvider>
+          <Outlet />
+        </TooltipProvider>
       </div>
 
       <Footer />

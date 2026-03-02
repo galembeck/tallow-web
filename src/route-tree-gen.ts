@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './pages/__root'
 import { Route as PublicLayoutRouteImport } from './pages/_public/layout'
 import { Route as AdminIndexRouteImport } from './pages/admin/index'
 import { Route as PublicIndexRouteImport } from './pages/_public/index'
+import { Route as ErrorNotFoundRouteImport } from './pages/_error/not-found'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
+import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkout/index'
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index'
@@ -32,9 +34,19 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
+const ErrorNotFoundRoute = ErrorNotFoundRouteImport.update({
+  id: '/_error/not-found',
+  path: '/not-found',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicProductsIndexRoute = PublicProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
+  getParentRoute: () => PublicLayoutRoute,
+} as any)
+const PublicCheckoutIndexRoute = PublicCheckoutIndexRouteImport.update({
+  id: '/checkout/',
+  path: '/checkout/',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
 const PublicCartIndexRoute = PublicCartIndexRouteImport.update({
@@ -61,30 +73,36 @@ const PublicProductsProductIdIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
+  '/not-found': typeof ErrorNotFoundRoute
   '/admin/': typeof AdminIndexRoute
   '/sign-in/': typeof AuthSignInIndexRoute
   '/sign-up/': typeof AuthSignUpIndexRoute
   '/cart/': typeof PublicCartIndexRoute
+  '/checkout/': typeof PublicCheckoutIndexRoute
   '/products/': typeof PublicProductsIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
+  '/not-found': typeof ErrorNotFoundRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/sign-in': typeof AuthSignInIndexRoute
   '/sign-up': typeof AuthSignUpIndexRoute
   '/cart': typeof PublicCartIndexRoute
+  '/checkout': typeof PublicCheckoutIndexRoute
   '/products': typeof PublicProductsIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicLayoutRouteWithChildren
+  '/_error/not-found': typeof ErrorNotFoundRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_auth/sign-in/': typeof AuthSignInIndexRoute
   '/_auth/sign-up/': typeof AuthSignUpIndexRoute
   '/_public/cart/': typeof PublicCartIndexRoute
+  '/_public/checkout/': typeof PublicCheckoutIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
 }
@@ -92,35 +110,42 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/not-found'
     | '/admin/'
     | '/sign-in/'
     | '/sign-up/'
     | '/cart/'
+    | '/checkout/'
     | '/products/'
     | '/products/$productId/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/not-found'
     | '/'
     | '/admin'
     | '/sign-in'
     | '/sign-up'
     | '/cart'
+    | '/checkout'
     | '/products'
     | '/products/$productId'
   id:
     | '__root__'
     | '/_public'
+    | '/_error/not-found'
     | '/_public/'
     | '/admin/'
     | '/_auth/sign-in/'
     | '/_auth/sign-up/'
     | '/_public/cart/'
+    | '/_public/checkout/'
     | '/_public/products/'
     | '/_public/products/$productId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
+  ErrorNotFoundRoute: typeof ErrorNotFoundRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AuthSignInIndexRoute: typeof AuthSignInIndexRoute
   AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute
@@ -149,11 +174,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
+    '/_error/not-found': {
+      id: '/_error/not-found'
+      path: '/not-found'
+      fullPath: '/not-found'
+      preLoaderRoute: typeof ErrorNotFoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public/products/': {
       id: '/_public/products/'
       path: '/products'
       fullPath: '/products/'
       preLoaderRoute: typeof PublicProductsIndexRouteImport
+      parentRoute: typeof PublicLayoutRoute
+    }
+    '/_public/checkout/': {
+      id: '/_public/checkout/'
+      path: '/checkout'
+      fullPath: '/checkout/'
+      preLoaderRoute: typeof PublicCheckoutIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
     '/_public/cart/': {
@@ -190,6 +229,7 @@ declare module '@tanstack/react-router' {
 interface PublicLayoutRouteChildren {
   PublicIndexRoute: typeof PublicIndexRoute
   PublicCartIndexRoute: typeof PublicCartIndexRoute
+  PublicCheckoutIndexRoute: typeof PublicCheckoutIndexRoute
   PublicProductsIndexRoute: typeof PublicProductsIndexRoute
   PublicProductsProductIdIndexRoute: typeof PublicProductsProductIdIndexRoute
 }
@@ -197,6 +237,7 @@ interface PublicLayoutRouteChildren {
 const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
   PublicIndexRoute: PublicIndexRoute,
   PublicCartIndexRoute: PublicCartIndexRoute,
+  PublicCheckoutIndexRoute: PublicCheckoutIndexRoute,
   PublicProductsIndexRoute: PublicProductsIndexRoute,
   PublicProductsProductIdIndexRoute: PublicProductsProductIdIndexRoute,
 }
@@ -207,6 +248,7 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
+  ErrorNotFoundRoute: ErrorNotFoundRoute,
   AdminIndexRoute: AdminIndexRoute,
   AuthSignInIndexRoute: AuthSignInIndexRoute,
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,

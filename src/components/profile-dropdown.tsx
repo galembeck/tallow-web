@@ -10,10 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/services/use-auth";
+import { useCart } from "@/hooks/services/use-cart";
 import { Button } from "./ui/button";
 
 export function ProfileDropdown() {
   const { user, logout } = useAuth();
+
+  const { cart } = useCart();
+  const cartItemsCount = cart?.totalItems ?? 0;
 
   const navigate = useNavigate();
 
@@ -36,11 +40,11 @@ export function ProfileDropdown() {
           variant="link"
         >
           <ShoppingCart className="h-6 w-6" />
-          {/* {getTotalItems() > 0 && ( */}
-          <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-900 text-white text-xs">
-            {/* {getTotalItems()} */}0
-          </span>
-          {/* )} */}
+          {user && cartItemsCount > 0 && (
+            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-900 text-white text-xs">
+              {cartItemsCount}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
 
