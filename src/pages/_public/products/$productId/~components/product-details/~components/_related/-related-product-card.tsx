@@ -1,28 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
-interface ProductCardProps {
+interface RelatedProductCardProps {
+  imageUrl: string;
   name: string;
   description: string;
   price: number;
-  imageUrl: string;
   productId: string;
 }
 
-export function ProductCard({
+export function RelatedProductCard({
+  imageUrl,
   name,
   description,
   price,
-  imageUrl,
   productId,
-}: ProductCardProps) {
+}: RelatedProductCardProps) {
   return (
     <Link
       className="group overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-xl"
       params={{ productId }}
       to="/products/$productId"
     >
-      <div className="relative h-80 overflow-hidden">
+      <div className="relative h-50 overflow-hidden">
         {/** biome-ignore lint/correctness/useImageSize: sized by @TailwindCSS */}
         <img
           alt={name}

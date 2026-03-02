@@ -1,3 +1,5 @@
+import type { ProfileType } from "../enums/profile-type";
+
 export interface User {
   id: string;
 
@@ -6,6 +8,8 @@ export interface User {
   email: string;
   cellphone: string;
   document: string;
+
+  role: ProfileType;
 
   createdAt: string;
   lastAccessAt?: string;

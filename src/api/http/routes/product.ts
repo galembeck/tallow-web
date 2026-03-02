@@ -5,7 +5,12 @@ export const productModule = {
   async list(): Promise<Product[]> {
     return await API.fetch("/product", {
       method: "GET",
-      credentials: "include",
+    });
+  },
+
+  async getById(productId: string): Promise<Product> {
+    return await API.fetch(`/product/${productId}`, {
+      method: "GET",
     });
   },
 };

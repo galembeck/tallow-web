@@ -9,4 +9,12 @@ export interface Product {
   price: number;
   ingredients: string[];
   stockAmount: number;
+
+  weight: number;
+  height: number;
+  width: number;
+  length: number;
+
+  imageUrl: string;
+  additionalImagesUrls?: string[];
 }

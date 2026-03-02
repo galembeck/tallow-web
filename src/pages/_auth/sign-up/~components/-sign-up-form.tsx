@@ -72,6 +72,7 @@ export function SignUpForm() {
         password: values.password,
         cellphone: cleanCellphone,
         document: cleanDocument,
+        role: 2, // Cliente
       });
 
       await login({

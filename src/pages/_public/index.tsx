@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { QuestionsAccordion } from "@/components/questions-accordion";
 import { AboutTallowSection } from "./~components/-about-tallow-section";
 import { CTASection } from "./~components/-cta-section";
 import { FeaturesSection } from "./~components/-features-section";
@@ -21,6 +22,7 @@ function HomePage() {
       <IntroSection />
       <FeaturesSection />
       <AboutTallowSection />
+      <QuestionsAccordion layout="landing" />
       <CTASection />
     </main>
   );

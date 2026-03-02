@@ -75,6 +75,18 @@ export function Header() {
 
             <Button
               className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+              onClick={
+                location.pathname === "/"
+                  ? () => scrollToSection("questions")
+                  : () => navigate({ to: "/", hash: "questions" })
+              }
+              variant="link"
+            >
+              Dúvidas
+            </Button>
+
+            <Button
+              className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
               onClick={() => navigate({ to: "/products" })}
               variant="link"
             >
@@ -134,6 +146,18 @@ export function Header() {
                 variant="link"
               >
                 Sobre o Tallow
+              </Button>
+
+              <Button
+                className="cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
+                onClick={
+                  location.pathname === "/"
+                    ? () => scrollToSection("questions")
+                    : () => navigate({ to: "/", hash: "questions" })
+                }
+                variant="link"
+              >
+                Dúvidas
               </Button>
 
               <Button

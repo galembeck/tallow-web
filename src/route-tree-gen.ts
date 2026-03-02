@@ -10,14 +10,21 @@
 
 import { Route as rootRouteImport } from './pages/__root'
 import { Route as PublicLayoutRouteImport } from './pages/_public/layout'
+import { Route as AdminIndexRouteImport } from './pages/admin/index'
 import { Route as PublicIndexRouteImport } from './pages/_public/index'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index'
+import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
 
 const PublicLayoutRoute = PublicLayoutRouteImport.update({
   id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
@@ -45,47 +52,76 @@ const AuthSignInIndexRoute = AuthSignInIndexRouteImport.update({
   path: '/sign-in/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PublicProductsProductIdIndexRoute =
+  PublicProductsProductIdIndexRouteImport.update({
+    id: '/products/$productId/',
+    path: '/products/$productId/',
+    getParentRoute: () => PublicLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/sign-in/': typeof AuthSignInIndexRoute
   '/sign-up/': typeof AuthSignUpIndexRoute
   '/cart/': typeof PublicCartIndexRoute
   '/products/': typeof PublicProductsIndexRoute
+  '/products/$productId/': typeof PublicProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/sign-in': typeof AuthSignInIndexRoute
   '/sign-up': typeof AuthSignUpIndexRoute
   '/cart': typeof PublicCartIndexRoute
   '/products': typeof PublicProductsIndexRoute
+  '/products/$productId': typeof PublicProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicLayoutRouteWithChildren
   '/_public/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/_auth/sign-in/': typeof AuthSignInIndexRoute
   '/_auth/sign-up/': typeof AuthSignUpIndexRoute
   '/_public/cart/': typeof PublicCartIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
+  '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sign-in/' | '/sign-up/' | '/cart/' | '/products/'
+  fullPaths:
+    | '/'
+    | '/admin/'
+    | '/sign-in/'
+    | '/sign-up/'
+    | '/cart/'
+    | '/products/'
+    | '/products/$productId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/sign-up' | '/cart' | '/products'
+  to:
+    | '/'
+    | '/admin'
+    | '/sign-in'
+    | '/sign-up'
+    | '/cart'
+    | '/products'
+    | '/products/$productId'
   id:
     | '__root__'
     | '/_public'
     | '/_public/'
+    | '/admin/'
     | '/_auth/sign-in/'
     | '/_auth/sign-up/'
     | '/_public/cart/'
     | '/_public/products/'
+    | '/_public/products/$productId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
   AuthSignInIndexRoute: typeof AuthSignInIndexRoute
   AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute
 }
@@ -97,6 +133,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof PublicLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public/': {
@@ -134,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_public/products/$productId/': {
+      id: '/_public/products/$productId/'
+      path: '/products/$productId'
+      fullPath: '/products/$productId/'
+      preLoaderRoute: typeof PublicProductsProductIdIndexRouteImport
+      parentRoute: typeof PublicLayoutRoute
+    }
   }
 }
 
@@ -141,12 +191,14 @@ interface PublicLayoutRouteChildren {
   PublicIndexRoute: typeof PublicIndexRoute
   PublicCartIndexRoute: typeof PublicCartIndexRoute
   PublicProductsIndexRoute: typeof PublicProductsIndexRoute
+  PublicProductsProductIdIndexRoute: typeof PublicProductsProductIdIndexRoute
 }
 
 const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
   PublicIndexRoute: PublicIndexRoute,
   PublicCartIndexRoute: PublicCartIndexRoute,
   PublicProductsIndexRoute: PublicProductsIndexRoute,
+  PublicProductsProductIdIndexRoute: PublicProductsProductIdIndexRoute,
 }
 
 const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
@@ -155,6 +207,7 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
+  AdminIndexRoute: AdminIndexRoute,
   AuthSignInIndexRoute: AuthSignInIndexRoute,
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,
 }

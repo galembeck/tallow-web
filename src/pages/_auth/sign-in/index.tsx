@@ -4,6 +4,9 @@ import { SignInForm } from "./~components/-sign-in-form";
 
 export const Route = createFileRoute("/_auth/sign-in/")({
   component: SignInPage,
+  head: () => ({
+    meta: [{ title: "Entrar | Terra & Tallow" }],
+  }),
   beforeLoad: () => {
     const token = cookies.get("AccessToken");
 
