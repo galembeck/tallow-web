@@ -18,3 +18,11 @@ export interface Product {
   imageUrl: string;
   additionalImagesUrls?: string[];
 }
+
+export interface ProductFilterParams {
+  category?: ProductCategory;
+  minPrice?: number;
+  maxPrice?: number;
+  searchTerm?: string;
+  inStock?: boolean;
+}
