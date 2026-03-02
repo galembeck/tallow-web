@@ -38,7 +38,7 @@ export function QuestionsAccordion({ layout }: QuestionsAccordionProps) {
                 key={question.id}
                 value={`item-${question.id}`}
               >
-                <AccordionTrigger className="cursor-pointer items-center bg-white px-6 font-semibold text-black text-xl">
+                <AccordionTrigger className="cursor-pointer items-center border border-gray-200 bg-white px-6 font-semibold text-black text-xl">
                   {question.question}
                 </AccordionTrigger>
                 <AccordionContent className="bg-white px-6 text-base text-black/80">
