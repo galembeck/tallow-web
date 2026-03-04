@@ -37,7 +37,7 @@ interface ShippingDetailsFormProps {
   isLoading: boolean;
 
   calculateShipping: (params: CalculateShippingData) => void;
-  calculateCheapest: (params: CalculateShippingData) => void;
+  calculateFastest: (params: CalculateShippingData) => void;
 
   productId: string;
   quantity: number;
@@ -46,7 +46,7 @@ interface ShippingDetailsFormProps {
 export function ShippingDetailsForm({
   isLoading,
   calculateShipping,
-  calculateCheapest,
+  calculateFastest,
   productId,
   quantity,
 }: ShippingDetailsFormProps) {
@@ -68,7 +68,7 @@ export function ShippingDetailsForm({
         quantity,
       });
 
-      await calculateCheapest({
+      await calculateFastest({
         toZipCode: cleanZipCode,
         productId,
         quantity,

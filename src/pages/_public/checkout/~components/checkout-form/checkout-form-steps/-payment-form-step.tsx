@@ -1,100 +1,65 @@
+import { Payment } from "@mercadopago/sdk-react";
 import { CreditCard } from "lucide-react";
-import type { UseFormReturn } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import type { CheckoutFormData } from "@/constants/checkout";
+import { toast } from "sonner";
 
-interface PaymentStepProps {
-  form: UseFormReturn<CheckoutFormData>;
-  isClearingCart: boolean;
-  onBack: () => void;
+interface PaymentFormStepProps {
+  amount: number;
+  preferenceId?: string;
+  onSubmitPayment: (payload: {
+    selectedPaymentMethod?: string;
+    formData: unknown;
+  }) => Promise<void>;
 }
 
-export function PaymentStep({
-  form,
-  isClearingCart,
-  onBack,
-}: PaymentStepProps) {
+export function PaymentFormStep({
+  amount,
+  preferenceId,
+  onSubmitPayment,
+}: PaymentFormStepProps) {
   return (
-    <div className="rounded-lg bg-white p-8 shadow-md">
-      <div className="mb-6 flex items-center gap-3">
-        <CreditCard className="h-6 w-6 text-amber-900" />
-        <h2 className="text-2xl text-gray-900">Dados de Pagamento</h2>
-      </div>
+    <div className="rounded-lg bg-white px-6 pt-6 shadow-md">
+      <h2 className="flex items-center gap-2 font-medium text-2xl text-gray-900">
+        <CreditCard className="size-6 text-amber-900" />
+        Dados de pagamento
+      </h2>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <FormField
-          control={form.control}
-          name="cardNumber"
-          render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Número do cartão</FormLabel>
-              <FormControl>
-                <Input placeholder="1234 5678 9012 3456" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="cardHolderName"
-          render={({ field }) => (
-            <FormItem className="md:col-span-2">
-              <FormLabel>Nome no cartão</FormLabel>
-              <FormControl>
-                <Input placeholder="Nome impresso" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="cardExpirationDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Validade</FormLabel>
-              <FormControl>
-                <Input placeholder="MM/AA" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="cardCvv"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CVV</FormLabel>
-              <FormControl>
-                <Input placeholder="123" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="mt-8 flex gap-4">
-        <Button onClick={onBack} type="button" variant="outline">
-          Voltar
-        </Button>
-        <Button disabled={isClearingCart} type="submit">
-          Finalizar pedido
-        </Button>
-      </div>
+      <Payment
+        customization={{
+          visual: {
+            hideFormTitle: true,
+            style: { theme: "default" },
+          },
+          paymentMethods: {
+            creditCard: "all",
+            ticket: "all",
+            bankTransfer: "all",
+            maxInstallments: 6,
+          },
+        }}
+        initialization={{
+          amount,
+          preferenceId,
+          payer: {
+            firstName: "",
+            lastName: "",
+            email: "",
+          },
+        }}
+        onError={(_error) => {
+          toast.error(
+            "Ops! Ocorreu um erro ao carregar o formulário de pagamento.",
+            {
+              description:
+                "Tente novamente mais tarde ou entre em contato com o suporte.",
+            },
+          );
+        }}
+        // biome-ignore lint/suspicious/noEmptyBlockStatements: required by @mercadopago/sdk-react
+        onReady={() => {}}
+        onSubmit={async ({ selectedPaymentMethod, formData }) => {
+          await onSubmitPayment({ selectedPaymentMethod, formData });
+        }}
+      />
     </div>
   );
 }

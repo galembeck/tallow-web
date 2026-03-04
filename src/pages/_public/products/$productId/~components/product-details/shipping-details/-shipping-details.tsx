@@ -12,8 +12,8 @@ export function ShippingDetails({ productId, quantity }: ShippingDetailsProps) {
   const {
     calculateShipping,
     shippingOptions,
-    calculateCheapest,
-    cheapestShippingOption,
+    calculateFastest,
+    fastestShippingOption,
     isLoading,
   } = useShipping();
 
@@ -26,7 +26,7 @@ export function ShippingDetails({ productId, quantity }: ShippingDetailsProps) {
         </h1>
 
         <ShippingDetailsForm
-          calculateCheapest={calculateCheapest}
+          calculateFastest={calculateFastest}
           calculateShipping={calculateShipping}
           isLoading={isLoading}
           productId={productId}
@@ -36,19 +36,19 @@ export function ShippingDetails({ productId, quantity }: ShippingDetailsProps) {
 
       {shippingOptions &&
         shippingOptions.length > 0 &&
-        cheapestShippingOption && (
+        fastestShippingOption && (
           <div className="flex flex-col gap-4">
             <ShippingDetailCard
-              carrierName={cheapestShippingOption.carrierName}
-              cheapestOption
-              deliveryTimeLabel={cheapestShippingOption.deliveryTimeLabel}
-              price={cheapestShippingOption.price}
+              carrierName={fastestShippingOption.carrierName}
+              deliveryTimeLabel={fastestShippingOption.deliveryTimeLabel}
+              fastestOption
+              price={fastestShippingOption.price}
             />
 
             <div className="grid grid-cols-2 gap-4">
               {shippingOptions
                 .filter(
-                  (option) => option.price !== cheapestShippingOption.price,
+                  (option) => option.price !== fastestShippingOption.price,
                 )
                 .map((option) => (
                   <ShippingDetailCard

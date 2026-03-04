@@ -1,21 +1,32 @@
 import { useMutation } from "@tanstack/react-query";
 import { shippingModule } from "@/api/http/routes/shipping";
-import type { CalculateShippingData } from "@/types/services/shipping";
+import type {
+  CalculateCartShippingData,
+  CalculateShippingData,
+} from "@/types/services/shipping";
 
 export function useShipping() {
   const calculateShippingMutation = useMutation({
     mutationFn: async (shippingData: CalculateShippingData) => {
-      const result = await shippingModule.calculate(shippingData);
-
-      return result;
+      return await shippingModule.calculate(shippingData);
     },
   });
 
-  const calculateCheapestMutation = useMutation({
+  const calculateFastestMutation = useMutation({
     mutationFn: async (shippingData: CalculateShippingData) => {
-      const result = await shippingModule.calculateCheapest(shippingData);
+      return await shippingModule.calculateFastest(shippingData);
+    },
+  });
 
-      return result;
+  const calculateCartShippingMutation = useMutation({
+    mutationFn: async (shippingData: CalculateCartShippingData) => {
+      return await shippingModule.calculateCart(shippingData);
+    },
+  });
+
+  const calculateFastestCartMutation = useMutation({
+    mutationFn: async (shippingData: CalculateCartShippingData) => {
+      return await shippingModule.calculateFastestCart(shippingData);
     },
   });
 
@@ -23,12 +34,25 @@ export function useShipping() {
     calculateShipping: calculateShippingMutation.mutateAsync,
     shippingOptions: calculateShippingMutation.data,
 
-    calculateCheapest: calculateCheapestMutation.mutateAsync,
-    cheapestShippingOption: calculateCheapestMutation.data,
+    calculateFastest: calculateFastestMutation.mutateAsync,
+    fastestShippingOption: calculateFastestMutation.data,
+
+    calculateCartShipping: calculateCartShippingMutation.mutateAsync,
+    cartShippingOptions: calculateCartShippingMutation.data,
+
+    calculateFastestCart: calculateFastestCartMutation.mutateAsync,
+    fastestCartShippingOption: calculateFastestCartMutation.data,
 
     isLoading:
       calculateShippingMutation.isPending ||
-      calculateCheapestMutation.isPending,
-    error: calculateShippingMutation.error || calculateCheapestMutation.error,
+      calculateFastestMutation.isPending ||
+      calculateCartShippingMutation.isPending ||
+      calculateFastestCartMutation.isPending,
+
+    error:
+      calculateShippingMutation.error ||
+      calculateFastestMutation.error ||
+      calculateCartShippingMutation.error ||
+      calculateFastestCartMutation.error,
   };
 }

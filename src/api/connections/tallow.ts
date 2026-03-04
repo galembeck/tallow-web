@@ -1,5 +1,5 @@
 export const API = {
-  baseURL: "http://localhost:5005",
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5005",
 
   async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${this.baseURL}${endpoint}`;

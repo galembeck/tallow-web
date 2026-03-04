@@ -1,7 +1,8 @@
 import z from "zod";
+import { removeFormat } from "@/utils/format-masks";
+import { isValidCPF } from "@/utils/is-valid-masks";
 
 export const checkoutFormSchema = z.object({
-  // First-step (Shipping information)
   name: z
     .string({
       message: "O nome é obrigatório.",
@@ -16,6 +17,22 @@ export const checkoutFormSchema = z.object({
     .email({
       message: "O e-mail deve ter um formato válido.",
     }),
+  document: z
+    .string({
+      message: "O CPF é obrigatório.",
+    })
+    .min(11, {
+      message: "O CPF deve ter 11 dígitos.",
+    })
+    .refine(
+      (value) => {
+        const cleanCPF = removeFormat(value);
+        return cleanCPF.length === 11 && isValidCPF(value);
+      },
+      {
+        message: "O CPF deve ser válido.",
+      },
+    ),
   cellphone: z
     .string({
       message: "O número de telefone é obrigatório.",
@@ -37,9 +54,13 @@ export const checkoutFormSchema = z.object({
     .min(2, {
       message: "A rua deve ter pelo menos 2 caracteres.",
     }),
-  number: z.string({
-    message: "O número é obrigatório.",
-  }),
+  number: z
+    .string({
+      message: "O número é obrigatório.",
+    })
+    .min(1, {
+      message: "O número é obrigatório.",
+    }),
   complement: z.string().optional(),
   neighborhood: z
     .string({
@@ -62,44 +83,18 @@ export const checkoutFormSchema = z.object({
     .min(2, {
       message: "O estado deve ter no mínimo 2 caracteres.",
     }),
-
-  // Second-step (Payment information)
-  cardNumber: z
-    .string({
-      message: "O número do cartão é obrigatório.",
-    })
-    .min(16, {
-      message: "O número do cartão deve conter 16 dígitos.",
-    }),
-  cardHolderName: z
-    .string({
-      message: "O nome do titular é obrigatório.",
-    })
-    .min(2, {
-      message: "O nome do titular deve conter pelo menos 2 caracteres.",
-    }),
-  cardExpirationDate: z
-    .string({
-      message: "A data de validade é obrigatória.",
-    })
-    .min(5, {
-      message: "A data de validade deve ter o formato MM/AA.",
-    }),
-  cardCvv: z
-    .string({
-      message: "O CVV é obrigatório.",
-    })
-    .min(3, {
-      message: "O CVV deve conter pelo menos 3 dígitos.",
-    }),
 });
 
 export type CheckoutFormData = z.infer<typeof checkoutFormSchema>;
 
-export const shippingFields: (keyof CheckoutFormData)[] = [
+export const personalFields: (keyof CheckoutFormData)[] = [
   "name",
   "email",
+  "document",
   "cellphone",
+];
+
+export const addressFields: (keyof CheckoutFormData)[] = [
   "zipcode",
   "address",
   "number",
