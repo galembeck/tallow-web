@@ -18,12 +18,12 @@ export function useOrder({
   const createOrderMutation = useMutation({
     mutationFn: (data: CreateOrderDTO) => orderModule.create(data),
     onSuccess: async (createdOrders) => {
-      const firstOrder = createdOrders[0];
+      const order = createdOrders;
 
-      if (firstOrder?.id) {
+      if (order?.id) {
         queryClient.setQueryData<OrderResponseDTO>(
-          ["orders", "details", firstOrder.id],
-          firstOrder,
+          ["orders", "details", order.id],
+          order,
         );
       }
 

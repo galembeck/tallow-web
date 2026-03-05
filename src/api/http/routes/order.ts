@@ -2,7 +2,7 @@ import { API } from "@/api/connections/tallow";
 import type { CreateOrderDTO, OrderResponseDTO } from "@/types/services/order";
 
 export const orderModule = {
-  async create(data: CreateOrderDTO): Promise<OrderResponseDTO[]> {
+  async create(data: CreateOrderDTO): Promise<OrderResponseDTO> {
     return await API.fetch("/order", {
       method: "POST",
       body: JSON.stringify(data),

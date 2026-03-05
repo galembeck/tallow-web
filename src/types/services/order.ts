@@ -12,6 +12,7 @@ export interface BuyerInfoDTO {
 export interface ShippingInfoDTO {
   shippingService: string;
   shippingDeliveryTime: string;
+  shippingAmount: number;
   shippingZipcode: string;
   shippingAddress: string;
   shippingNumber: string;

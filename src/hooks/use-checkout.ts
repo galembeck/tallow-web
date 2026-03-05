@@ -2,24 +2,38 @@ import { useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import type { CheckoutFormData } from "@/constants/checkout";
+import type { PaymentBrickSubmitData } from "@/types/services/payment";
 import type { ShippingInformation } from "@/types/services/shipping";
 import { useCart } from "./services/use-cart";
 import { useOrder } from "./services/use-order";
+import {
+  buildBoletoPayload,
+  buildCreditCardPayload,
+  buildPixPayload,
+  usePayment,
+} from "./services/use-payment";
 
 interface UseCheckoutOptions {
   onOrderCreated?: () => void;
+  onPaymentSuccess?: (paymentId: string) => void;
+  shippingCost?: number;
 }
 
 export function useCheckout(
   form: UseFormReturn<CheckoutFormData>,
-  { onOrderCreated }: UseCheckoutOptions = {},
+  {
+    onOrderCreated,
+    onPaymentSuccess,
+    shippingCost = 0,
+  }: UseCheckoutOptions = {},
 ) {
-  const { cart, isClearingCart } = useCart({
+  const { cart, clearCart } = useCart({
     enableCartQuery: true,
   });
   const { createOrder, isCreatingOrder } = useOrder({
     enableOrderQuery: false,
   });
+  const { processPayment, isProcessingPayment } = usePayment();
 
   const [orderId, setOrderId] = useState<string | null>(null);
 
@@ -40,6 +54,7 @@ export function useCheckout(
       shippingInfo: {
         shippingService: selectedShippingOption.serviceName,
         shippingDeliveryTime: selectedShippingOption.deliveryTimeLabel,
+        shippingAmount: selectedShippingOption.price,
         shippingZipcode: values.zipcode.replace(/\D/g, ""),
         shippingAddress: values.address,
         shippingNumber: values.number,
@@ -47,6 +62,22 @@ export function useCheckout(
         shippingNeighborhood: values.neighborhood,
         shippingCity: values.city,
         shippingState: values.state,
+      },
+    };
+  };
+
+  const buildPayerFromForm = () => {
+    const values = form.getValues();
+
+    const [firstName, ...rest] = values.name.trim().split(" ");
+
+    return {
+      email: values.email,
+      firstName: firstName ?? values.name,
+      lastName: rest.join(" ") || null,
+      identification: {
+        type: "CPF" as const,
+        number: values.document.replace(/\D/g, ""),
       },
     };
   };
@@ -69,10 +100,9 @@ export function useCheckout(
         return;
       }
 
-      const createdOrders = await createOrder(
+      const createdOrder = await createOrder(
         buildOrderPayload(selectedShippingOption),
       );
-      const createdOrder = createdOrders?.[0];
 
       if (!createdOrder?.id) {
         toast.error("Ocorreu um erro ao criar o pedido!", {
@@ -91,11 +121,77 @@ export function useCheckout(
     }
   };
 
+  const handleProcessPayment = async ({
+    selectedPaymentMethod,
+    formData,
+  }: PaymentBrickSubmitData) => {
+    try {
+      if (!orderId) {
+        toast.error("Pedido não encontrado :/", {
+          description:
+            "Por favor, crie um pedido antes de finalizar o pagamento.",
+        });
+        return;
+      }
+
+      if (!cart) {
+        toast.error("Carrinho não encontrado :/", {
+          description:
+            "Adicione produtos ao carrinho antes de finalizar a compra.",
+        });
+        return;
+      }
+
+      const totalAmount = (cart.totalAmount ?? 0) + shippingCost;
+      const payer = buildPayerFromForm();
+
+      let payload: Parameters<typeof processPayment>[0];
+
+      if (selectedPaymentMethod === "credit_card") {
+        payload = buildCreditCardPayload({ orderId, formData });
+      } else if (selectedPaymentMethod === "bank_transfer") {
+        payload = buildPixPayload({
+          orderId,
+          transactionAmount: totalAmount,
+          payer,
+        });
+      } else if (selectedPaymentMethod === "ticket") {
+        payload = buildBoletoPayload({
+          orderId,
+          transactionAmount: totalAmount,
+          payer,
+        });
+      } else {
+        toast.error("Forma de pagamento não suportada.", {
+          description: "Tente selecionar outra forma de pagamento.",
+        });
+        return;
+      }
+
+      const payment = await processPayment(payload);
+
+      onPaymentSuccess?.(payment.id);
+      await clearCart();
+
+      toast.success("Parabéns! Pagamento realizado com sucesso.", {
+        description:
+          "Em breve você receberá um e-mail com os detalhes do seu pedido.",
+      });
+    } catch (_error) {
+      toast.error("Ops! Ocorreu um erro ao processar seu pagamento.", {
+        description:
+          "Tente novamente mais tarde ou entre em contato com o suporte.",
+      });
+    }
+  };
+
   return {
     cart,
     orderId,
-    isProcessing: isCreatingOrder || isClearingCart,
+    isProcessing: isCreatingOrder || isProcessingPayment,
     isCreatingOrder,
+    isProcessingPayment,
     handleCreateOrder,
+    handleProcessPayment,
   };
 }

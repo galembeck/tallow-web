@@ -23,16 +23,13 @@ import { formatCEP, removeFormat } from "@/utils/format-masks";
 
 interface ShippingFormStepProps {
   form: UseFormReturn<CheckoutFormData>;
-  handleCreateOrder: (payload: {
-    selectedPaymentMethod?: string;
-    formData: unknown;
-  }) => Promise<void>;
+  onCreateOrder: () => Promise<void>;
   onShippingSelect?: (option: ShippingInformation) => void;
 }
 
 export function ShippingFormStep({
   form,
-  handleCreateOrder,
+  onCreateOrder,
   onShippingSelect,
 }: ShippingFormStepProps) {
   const { cart } = useCart({ enableCartQuery: true });
@@ -331,9 +328,7 @@ export function ShippingFormStep({
 
             <Button
               className="mt-8 w-full cursor-pointer bg-amber-900 py-5! font-semibold text-sm text-white uppercase hover:bg-amber-900/90 hover:text-white"
-              onClick={() => {
-                handleCreateOrder({ formData: form.getValues() });
-              }}
+              onClick={onCreateOrder}
               type="button"
             >
               Continuar para pagamento

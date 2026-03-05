@@ -1,9 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { CheckCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
@@ -15,6 +13,7 @@ import { useAuth } from "@/hooks/services/use-auth";
 import { useCart } from "@/hooks/services/use-cart";
 import { useCheckout } from "@/hooks/use-checkout";
 import { useCheckoutSteps } from "@/hooks/use-checkout-steps";
+import { OrderConfirmation } from "../-order-confirmation";
 import { OrderSummary } from "../-order-summary-card";
 import { PaymentFormStep } from "./checkout-form-steps/-payment-form-step";
 import { PersonalFormStep } from "./checkout-form-steps/-personal-form-step";
@@ -46,10 +45,6 @@ export function CheckoutForm() {
     },
   });
 
-  const { isProcessing, isCreatingOrder, handleCreateOrder } = useCheckout(
-    form,
-    { onOrderCreated: () => goToStep(3) },
-  );
   const {
     step,
     goToStep,
@@ -59,6 +54,17 @@ export function CheckoutForm() {
   } = useCheckoutSteps(form);
 
   const shippingCost = selectedShippingOption?.price ?? 0;
+
+  const { isProcessing, handleCreateOrder, handleProcessPayment, orderId } =
+    useCheckout(form, {
+      shippingCost,
+      onOrderCreated: () => goToStep(3),
+      onPaymentSuccess: () => {
+        // TODO: redirecionar para página de confirmação/status
+        // navigate({ to: `/order/${orderId}/status` });
+        goToStep(4);
+      },
+    });
 
   useEffect(() => {
     if (!user) {
@@ -87,24 +93,7 @@ export function CheckoutForm() {
   }
 
   if (step === 4) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-        <div className="max-w-2xl rounded-lg bg-white p-12 text-center shadow-lg">
-          <CheckCircle className="mx-auto mb-6 h-20 w-20 text-green-500" />
-          <h2 className="mb-4 text-4xl text-amber-900">Pedido Confirmado!</h2>
-          <p className="mb-8 text-gray-600 text-xl">
-            Obrigado pela sua compra! Você receberá os detalhes em breve.
-          </p>
-          <div className="mb-8 rounded-lg bg-amber-50 p-6">
-            <p className="mb-2 text-gray-700">Número do Pedido:</p>
-            {/* <p className="text-2xl text-amber-900">#{orderNumber}</p> */}
-          </div>
-          <Button onClick={() => navigate({ to: "/products" })}>
-            Continuar comprando
-          </Button>
-        </div>
-      </div>
-    );
+    return <OrderConfirmation orderNumber={orderId} />;
   }
 
   return (
@@ -114,7 +103,7 @@ export function CheckoutForm() {
           Finalizar compra
         </h1>
 
-        <Progress className="mb-10" value={(step / 4) * 100} />
+        <Progress className="mb-10" value={(step / 3) * 100} />
 
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
@@ -130,7 +119,7 @@ export function CheckoutForm() {
                 {step === 2 && (
                   <ShippingFormStep
                     form={form}
-                    handleCreateOrder={() =>
+                    onCreateOrder={() =>
                       handleCreateOrder(selectedShippingOption)
                     }
                     onShippingSelect={setSelectedShippingOption}
@@ -140,9 +129,7 @@ export function CheckoutForm() {
                 {step === 3 && (
                   <PaymentFormStep
                     amount={(cart?.totalAmount ?? 0) + shippingCost}
-                    onSubmitPayment={async () => {
-                      // TODO: passa onSubmitPayment real quando pagamento for implementado
-                    }}
+                    onSubmitPayment={handleProcessPayment}
                   />
                 )}
 
@@ -150,7 +137,7 @@ export function CheckoutForm() {
                   <div className="flex items-center gap-2 text-gray-500 text-sm">
                     <Spinner className="size-4" />
                     <span>
-                      {isCreatingOrder ? "Criando pedido..." : "Processando..."}
+                      {isProcessing ? "Processando..." : "Criando pedido..."}
                     </span>
                   </div>
                 )}

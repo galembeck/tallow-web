@@ -1,14 +1,14 @@
+// -payment-form-step.tsx
+
 import { Payment } from "@mercadopago/sdk-react";
 import { CreditCard } from "lucide-react";
 import { toast } from "sonner";
+import type { PaymentBrickSubmitData } from "@/types/services/payment";
 
 interface PaymentFormStepProps {
   amount: number;
   preferenceId?: string;
-  onSubmitPayment: (payload: {
-    selectedPaymentMethod?: string;
-    formData: unknown;
-  }) => Promise<void>;
+  onSubmitPayment: (data: PaymentBrickSubmitData) => Promise<void>;
 }
 
 export function PaymentFormStep({
@@ -45,7 +45,8 @@ export function PaymentFormStep({
             email: "",
           },
         }}
-        onError={(_error) => {
+        onError={(error) => {
+          console.error("❌ Erro no Payment Brick:", error);
           toast.error(
             "Ops! Ocorreu um erro ao carregar o formulário de pagamento.",
             {
@@ -54,10 +55,31 @@ export function PaymentFormStep({
             },
           );
         }}
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: required by @mercadopago/sdk-react
-        onReady={() => {}}
-        onSubmit={async ({ selectedPaymentMethod, formData }) => {
-          await onSubmitPayment({ selectedPaymentMethod, formData });
+        onReady={() => {
+          console.log("✅ Payment Brick carregado com sucesso!");
+        }}
+        onSubmit={async (data) => {
+          console.log("🎯 Payment Brick onSubmit disparado!");
+          console.log("📦 Dados brutos do Payment Brick:", data);
+
+          // ✅ Validação antes de enviar
+          const submitData = data as unknown as PaymentBrickSubmitData;
+
+          console.log("📦 Dados convertidos:", {
+            selectedPaymentMethod: submitData.selectedPaymentMethod,
+            formData: submitData.formData,
+          });
+
+          // ✅ Validação adicional
+          if (!submitData.formData) {
+            console.error("❌ formData está undefined!");
+            toast.error("Erro ao processar dados do pagamento", {
+              description: "Por favor, tente preencher o formulário novamente.",
+            });
+            return;
+          }
+
+          await onSubmitPayment(submitData);
         }}
       />
     </div>

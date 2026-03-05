@@ -1,7 +1,7 @@
 import type { PaymentMethod } from "../enums/payment-method";
 import type { PaymentStatus } from "../enums/payment-status";
 
-export type IdentificationType = "CPF" | "CNPJ" | "DNI" | "CI" | "RUT" | string;
+export type IdentificationType = "CPF" | "CNPJ";
 
 export interface IdentificationDTO {
   type: IdentificationType;
@@ -52,10 +52,18 @@ export interface PaymentResponseDTO {
   statusDetail?: string | null;
   paymentMethod: PaymentMethod | string;
   paymentMethodId: string;
+  paymentTypeId?: string | null;
   transactionAmount: number;
   installments?: number | null;
+  currencyId?: string | null;
+  shippingAmount?: number | null;
+  authorizationCode?: string | null; // Código de autorização da transação
+  liveMode?: boolean | null; // true = produção, false = sandbox
+  statementDescriptor?: string | null; // Nome que aparece na fatura do cartão
+  externalReference?: string | null; // Referência externa (geralmente order_id)
   dateCreated: string;
   dateApproved?: string | null;
+  dateLastUpdated?: string | null;
   dateOfExpiration?: string | null;
   pixQrCode?: string | null;
   pixQrCodeBase64?: string | null;
@@ -68,8 +76,10 @@ export type PaymentListResponseDTO = PaymentResponseDTO[];
 
 export interface PaymentBrickFormData {
   token?: string;
-  paymentMethodId: string;
-  issuerId?: string;
+  payment_method_id: string;
+  issuer_id?: string;
+  transaction_amount: number;
+  installments: number;
   payer: {
     email: string;
     firstName?: string;
@@ -79,14 +89,11 @@ export interface PaymentBrickFormData {
       number: string;
     };
   };
-  transactionAmount: number;
-  installments: number;
   paymentTypeId?: string;
 }
 
 export interface PaymentBrickSubmitData {
   selectedPaymentMethod: "credit_card" | "bank_transfer" | "ticket";
-
   formData: PaymentBrickFormData;
 }
 
@@ -124,64 +131,23 @@ export interface PaymentBrickConfig {
   };
 }
 
-// export const PaymentTypeLabels: Record<string, string> = {
-//   credit_card: 'Cartão de Crédito',
-//   debit_card: 'Cartão de Débito',
-//   bank_transfer: 'PIX',
-//   ticket: 'Boleto',
-//   wallet_purchase: 'Mercado Pago',
-//   atm: 'Caixa Eletrônico',
-// };
+export interface BuildCreditCardPaymentParams {
+  orderId: string;
+  formData: PaymentBrickFormData;
+}
 
-// export const PaymentStatusLabels: Record<PaymentStatus, string> = {
-//   [PaymentStatus.PENDING]: 'Pendente',
-//   [PaymentStatus.APPROVED]: 'Aprovado',
-//   [PaymentStatus.REJECTED]: 'Rejeitado',
-//   [PaymentStatus.IN_PROCESS]: 'Em Processamento',
-//   [PaymentStatus.CANCELLED]: 'Cancelado',
-//   [PaymentStatus.REFUNDED]: 'Reembolsado',
-//   [PaymentStatus.CHARGED_BACK]: 'Estornado',
-// };
+export interface BuildPixPaymentParams {
+  orderId: string;
+  transactionAmount: number;
+  payer: CreatePaymentDTO["payer"];
+}
 
-// export function isPaymentApproved(payment: PaymentResponseDTO): boolean {
-//   return payment.status === PaymentStatus.APPROVED || payment.status === 'APPROVED';
-// }
-
-// export function isPaymentPending(payment: PaymentResponseDTO): boolean {
-//   return payment.status === PaymentStatus.PENDING ||
-//          payment.status === PaymentStatus.IN_PROCESS ||
-//          payment.status === 'PENDING' ||
-//          payment.status === 'IN_PROCESS';
-// }
-
-// export function isPaymentRejected(payment: PaymentResponseDTO): boolean {
-//   return payment.status === PaymentStatus.REJECTED || payment.status === 'REJECTED';
-// }
-
-// export function isPixPayment(payment: PaymentResponseDTO): boolean {
-//   return payment.paymentMethodId === 'pix' && !!payment.pixQrCode;
-// }
-
-// export function isBoletoPayment(payment: PaymentResponseDTO): boolean {
-//   return payment.paymentMethodId?.includes('bol') && !!payment.boletoUrl;
-// }
-
-// export function formatCurrency(value: number): string {
-//   return new Intl.NumberFormat('pt-BR', {
-//     style: 'currency',
-//     currency: 'BRL'
-//   }).format(value);
-// }
-
-// export function formatDate(dateString: string): string {
-//   return new Intl.DateTimeFormat('pt-BR', {
-//     day: '2-digit',
-//     month: '2-digit',
-//     year: 'numeric',
-//     hour: '2-digit',
-//     minute: '2-digit'
-//   }).format(new Date(dateString));
-// }
+export interface BuildBoletoPaymentParams {
+  orderId: string;
+  transactionAmount: number;
+  payer: CreatePaymentDTO["payer"];
+  dateOfExpiration?: string;
+}
 
 /**
  * EXEMPLO 1: Criar pagamento PIX
@@ -209,73 +175,54 @@ export interface PaymentBrickConfig {
  *
  * if (isPixPayment(payment)) {
  *   console.log('QR Code:', payment.pixCopyPaste);
+ *   console.log('Ambiente:', isProductionPayment(payment) ? 'Produção' : 'Teste');
  * }
  */
 
 /**
- * EXEMPLO 2: Processar pagamento do Payment Brick
+ * EXEMPLO 2: Exibir informações completas do pagamento
  *
- * const onSubmitPayment = async ({ formData }: PaymentBrickSubmitData) => {
- *   const paymentRequest: CreatePaymentDTO = {
- *     orderId: orderId,
- *     token: formData.token,
- *     transactionAmount: formData.transactionAmount,
- *     installments: formData.installments,
- *     paymentMethodId: formData.paymentMethodId,
- *     issuerId: formData.issuerId,
- *     payer: {
- *       email: formData.payer.email,
- *       firstName: formData.payer.firstName,
- *       lastName: formData.payer.lastName,
- *       identification: formData.payer.identification
- *     }
- *   };
- *
- *   const response = await fetch('/payment/process', {
- *     method: 'POST',
- *     headers: {
- *       'Content-Type': 'application/json',
- *       'Authorization': `Bearer ${token}`
- *     },
- *     body: JSON.stringify(paymentRequest)
- *   });
- *
- *   const payment: PaymentResponseDTO = await response.json();
- *
- *   if (isPaymentApproved(payment)) {
- *     window.location.href = `/success/${payment.id}`;
- *   } else if (isPixPayment(payment)) {
- *     window.location.href = `/pix/${payment.id}`;
- *   } else if (isPaymentRejected(payment)) {
- *     alert('Pagamento rejeitado: ' + payment.statusDetail);
- *   }
- * };
+ * function PaymentDetails({ payment }: { payment: PaymentResponseDTO }) {
+ *   return (
+ *     <div>
+ *       <h2>Pagamento #{payment.mercadoPagoPaymentId}</h2>
+ *       <p>Status: {getPaymentStatusMessage(payment)}</p>
+ *       <p>Valor: {formatCurrency(payment.transactionAmount, payment.currencyId)}</p>
+ *       <p>Criado em: {formatDate(payment.dateCreated)}</p>
+ *       {payment.dateApproved && (
+ *         <p>Aprovado em: {formatDate(payment.dateApproved)}</p>
+ *       )}
+ *       {payment.authorizationCode && (
+ *         <p>Código de Autorização: {payment.authorizationCode}</p>
+ *       )}
+ *       {payment.statementDescriptor && (
+ *         <p>Aparece na fatura como: {payment.statementDescriptor}</p>
+ *       )}
+ *       <Badge color={getPaymentStatusColor(payment)}>
+ *         {PaymentStatusLabels[payment.status]}
+ *       </Badge>
+ *     </div>
+ *   );
+ * }
  */
 
 /**
- * EXEMPLO 3: Buscar pagamento
+ * EXEMPLO 3: Listar histórico de pagamentos
  *
- * const fetchPayment = async (paymentId: string): Promise<PaymentResponseDTO> => {
- *   const response = await fetch(`/payment/${paymentId}`, {
- *     headers: {
- *       'Authorization': `Bearer ${token}`
- *     }
- *   });
- *
- *   return await response.json();
- * };
- */
-
-/**
- * EXEMPLO 4: Listar meus pagamentos
- *
- * const fetchMyPayments = async (): Promise<PaymentListResponseDTO> => {
- *   const response = await fetch('/payment/user/me', {
- *     headers: {
- *       'Authorization': `Bearer ${token}`
- *     }
- *   });
- *
- *   return await response.json();
- * };
+ * function PaymentHistory({ payments }: { payments: PaymentListResponseDTO }) {
+ *   return (
+ *     <ul>
+ *       {payments.map(payment => (
+ *         <li key={payment.id}>
+ *           <span>{formatDate(payment.dateCreated)}</span>
+ *           <span>{formatCurrency(payment.transactionAmount)}</span>
+ *           <span>{PaymentTypeLabels[payment.paymentTypeId || 'credit_card']}</span>
+ *           <Badge color={getPaymentStatusColor(payment)}>
+ *             {PaymentStatusLabels[payment.status]}
+ *           </Badge>
+ *         </li>
+ *       ))}
+ *     </ul>
+ *   );
+ * }
  */

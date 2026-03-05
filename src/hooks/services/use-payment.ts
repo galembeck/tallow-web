@@ -1,14 +1,187 @@
-import { useMutation } from "@tanstack/react-query";
-import { paymentModule } from "@/api/http/routes/payment";
+// hooks/services/use-payment.tsx
+/** biome-ignore-all lint/suspicious/noExplicitAny: used for now... */
 
-export function usePayment() {
-  const createCardPaymentMutation = useMutation({
-    mutationFn: paymentModule.createCardPayment,
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { paymentModule } from "@/api/http/routes/payment";
+import type {
+  BuildBoletoPaymentParams,
+  BuildCreditCardPaymentParams,
+  BuildPixPaymentParams,
+  CreatePaymentDTO,
+  PaymentResponseDTO,
+} from "@/types/services/payment";
+
+export function buildCreditCardPayload({
+  orderId,
+  formData,
+}: BuildCreditCardPaymentParams): CreatePaymentDTO {
+  const toCamelCase = (str: string) =>
+    str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+
+  const convertObjectToCamelCase = (obj: any): any => {
+    if (Array.isArray(obj)) {
+      return obj.map(convertObjectToCamelCase);
+    }
+    if (obj !== null && typeof obj === "object") {
+      return Object.keys(obj).reduce((result, key) => {
+        const camelKey = toCamelCase(key);
+        result[camelKey] = convertObjectToCamelCase(obj[key]);
+        return result;
+      }, {} as any);
+    }
+    return obj;
+  };
+
+  const normalizedFormData = convertObjectToCamelCase(formData);
+
+  const payload: CreatePaymentDTO = {
+    orderId,
+    token: normalizedFormData.token,
+    transactionAmount: normalizedFormData.transactionAmount,
+    installments: normalizedFormData.installments || 1,
+    paymentMethodId: normalizedFormData.paymentMethodId,
+    issuerId: normalizedFormData.issuerId ?? null,
+    payer: {
+      email: normalizedFormData.payer.email,
+      firstName: normalizedFormData.payer.firstName ?? null,
+      lastName: normalizedFormData.payer.lastName ?? null,
+      identification: normalizedFormData.payer.identification
+        ? {
+            type: normalizedFormData.payer.identification.type,
+            number: normalizedFormData.payer.identification.number,
+          }
+        : null,
+    },
+    description: `Pedido #${orderId.substring(0, 8)}`,
+  };
+
+  return payload;
+}
+
+export function buildPixPayload({
+  orderId,
+  transactionAmount,
+  payer,
+}: BuildPixPaymentParams): CreatePaymentDTO {
+  return {
+    orderId,
+    token: null,
+    transactionAmount,
+    installments: 1,
+    paymentMethodId: "pix",
+    issuerId: null,
+    payer,
+    description: `Pedido #${orderId.substring(0, 8)} - PIX`,
+  };
+}
+
+export function buildBoletoPayload({
+  orderId,
+  transactionAmount,
+  payer,
+  dateOfExpiration,
+}: BuildBoletoPaymentParams): CreatePaymentDTO {
+  return {
+    orderId,
+    token: null,
+    transactionAmount,
+    installments: 1,
+    paymentMethodId: "bolbradesco",
+    issuerId: null,
+    payer,
+    description: `Pedido #${orderId.substring(0, 8)} - Boleto`,
+    dateOfExpiration: dateOfExpiration ?? null,
+  };
+}
+
+interface UsePaymentOptions {
+  paymentId?: string;
+  enablePaymentQuery?: boolean;
+  enableUserPaymentsQuery?: boolean;
+}
+
+export function usePayment({
+  paymentId,
+  enablePaymentQuery = false,
+  enableUserPaymentsQuery = false,
+}: UsePaymentOptions = {}) {
+  const queryClient = useQueryClient();
+
+  const processPaymentMutation = useMutation({
+    mutationFn: async (data: CreatePaymentDTO) => {
+      try {
+        const result = await paymentModule.process(data);
+        console.log("✅ Pagamento processado com sucesso:", result);
+        return result;
+      } catch (error) {
+        console.error("❌ Erro ao processar pagamento:", error);
+        throw error;
+      }
+    },
+    onSuccess: async (payment) => {
+      queryClient.setQueryData<PaymentResponseDTO>(
+        ["payments", "details", payment.id],
+        payment,
+      );
+
+      await queryClient.invalidateQueries({ queryKey: ["orders", "user"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["orders", "details", payment.orderId],
+      });
+    },
+    onError: (error) => {
+      console.error("💥 Erro no mutation:", error);
+    },
+  });
+
+  const paymentQuery = useQuery({
+    queryKey: ["payments", "details", paymentId],
+    queryFn: async () => {
+      if (!paymentId) {
+        throw new Error("ID do pagamento não encontrado.");
+      }
+      return await paymentModule.getById(paymentId);
+    },
+    enabled: enablePaymentQuery && !!paymentId,
+    retry: 1,
+  });
+
+  const userPaymentsQuery = useQuery({
+    queryKey: ["payments", "user"],
+    queryFn: () => paymentModule.getUserPayments(),
+    enabled: enableUserPaymentsQuery,
+    retry: 1,
+    staleTime: 0,
   });
 
   return {
-    createCardPayment: createCardPaymentMutation.mutateAsync,
-    isCreatingPayment: createCardPaymentMutation.isPending,
-    paymentError: createCardPaymentMutation.error,
+    processPayment: processPaymentMutation.mutateAsync,
+    isProcessingPayment: processPaymentMutation.isPending,
+    processPaymentError: processPaymentMutation.error,
+    processedPayment: processPaymentMutation.data,
+
+    payment:
+      paymentQuery.data ??
+      (paymentId
+        ? queryClient.getQueryData<PaymentResponseDTO>([
+            "payments",
+            "details",
+            paymentId,
+          ])
+        : undefined),
+    isPaymentLoading: paymentQuery.isLoading,
+    paymentError: paymentQuery.error,
+    refetchPayment: paymentQuery.refetch,
+
+    userPayments:
+      userPaymentsQuery.data ??
+      queryClient.getQueryData<PaymentResponseDTO[]>(["payments", "user"]),
+    isUserPaymentsLoading: userPaymentsQuery.isLoading,
+    userPaymentsError: userPaymentsQuery.error,
+    refetchUserPayments: userPaymentsQuery.refetch,
+
+    buildCreditCardPayload,
+    buildPixPayload,
+    buildBoletoPayload,
   };
 }
