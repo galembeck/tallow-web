@@ -9,7 +9,7 @@ export interface User {
   cellphone: string;
   document: string;
 
-  role: ProfileType;
+  profileType: ProfileType;
 
   createdAt: string;
   lastAccessAt?: string;

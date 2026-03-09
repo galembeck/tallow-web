@@ -1,5 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
-import { LogIn, LogOut, ShoppingCart, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  ShoppingCart,
+  User,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,12 +35,6 @@ export function ProfileDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        {/* <Avatar className="ml-6 h-8 w-8 cursor-pointer rounded-lg">
-          <AvatarFallback className="rounded-lg bg-primary font-semibold text-primary-foreground">
-            {userInitials}
-          </AvatarFallback>
-        </Avatar> */}
-
         <Button
           className="relative cursor-pointer text-base text-gray-700 transition-colors hover:text-amber-900"
           variant="link"
@@ -62,13 +62,36 @@ export function ProfileDropdown() {
         <DropdownMenuSeparator />
 
         {user ? (
-          <DropdownMenuItem
-            className="group focus:text-red-400"
-            onClick={handleLogout}
-          >
-            <LogOut className="group-focus:text-red-400" />
-            Sair
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuItem
+              className="group focus:text-red-400"
+              onClick={handleLogout}
+            >
+              <LogOut className="group-focus:text-red-400" />
+              Sair
+            </DropdownMenuItem>
+
+            {user.profileType === 1 && (
+              <>
+                <DropdownMenuSeparator />
+
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="text-muted-foreground">
+                    Painel administrativo
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => navigate({ to: "/admin/dashboard" })}
+                    >
+                      <LayoutDashboard />
+                      Dashboard
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuGroup>
+              </>
+            )}
+          </>
         ) : (
           <>
             <DropdownMenuItem

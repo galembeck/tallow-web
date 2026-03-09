@@ -37,4 +37,17 @@ export const productModule = {
       method: "GET",
     });
   },
+
+  // async create(data: Omit<Product, "id">): Promise<Product> {
+  //   return await API.fetch("/product", {
+  //     method: "POST",
+  //     body: JSON.stringify(data),
+  //   });
+  // },
+
+  // async delete(productId: string): Promise<void> {
+  //   return await API.fetch(`/product/${productId}`, {
+  //     method: "DELETE",
+  //   });
+  // },
 };

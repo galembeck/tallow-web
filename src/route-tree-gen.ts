@@ -9,25 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './pages/__root'
+import { Route as AdminLayoutRouteImport } from './pages/admin/layout'
 import { Route as PublicLayoutRouteImport } from './pages/_public/layout'
 import { Route as AdminIndexRouteImport } from './pages/admin/index'
 import { Route as PublicIndexRouteImport } from './pages/_public/index'
 import { Route as ErrorNotFoundRouteImport } from './pages/_error/not-found'
+import { Route as AdminProductsIndexRouteImport } from './pages/admin/products/index'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
 import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkout/index'
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index'
+import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
 
+const AdminLayoutRoute = AdminLayoutRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicLayoutRoute = PublicLayoutRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminLayoutRoute,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
@@ -38,6 +46,11 @@ const ErrorNotFoundRoute = ErrorNotFoundRouteImport.update({
   id: '/_error/not-found',
   path: '/not-found',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminProductsIndexRoute = AdminProductsIndexRouteImport.update({
+  id: '/products/',
+  path: '/products/',
+  getParentRoute: () => AdminLayoutRoute,
 } as any)
 const PublicProductsIndexRoute = PublicProductsIndexRouteImport.update({
   id: '/products/',
@@ -64,6 +77,12 @@ const AuthSignInIndexRoute = AuthSignInIndexRouteImport.update({
   path: '/sign-in/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminOverviewDashboardIndexRoute =
+  AdminOverviewDashboardIndexRouteImport.update({
+    id: '/_overview/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const PublicProductsProductIdIndexRoute =
   PublicProductsProductIdIndexRouteImport.update({
     id: '/products/$productId/',
@@ -73,6 +92,7 @@ const PublicProductsProductIdIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
+  '/admin': typeof AdminLayoutRouteWithChildren
   '/not-found': typeof ErrorNotFoundRoute
   '/admin/': typeof AdminIndexRoute
   '/sign-in/': typeof AuthSignInIndexRoute
@@ -80,7 +100,9 @@ export interface FileRoutesByFullPath {
   '/cart/': typeof PublicCartIndexRoute
   '/checkout/': typeof PublicCheckoutIndexRoute
   '/products/': typeof PublicProductsIndexRoute
+  '/admin/products/': typeof AdminProductsIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
+  '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/not-found': typeof ErrorNotFoundRoute
@@ -91,11 +113,14 @@ export interface FileRoutesByTo {
   '/cart': typeof PublicCartIndexRoute
   '/checkout': typeof PublicCheckoutIndexRoute
   '/products': typeof PublicProductsIndexRoute
+  '/admin/products': typeof AdminProductsIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
+  '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicLayoutRouteWithChildren
+  '/admin': typeof AdminLayoutRouteWithChildren
   '/_error/not-found': typeof ErrorNotFoundRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -104,12 +129,15 @@ export interface FileRoutesById {
   '/_public/cart/': typeof PublicCartIndexRoute
   '/_public/checkout/': typeof PublicCheckoutIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
+  '/admin/products/': typeof AdminProductsIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
+  '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/not-found'
     | '/admin/'
     | '/sign-in/'
@@ -117,7 +145,9 @@ export interface FileRouteTypes {
     | '/cart/'
     | '/checkout/'
     | '/products/'
+    | '/admin/products/'
     | '/products/$productId/'
+    | '/admin/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/not-found'
@@ -128,10 +158,13 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/products'
+    | '/admin/products'
     | '/products/$productId'
+    | '/admin/dashboard'
   id:
     | '__root__'
     | '/_public'
+    | '/admin'
     | '/_error/not-found'
     | '/_public/'
     | '/admin/'
@@ -140,19 +173,28 @@ export interface FileRouteTypes {
     | '/_public/cart/'
     | '/_public/checkout/'
     | '/_public/products/'
+    | '/admin/products/'
     | '/_public/products/$productId/'
+    | '/admin/_overview/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
+  AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
   ErrorNotFoundRoute: typeof ErrorNotFoundRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   AuthSignInIndexRoute: typeof AuthSignInIndexRoute
   AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -162,10 +204,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
     '/_public/': {
       id: '/_public/'
@@ -180,6 +222,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/not-found'
       preLoaderRoute: typeof ErrorNotFoundRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/products/': {
+      id: '/admin/products/'
+      path: '/products'
+      fullPath: '/admin/products/'
+      preLoaderRoute: typeof AdminProductsIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
     '/_public/products/': {
       id: '/_public/products/'
@@ -216,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_overview/dashboard/': {
+      id: '/admin/_overview/dashboard/'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof AdminOverviewDashboardIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/_public/products/$productId/': {
       id: '/_public/products/$productId/'
       path: '/products/$productId'
@@ -246,10 +302,26 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
   PublicLayoutRouteChildren,
 )
 
+interface AdminLayoutRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminProductsIndexRoute: typeof AdminProductsIndexRoute
+  AdminOverviewDashboardIndexRoute: typeof AdminOverviewDashboardIndexRoute
+}
+
+const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminProductsIndexRoute: AdminProductsIndexRoute,
+  AdminOverviewDashboardIndexRoute: AdminOverviewDashboardIndexRoute,
+}
+
+const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
+  AdminLayoutRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
+  AdminLayoutRoute: AdminLayoutRouteWithChildren,
   ErrorNotFoundRoute: ErrorNotFoundRoute,
-  AdminIndexRoute: AdminIndexRoute,
   AuthSignInIndexRoute: AuthSignInIndexRoute,
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,
 }

@@ -1,5 +1,12 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { LogIn, LogOut, Menu, ShoppingCart, X } from "lucide-react";
+import {
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  Menu,
+  ShoppingCart,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/services/use-auth";
 import { useCart } from "@/hooks/services/use-cart";
@@ -190,16 +197,32 @@ export function Header() {
               </Button>
 
               {user ? (
-                <Button
-                  className="flex w-full cursor-pointer items-center gap-2 bg-amber-900 py-4! text-base text-white transition-colors hover:bg-amber-900/90"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    logout();
-                  }}
-                >
-                  <LogOut className="h-5 w-5" />
-                  Sair
-                </Button>
+                <>
+                  {user.profileType === 1 && (
+                    <Button
+                      className="flex w-full cursor-pointer items-center gap-2 py-4! text-base"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        navigate({ to: "/admin/dashboard" });
+                      }}
+                      variant="secondary"
+                    >
+                      <LayoutDashboard className="h-5 w-5" />
+                      Painel administrativo
+                    </Button>
+                  )}
+
+                  <Button
+                    className="flex w-full cursor-pointer items-center gap-2 bg-amber-900 py-4! text-base text-white transition-colors hover:bg-amber-900/90"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                  >
+                    <LogOut className="h-5 w-5" />
+                    Sair
+                  </Button>
+                </>
               ) : (
                 <Button
                   className="flex w-full cursor-pointer items-center gap-2 bg-amber-900 py-4! text-base text-white transition-colors hover:bg-amber-900/90"

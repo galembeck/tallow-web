@@ -1,0 +1,15 @@
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute(
+  '/admin/~components/sidebar/content-elements/navigation-content',
+)({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  return (
+    <div>
+      Hello "/admin/~components/sidebar/content-elements/navigation-content"!
+    </div>
+  )
+}
