@@ -53,9 +53,7 @@ export function useAuth() {
       }
 
       try {
-        const result = await userModule.getMe(token);
-        console.log("[useAuth] user data:", result);
-        return result;
+        return await userModule.getMe(token);
       } catch (error) {
         if (error instanceof Error && error.message.includes("UNAUTHORIZED")) {
           cookies.remove("AccessToken");

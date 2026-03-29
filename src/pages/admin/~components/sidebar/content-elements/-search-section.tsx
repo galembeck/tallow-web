@@ -45,7 +45,7 @@ export function SearchSection() {
   return (
     <>
       <Button
-        className="text-muted-foreground group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:pl-2"
+        className="text-muted-foreground cursor-pointer group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:pl-2"
         onClick={() => setOpen(true)}
         variant="outline"
       >

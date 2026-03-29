@@ -2,7 +2,10 @@ import { useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import type { CheckoutFormData } from "@/constants/checkout";
-import type { PaymentBrickSubmitData } from "@/types/services/payment";
+import type {
+  PaymentBrickSubmitData,
+  PaymentResponseDTO,
+} from "@/types/services/payment";
 import type { ShippingInformation } from "@/types/services/shipping";
 import { useCart } from "./services/use-cart";
 import { useOrder } from "./services/use-order";
@@ -16,6 +19,7 @@ import {
 interface UseCheckoutOptions {
   onOrderCreated?: () => void;
   onPaymentSuccess?: (paymentId: string) => void;
+  onPaymentPending?: (payment: PaymentResponseDTO) => void;
   shippingCost?: number;
 }
 
@@ -24,6 +28,7 @@ export function useCheckout(
   {
     onOrderCreated,
     onPaymentSuccess,
+    onPaymentPending,
     shippingCost = 0,
   }: UseCheckoutOptions = {},
 ) {
@@ -142,7 +147,8 @@ export function useCheckout(
         return;
       }
 
-      const totalAmount = (cart.totalAmount ?? 0) + shippingCost;
+      const totalAmount =
+        Math.round(((cart.totalAmount ?? 0) + shippingCost) * 100) / 100;
       const payer = buildPayerFromForm();
 
       let payload: Parameters<typeof processPayment>[0];
@@ -170,8 +176,24 @@ export function useCheckout(
 
       const payment = await processPayment(payload);
 
-      onPaymentSuccess?.(payment.id);
+      if (!payment) {
+        toast.error("Ops! Não foi possível confirmar o pagamento.", {
+          description: "Tente novamente ou entre em contato com o suporte.",
+        });
+        return;
+      }
+
+      const isPending =
+        selectedPaymentMethod === "bank_transfer" ||
+        selectedPaymentMethod === "ticket";
+
+      if (isPending) {
+        onPaymentPending?.(payment);
+        return;
+      }
+
       await clearCart();
+      onPaymentSuccess?.(payment.id);
 
       toast.success("Parabéns! Pagamento realizado com sucesso.", {
         description:
@@ -193,5 +215,6 @@ export function useCheckout(
     isProcessingPayment,
     handleCreateOrder,
     handleProcessPayment,
+    clearCart,
   };
 }

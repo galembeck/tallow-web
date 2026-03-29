@@ -1,0 +1,13 @@
+{
+  "project_name": "tallow-web",
+  "languages": {
+    "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "biome",
+          "arguments": ["format", "--stdin-file-path", "{buffer_path}"],
+        },
+      },
+    },
+  },
+}

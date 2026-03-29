@@ -3,14 +3,17 @@ export const API = {
 
   async fetch(endpoint: string, options: RequestInit = {}) {
     const url = `${this.baseURL}${endpoint}`;
+    const isFormData = options.body instanceof FormData;
 
     const res = await fetch(url, {
       ...options,
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
+      headers: isFormData
+        ? (options.headers ?? {})
+        : {
+            "Content-Type": "application/json",
+            ...(options.headers ?? {}),
+          },
     });
 
     const json = await res.json().catch(() => ({}));

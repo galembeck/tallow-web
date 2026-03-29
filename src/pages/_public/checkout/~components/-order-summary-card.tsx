@@ -1,7 +1,7 @@
-import { useNavigate } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { LeaveConfirmation } from "@/components/leave-confirmation";
 import { Button } from "@/components/ui/button";
 import type { Cart } from "@/types/services/cart";
+import { ArrowLeft } from "lucide-react";
 
 interface OrderSummaryProps {
   cart?: Cart;
@@ -9,8 +9,6 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ cart, shippingCost }: OrderSummaryProps) {
-  const navigate = useNavigate();
-
   const subtotal = cart?.totalAmount ?? 0;
   const total = subtotal + shippingCost;
 
@@ -67,14 +65,12 @@ export function OrderSummary({ cart, shippingCost }: OrderSummaryProps) {
           </span>
         </div>
 
-        <Button
-          className="w-full cursor-pointer"
-          onClick={() => navigate({ to: "/cart" })}
-          variant="outline"
-        >
-          <ArrowLeft />
-          Voltar
-        </Button>
+        <LeaveConfirmation navigateTo="/cart">
+          <Button className="w-full cursor-pointer" variant="outline">
+            <ArrowLeft />
+            Voltar
+          </Button>
+        </LeaveConfirmation>
       </div>
     </aside>
   );

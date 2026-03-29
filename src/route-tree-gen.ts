@@ -14,14 +14,15 @@ import { Route as PublicLayoutRouteImport } from './pages/_public/layout'
 import { Route as AdminIndexRouteImport } from './pages/admin/index'
 import { Route as PublicIndexRouteImport } from './pages/_public/index'
 import { Route as ErrorNotFoundRouteImport } from './pages/_error/not-found'
-import { Route as AdminProductsIndexRouteImport } from './pages/admin/products/index'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
 import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkout/index'
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index'
+import { Route as AdminPrimaryProductsIndexRouteImport } from './pages/admin/_primary/products/index'
 import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
+import { Route as AdminPrimaryProductsProductIdIndexRouteImport } from './pages/admin/_primary/products/$productId/index'
 
 const AdminLayoutRoute = AdminLayoutRouteImport.update({
   id: '/admin',
@@ -46,11 +47,6 @@ const ErrorNotFoundRoute = ErrorNotFoundRouteImport.update({
   id: '/_error/not-found',
   path: '/not-found',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AdminProductsIndexRoute = AdminProductsIndexRouteImport.update({
-  id: '/products/',
-  path: '/products/',
-  getParentRoute: () => AdminLayoutRoute,
 } as any)
 const PublicProductsIndexRoute = PublicProductsIndexRouteImport.update({
   id: '/products/',
@@ -77,6 +73,12 @@ const AuthSignInIndexRoute = AuthSignInIndexRouteImport.update({
   path: '/sign-in/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPrimaryProductsIndexRoute =
+  AdminPrimaryProductsIndexRouteImport.update({
+    id: '/_primary/products/',
+    path: '/products/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminOverviewDashboardIndexRoute =
   AdminOverviewDashboardIndexRouteImport.update({
     id: '/_overview/dashboard/',
@@ -89,6 +91,12 @@ const PublicProductsProductIdIndexRoute =
     path: '/products/$productId/',
     getParentRoute: () => PublicLayoutRoute,
   } as any)
+const AdminPrimaryProductsProductIdIndexRoute =
+  AdminPrimaryProductsProductIdIndexRouteImport.update({
+    id: '/_primary/products/$productId/',
+    path: '/products/$productId/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
@@ -100,9 +108,10 @@ export interface FileRoutesByFullPath {
   '/cart/': typeof PublicCartIndexRoute
   '/checkout/': typeof PublicCheckoutIndexRoute
   '/products/': typeof PublicProductsIndexRoute
-  '/admin/products/': typeof AdminProductsIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
+  '/admin/products/': typeof AdminPrimaryProductsIndexRoute
+  '/admin/products/$productId/': typeof AdminPrimaryProductsProductIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/not-found': typeof ErrorNotFoundRoute
@@ -113,9 +122,10 @@ export interface FileRoutesByTo {
   '/cart': typeof PublicCartIndexRoute
   '/checkout': typeof PublicCheckoutIndexRoute
   '/products': typeof PublicProductsIndexRoute
-  '/admin/products': typeof AdminProductsIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
+  '/admin/products': typeof AdminPrimaryProductsIndexRoute
+  '/admin/products/$productId': typeof AdminPrimaryProductsProductIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -129,9 +139,10 @@ export interface FileRoutesById {
   '/_public/cart/': typeof PublicCartIndexRoute
   '/_public/checkout/': typeof PublicCheckoutIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
-  '/admin/products/': typeof AdminProductsIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
+  '/admin/_primary/products/': typeof AdminPrimaryProductsIndexRoute
+  '/admin/_primary/products/$productId/': typeof AdminPrimaryProductsProductIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -145,9 +156,10 @@ export interface FileRouteTypes {
     | '/cart/'
     | '/checkout/'
     | '/products/'
-    | '/admin/products/'
     | '/products/$productId/'
     | '/admin/dashboard/'
+    | '/admin/products/'
+    | '/admin/products/$productId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/not-found'
@@ -158,9 +170,10 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/products'
-    | '/admin/products'
     | '/products/$productId'
     | '/admin/dashboard'
+    | '/admin/products'
+    | '/admin/products/$productId'
   id:
     | '__root__'
     | '/_public'
@@ -173,9 +186,10 @@ export interface FileRouteTypes {
     | '/_public/cart/'
     | '/_public/checkout/'
     | '/_public/products/'
-    | '/admin/products/'
     | '/_public/products/$productId/'
     | '/admin/_overview/dashboard/'
+    | '/admin/_primary/products/'
+    | '/admin/_primary/products/$productId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -223,13 +237,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorNotFoundRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/products/': {
-      id: '/admin/products/'
-      path: '/products'
-      fullPath: '/admin/products/'
-      preLoaderRoute: typeof AdminProductsIndexRouteImport
-      parentRoute: typeof AdminLayoutRoute
-    }
     '/_public/products/': {
       id: '/_public/products/'
       path: '/products'
@@ -265,6 +272,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_primary/products/': {
+      id: '/admin/_primary/products/'
+      path: '/products'
+      fullPath: '/admin/products/'
+      preLoaderRoute: typeof AdminPrimaryProductsIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/admin/_overview/dashboard/': {
       id: '/admin/_overview/dashboard/'
       path: '/dashboard'
@@ -278,6 +292,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/$productId/'
       preLoaderRoute: typeof PublicProductsProductIdIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
+    }
+    '/admin/_primary/products/$productId/': {
+      id: '/admin/_primary/products/$productId/'
+      path: '/products/$productId'
+      fullPath: '/admin/products/$productId/'
+      preLoaderRoute: typeof AdminPrimaryProductsProductIdIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
   }
 }
@@ -304,14 +325,17 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 
 interface AdminLayoutRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
-  AdminProductsIndexRoute: typeof AdminProductsIndexRoute
   AdminOverviewDashboardIndexRoute: typeof AdminOverviewDashboardIndexRoute
+  AdminPrimaryProductsIndexRoute: typeof AdminPrimaryProductsIndexRoute
+  AdminPrimaryProductsProductIdIndexRoute: typeof AdminPrimaryProductsProductIdIndexRoute
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
-  AdminProductsIndexRoute: AdminProductsIndexRoute,
   AdminOverviewDashboardIndexRoute: AdminOverviewDashboardIndexRoute,
+  AdminPrimaryProductsIndexRoute: AdminPrimaryProductsIndexRoute,
+  AdminPrimaryProductsProductIdIndexRoute:
+    AdminPrimaryProductsProductIdIndexRoute,
 }
 
 const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
