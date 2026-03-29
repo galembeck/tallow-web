@@ -17,6 +17,38 @@ export interface Product {
 
   imageUrl: string;
   additionalImagesUrls?: string[];
+
+  createdAt?: string;
+  createdBy?: string;
+}
+
+export interface CreateProductDTO {
+  name: string;
+  description: string;
+  category: ProductCategory;
+  price: number;
+  ingredients: string[];
+  stockAmount: number;
+  weight: number;
+  height: number;
+  width: number;
+  length: number;
+  image: File;
+}
+
+export interface UpdateProductDTO {
+  id: string;
+  name?: string;
+  description?: string;
+  category?: ProductCategory;
+  price?: number;
+  ingredients?: string[];
+  stockAmount?: number;
+  weight?: number;
+  height?: number;
+  width?: number;
+  length?: number;
+  image?: File;
 }
 
 export interface ProductFilterParams {

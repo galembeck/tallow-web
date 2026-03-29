@@ -201,7 +201,7 @@ export function ShippingFormStep({
               <FormItem>
                 <FormLabel>Endereço</FormLabel>
                 <FormControl>
-                  <Input placeholder="Rua" {...field} />
+                  <Input placeholder="Rua" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -245,7 +245,7 @@ export function ShippingFormStep({
               <FormItem>
                 <FormLabel>Bairro</FormLabel>
                 <FormControl>
-                  <Input placeholder="Bairro" {...field} />
+                  <Input placeholder="Bairro" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -259,7 +259,7 @@ export function ShippingFormStep({
               <FormItem>
                 <FormLabel>Estado</FormLabel>
                 <FormControl>
-                  <Input placeholder="UF" {...field} />
+                  <Input placeholder="UF" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -273,7 +273,7 @@ export function ShippingFormStep({
               <FormItem>
                 <FormLabel>Cidade</FormLabel>
                 <FormControl>
-                  <Input placeholder="Cidade" {...field} />
+                  <Input placeholder="Cidade" {...field} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>

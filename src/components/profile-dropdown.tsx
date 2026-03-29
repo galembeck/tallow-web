@@ -63,18 +63,8 @@ export function ProfileDropdown() {
 
         {user ? (
           <>
-            <DropdownMenuItem
-              className="group focus:text-red-400"
-              onClick={handleLogout}
-            >
-              <LogOut className="group-focus:text-red-400" />
-              Sair
-            </DropdownMenuItem>
-
             {user.profileType === 1 && (
               <>
-                <DropdownMenuSeparator />
-
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="text-muted-foreground">
                     Painel administrativo
@@ -89,8 +79,18 @@ export function ProfileDropdown() {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
               </>
             )}
+
+            <DropdownMenuItem
+              className="group focus:text-red-400"
+              onClick={handleLogout}
+            >
+              <LogOut className="group-focus:text-red-400" />
+              Sair
+            </DropdownMenuItem>
           </>
         ) : (
           <>

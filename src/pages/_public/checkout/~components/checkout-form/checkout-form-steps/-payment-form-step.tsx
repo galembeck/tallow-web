@@ -45,35 +45,17 @@ export function PaymentFormStep({
             email: "",
           },
         }}
-        onError={(error) => {
-          console.error("❌ Erro no Payment Brick:", error);
-          toast.error(
-            "Ops! Ocorreu um erro ao carregar o formulário de pagamento.",
-            {
-              description:
-                "Tente novamente mais tarde ou entre em contato com o suporte.",
-            },
-          );
-        }}
-        onReady={() => {
-          console.log("✅ Payment Brick carregado com sucesso!");
+        onError={(_error) => {
+          toast.error("Houve um erro ao carregar o formulário de pagamento!", {
+            description:
+              "Tente novamente mais tarde ou entre em contato com o suporte.",
+          });
         }}
         onSubmit={async (data) => {
-          console.log("🎯 Payment Brick onSubmit disparado!");
-          console.log("📦 Dados brutos do Payment Brick:", data);
-
-          // ✅ Validação antes de enviar
           const submitData = data as unknown as PaymentBrickSubmitData;
 
-          console.log("📦 Dados convertidos:", {
-            selectedPaymentMethod: submitData.selectedPaymentMethod,
-            formData: submitData.formData,
-          });
-
-          // ✅ Validação adicional
           if (!submitData.formData) {
-            console.error("❌ formData está undefined!");
-            toast.error("Erro ao processar dados do pagamento", {
+            toast.error("Erro ao processar dados do pagamento!", {
               description: "Por favor, tente preencher o formulário novamente.",
             });
             return;

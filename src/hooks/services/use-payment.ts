@@ -98,12 +98,14 @@ interface UsePaymentOptions {
   paymentId?: string;
   enablePaymentQuery?: boolean;
   enableUserPaymentsQuery?: boolean;
+  pollingIntervalMs?: number | false;
 }
 
 export function usePayment({
   paymentId,
   enablePaymentQuery = false,
   enableUserPaymentsQuery = false,
+  pollingIntervalMs = false,
 }: UsePaymentOptions = {}) {
   const queryClient = useQueryClient();
 
@@ -111,26 +113,24 @@ export function usePayment({
     mutationFn: async (data: CreatePaymentDTO) => {
       try {
         const result = await paymentModule.process(data);
-        console.log("✅ Pagamento processado com sucesso:", result);
         return result;
-      } catch (error) {
-        console.error("❌ Erro ao processar pagamento:", error);
-        throw error;
+      } catch (_error) {
+        // Error handling
       }
     },
     onSuccess: async (payment) => {
       queryClient.setQueryData<PaymentResponseDTO>(
-        ["payments", "details", payment.id],
+        ["payments", "details", payment?.id],
         payment,
       );
 
       await queryClient.invalidateQueries({ queryKey: ["orders", "user"] });
       await queryClient.invalidateQueries({
-        queryKey: ["orders", "details", payment.orderId],
+        queryKey: ["orders", "details", payment?.orderId],
       });
     },
-    onError: (error) => {
-      console.error("💥 Erro no mutation:", error);
+    onError: (_error) => {
+      // Error handling
     },
   });
 
@@ -144,6 +144,8 @@ export function usePayment({
     },
     enabled: enablePaymentQuery && !!paymentId,
     retry: 1,
+    refetchInterval: pollingIntervalMs,
+    refetchIntervalInBackground: false,
   });
 
   const userPaymentsQuery = useQuery({

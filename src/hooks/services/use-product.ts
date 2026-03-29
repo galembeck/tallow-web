@@ -1,9 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { productModule } from "@/api/http/routes/product";
-import type { Product, ProductFilterParams } from "@/types/services/product";
+import type {
+  CreateProductDTO,
+  Product,
+  ProductFilterParams,
+  UpdateProductDTO,
+} from "@/types/services/product";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export function useProduct(productId?: string, filters?: ProductFilterParams) {
+  const queryClient = useQueryClient();
   const [debouncedFilters, setDebouncedFilters] = useState(filters);
 
   useEffect(() => {
@@ -64,6 +71,32 @@ export function useProduct(productId?: string, filters?: ProductFilterParams) {
     retry: false,
   });
 
+  const createProductMutation = useMutation({
+    mutationFn: (data: CreateProductDTO) => productModule.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products", "list"] });
+    },
+  });
+
+  const updateProductMutation = useMutation({
+    mutationFn: (data: UpdateProductDTO) => productModule.update(data),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["products", "list"] });
+      queryClient.invalidateQueries({
+        queryKey: ["product", "details", variables.id],
+      });
+    },
+  });
+
+  const deleteProductMutation = useMutation({
+    mutationFn: (productId: string) => productModule.delete(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products", "list"] });
+
+      toast.success("Produto excluído com sucesso!");
+    },
+  });
+
   return {
     products,
     isLoading,
@@ -74,5 +107,14 @@ export function useProduct(productId?: string, filters?: ProductFilterParams) {
     product,
     isProductLoading,
     error,
+
+    createProduct: createProductMutation.mutateAsync,
+    isCreatingProduct: createProductMutation.isPending,
+
+    updateProduct: updateProductMutation.mutateAsync,
+    isUpdatingProduct: updateProductMutation.isPending,
+
+    deleteProduct: deleteProductMutation.mutateAsync,
+    isDeletingProduct: deleteProductMutation.isPending,
   };
 }
