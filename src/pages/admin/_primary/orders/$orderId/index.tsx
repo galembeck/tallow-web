@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useOrder } from "@/hooks/services/use-order";
-import { orderStatusLabel } from "@/types/enums/order-status";
+import {
+  normalizeOrderStatus,
+  orderStatusLabel,
+} from "@/types/enums/order-status";
 import { paymentMethodLabel } from "@/types/enums/payment-method";
 import { paymentStatusLabel } from "@/types/enums/payment-status";
 import { formatCurrency } from "@/utils/format-currency";
@@ -197,11 +200,14 @@ function OrderDetailsPage() {
                     label="Status"
                     value={
                       <Badge
-                        variant={orderStatusVariant(String(order.status))}
+                        variant={orderStatusVariant(
+                          normalizeOrderStatus(String(order.status)),
+                        )}
                         className="uppercase"
                       >
-                        {orderStatusLabel[String(order.status)] ??
-                          String(order.status)}
+                        {orderStatusLabel[
+                          normalizeOrderStatus(String(order.status))
+                        ] ?? normalizeOrderStatus(String(order.status))}
                       </Badge>
                     }
                   />

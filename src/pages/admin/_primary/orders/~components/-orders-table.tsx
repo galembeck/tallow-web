@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useOrder } from "@/hooks/services/use-order";
 import type { OrderAdminSummaryDTO } from "@/types/services/order";
-import { orderStatusLabel } from "@/types/enums/order-status";
+import { normalizeOrderStatus, orderStatusLabel } from "@/types/enums/order-status";
 import { formatCurrency } from "@/utils/format-currency";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -91,7 +91,7 @@ export const ordersTableColumns: ColumnDef<OrderAdminSummaryDTO>[] = [
       />
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = normalizeOrderStatus(row.getValue("status") as string);
       return (
         <div className="flex justify-center">
           <Badge variant={orderStatusVariant(status)} className="uppercase">

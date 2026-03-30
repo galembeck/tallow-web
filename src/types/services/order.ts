@@ -65,7 +65,7 @@ export interface OrderAdminSummaryDTO {
   subTotalAmount: number;
   shippingAmount: number;
   totalAmount: number;
-  itemCount: number;
+  itemsCount: number;
   shippingCity: string;
   shippingState: string;
   createdAt: string;

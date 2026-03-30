@@ -1,13 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import { Banknote, Box, ShoppingBag, User } from "lucide-react";
+import { OrdersTable } from "../../_primary/orders/~components/-orders-table";
 import { PaymentsTable } from "../../_primary/payments/~components/-payments-table";
 import { ProductsTable } from "../../_primary/products/~components/-products-table";
-import { ChartLineInteractive } from "./~components/-chart-area-interactive";
+import { ChartAreaInteractive } from "./~components/-chart-area-interactive";
 import { PayedOrdersCard } from "./~components/-payed-orders-card";
 import { UnderDevelopmentAdvice } from "./~components/-under-development-advice";
 import { TransactionsOverview } from "./~components/analytics-information/-transactions-overview";
-import { OrdersTable } from "../../_primary/orders/~components/-orders-table";
 
 export const Route = createFileRoute("/admin/_overview/dashboard/")({
   component: DashboardPage,
@@ -71,7 +71,7 @@ function DashboardPage() {
       <div className="flex w-full flex-col gap-4 xl:flex-row">
         <PayedOrdersCard />
 
-        <ChartLineInteractive />
+        <ChartAreaInteractive />
       </div>
     </main>
   );
