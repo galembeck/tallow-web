@@ -316,7 +316,7 @@ export function PaymentsTable({ layout = "default" }: PaymentsTableProps) {
   const navigate = useNavigate();
 
   const { allPayments, isAllPaymentsLoading } = usePayment({
-    enableAllPaymentsQuery: layout === "default",
+    enableAllPaymentsQuery: true,
   });
 
   return (

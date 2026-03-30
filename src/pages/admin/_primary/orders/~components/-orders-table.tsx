@@ -259,7 +259,7 @@ export function OrdersTable({ layout = "default" }: OrdersTableProps) {
   const navigate = useNavigate();
 
   const { allOrders, isAllOrdersLoading } = useOrder({
-    enableAllOrdersQuery: layout === "default",
+    enableAllOrdersQuery: true,
   });
 
   return (
