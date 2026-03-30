@@ -74,6 +74,42 @@ export interface PaymentResponseDTO {
 
 export type PaymentListResponseDTO = PaymentResponseDTO[];
 
+export interface PaymentAdminDTO {
+  id: string;
+  mercadoPagoPaymentId?: number | null;
+  orderId?: string | null;
+  status: string;
+  statusDetail?: string | null;
+  paymentMethod: string;
+  paymentMethodId: string;
+  transactionAmount: number;
+  shippingAmount?: number | null;
+  installments?: number | null;
+  dateCreated: string;
+  dateApproved?: string | null;
+  dateLastUpdated?: string | null;
+  payerName?: string | null;
+  payerEmail?: string | null;
+  payerDocument?: string | null;
+}
+
+export interface PaymentDetailDTO extends PaymentAdminDTO {
+  authorizationCode?: string | null;
+  liveMode?: boolean | null;
+  statementDescriptor?: string | null;
+  externalReference?: string | null;
+  dateOfExpiration?: string | null;
+  pixQrCode?: string | null;
+  pixQrCodeBase64?: string | null;
+  pixCopyPaste?: string | null;
+  boletoUrl?: string | null;
+  boletoBarcode?: string | null;
+  orderSubTotal?: number | null;
+  orderTotal?: number | null;
+  shippingCity?: string | null;
+  shippingState?: string | null;
+}
+
 export interface PaymentBrickFormData {
   token?: string;
   payment_method_id: string;

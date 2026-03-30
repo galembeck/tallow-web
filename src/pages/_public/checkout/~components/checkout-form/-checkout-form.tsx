@@ -150,7 +150,7 @@ export function CheckoutForm() {
 
                 {step === 3 && (
                   <PaymentFormStep
-                    amount={(cart?.totalAmount ?? 0) + shippingCost}
+                    amount={Math.round(((cart?.totalAmount ?? 0) + shippingCost) * 100) / 100}
                     onSubmitPayment={handleProcessPayment}
                   />
                 )}

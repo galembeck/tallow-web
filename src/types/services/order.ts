@@ -57,6 +57,25 @@ export interface OrderResponseDTO {
   payment?: PaymentSummaryDTO | null;
 }
 
+export interface OrderAdminSummaryDTO {
+  id: string;
+  status: string;
+  buyerName: string;
+  buyerEmail: string;
+  subTotalAmount: number;
+  shippingAmount: number;
+  totalAmount: number;
+  itemCount: number;
+  shippingCity: string;
+  shippingState: string;
+  createdAt: string;
+  paymentApprovedAt?: string | null;
+  processingAt?: string | null;
+  shippedAt?: string | null;
+  deliveredAt?: string | null;
+  cancelledAt?: string | null;
+}
+
 /**
  * Exemplo de como criar um pedido:
  *

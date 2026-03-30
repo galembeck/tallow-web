@@ -1,11 +1,13 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute } from "@tanstack/react-router";
+import { Banknote, Box, ShoppingBag, User } from "lucide-react";
+import { PaymentsTable } from "../../_primary/payments/~components/-payments-table";
+import { ProductsTable } from "../../_primary/products/~components/-products-table";
+import { ChartLineInteractive } from "./~components/-chart-area-interactive";
+import { PayedOrdersCard } from "./~components/-payed-orders-card";
 import { UnderDevelopmentAdvice } from "./~components/-under-development-advice";
 import { TransactionsOverview } from "./~components/analytics-information/-transactions-overview";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Box, Receipt, User } from "lucide-react";
-import { ProductsTable } from "../../_primary/products/~components/-products-table";
-import { PayedOrdersCard } from "./~components/-payed-orders-card";
-import { ChartLineInteractive } from "./~components/-chart-area-interactive";
+import { OrdersTable } from "../../_primary/orders/~components/-orders-table";
 
 export const Route = createFileRoute("/admin/_overview/dashboard/")({
   component: DashboardPage,
@@ -28,8 +30,13 @@ function DashboardPage() {
       <Tabs defaultValue="payments">
         <TabsList>
           <TabsTrigger value="payments">
-            <Receipt />
+            <Banknote />
             Pagamentos
+          </TabsTrigger>
+
+          <TabsTrigger value="orders">
+            <Box />
+            Pedidos
           </TabsTrigger>
 
           <TabsTrigger value="clients">
@@ -38,14 +45,17 @@ function DashboardPage() {
           </TabsTrigger>
 
           <TabsTrigger value="products">
-            <Box />
+            <ShoppingBag />
             Produtos
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="payments">
-          {/*<PaymentsTable />*/}
-          <h1>Tabela de Pagamentos</h1>
+          <PaymentsTable layout="summary" />
+        </TabsContent>
+
+        <TabsContent value="orders">
+          <OrdersTable layout="summary" />
         </TabsContent>
 
         <TabsContent value="clients">

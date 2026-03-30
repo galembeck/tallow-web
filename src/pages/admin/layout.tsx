@@ -62,10 +62,12 @@ function AdminLayout() {
 
     "/admin/products": "Produtos",
     "/admin/products/$productId": "Detalhes do Produto",
-    "/admin/payments": "Pagamentos",
 
-    "/admin/clients": "Clientes",
-    "/admin/client-detail/$clientId": "Detalhes do Cliente",
+    "/admin/payments": "Pagamentos",
+    "/admin/payments/$paymentId": "Detalhes do Pagamento",
+
+    "/admin/orders": "Pedidos",
+    "/admin/orders/$orderId": "Detalhes do Pedido",
 
     "/admin/roadmap": "Roadmap",
   };
@@ -79,6 +81,14 @@ function AdminLayout() {
       return "/admin/products/$productId";
     }
 
+    if (path.startsWith("/admin/payments/")) {
+      return "/admin/payments/$paymentId";
+    }
+
+    if (path.startsWith("/admin/orders/")) {
+      return "/admin/orders/$orderId";
+    }
+
     return path;
   }
 
@@ -87,11 +97,11 @@ function AdminLayout() {
     "Página não reconhecida...";
 
   return (
-    <div className="min-h-screen w-full">
-      <SidebarProvider>
+    <div className="h-screen w-full overflow-hidden">
+      <SidebarProvider className="h-full">
         <AdminSidebar />
 
-        <SidebarInset>
+        <SidebarInset className="flex flex-col overflow-hidden">
           <header className="flex h-16 shrink-0 items-center justify-between gap-2 pr-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
@@ -127,8 +137,10 @@ function AdminLayout() {
             </div>
           </header>
 
-          <main className="container mx-auto space-y-8 p-4">
-            <Outlet />
+          <main className="flex-1 overflow-y-auto">
+            <div className="container mx-auto space-y-8 p-4">
+              <Outlet />
+            </div>
           </main>
         </SidebarInset>
       </SidebarProvider>

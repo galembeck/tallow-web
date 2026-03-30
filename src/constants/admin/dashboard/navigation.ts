@@ -56,20 +56,7 @@ export const getAllNavigationItems = (): NavigationItem[] => {
       description: item.description,
       group: "Transações",
       icon: item.icon,
-      keywords: [
-        "transações",
-        "transactions",
-        "produtos",
-        "cobranças",
-        "links de pagamento",
-        "clientes",
-        "cupons",
-        "saques",
-        "roadmap",
-        "plugins",
-        "disputas",
-        item.title.toLowerCase(),
-      ],
+      keywords: ["produtos", "pedidos", "pagamentos", item.title.toLowerCase()],
     }),
   );
 

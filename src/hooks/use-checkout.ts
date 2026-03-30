@@ -192,13 +192,14 @@ export function useCheckout(
         return;
       }
 
-      await clearCart();
       onPaymentSuccess?.(payment.id);
+      await clearCart();
 
       toast.success("Parabéns! Pagamento realizado com sucesso.", {
         description:
           "Em breve você receberá um e-mail com os detalhes do seu pedido.",
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       toast.error("Ops! Ocorreu um erro ao processar seu pagamento.", {
         description:
