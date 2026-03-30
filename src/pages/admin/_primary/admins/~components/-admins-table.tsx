@@ -106,11 +106,12 @@ export const adminsTableColumns: ColumnDef<User>[] = [
       </div>
     ),
     cell: ({ row }) => {
-      const type = row.getValue("profileType") as number;
+      const type = row.getValue("profileType") as string;
+
       return (
         <div className="flex justify-center">
           <Badge variant="default" className="uppercase font-semibold">
-            {profileTypeLabel(type)}
+            <p>{type}</p>
           </Badge>
         </div>
       );
