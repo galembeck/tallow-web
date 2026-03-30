@@ -260,7 +260,13 @@ export const productsTableColumns: ColumnDef<Product>[] = [
   },
 ];
 
-export function ProductsTable() {
+interface ProductsTableProps {
+  layout?: "default" | "summary";
+}
+
+export function ProductsTable({ layout = "default" }: ProductsTableProps) {
+  const navigate = useNavigate();
+
   const { products, isLoading } = useProduct();
 
   return (
@@ -270,12 +276,18 @@ export function ProductsTable() {
           <CardTitle className="text-2xl">Produtos</CardTitle>
           <CardDescription className="text-base">
             Crie, visualize e gerencie os produtos de sua loja através do botão
-            ao lado e a tabela abaixo, respectivamente
+            ao lado e a tabela abaixo, respectivamente.
           </CardDescription>
         </article>
 
         <CardAction className="w-full md:w-fit">
-          <CreateProductModal />
+          {layout === "summary" ? (
+            <Button onClick={() => navigate({ to: "/admin/products" })}>
+              Ver todos
+            </Button>
+          ) : (
+            <CreateProductModal />
+          )}
         </CardAction>
       </CardHeader>
 
