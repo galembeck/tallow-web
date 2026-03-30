@@ -1,4 +1,4 @@
-import { Banknote, Package, ShoppingBag, SquareTerminal } from "lucide-react";
+import { Banknote, Package, ShieldCheck, ShoppingBag, SquareTerminal, Users } from "lucide-react";
 
 export const dashboardData = {
   consolidated: [
@@ -30,6 +30,18 @@ export const dashboardData = {
         "Crie e gerencie as cobranças/pagamentos através de nossa plataforma",
       url: "/admin/payments",
       icon: Banknote,
+    },
+    {
+      title: "Clientes",
+      description: "Visualize e gerencie todos os clientes cadastrados na loja",
+      url: "/admin/clients",
+      icon: Users,
+    },
+    {
+      title: "Administradores",
+      description: "Visualize e gerencie os administradores da plataforma",
+      url: "/admin/admins",
+      icon: ShieldCheck,
     },
   ],
 };

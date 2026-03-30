@@ -12,6 +12,8 @@ import { ArrowLeft, Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { PaymentLoading } from "./~components/-payment-loading";
 import { PaymentNotFound } from "./~components/-payment-not-found";
+import { InfoRow } from "@/components/info-row";
+import { formatDate } from "@/utils/format-date";
 
 export const Route = createFileRoute("/admin/_primary/payments/$paymentId/")({
   component: PaymentDetailsPage,
@@ -33,22 +35,6 @@ function paymentStatusVariant(
     default:
       return "secondary";
   }
-}
-
-function formatDate(dateStr?: string | null) {
-  if (!dateStr) return "—";
-  return format(new Date(dateStr), "dd/MM/yyyy HH:mm");
-}
-
-function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-        {label}
-      </span>
-      <span className="text-sm font-medium">{value}</span>
-    </div>
-  );
 }
 
 function PaymentDetailsPage() {

@@ -1,6 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import { Banknote, Box, ShoppingBag, User } from "lucide-react";
+import { ClientsTable } from "../../_primary/clients/~components/-clients-table";
 import { OrdersTable } from "../../_primary/orders/~components/-orders-table";
 import { PaymentsTable } from "../../_primary/payments/~components/-payments-table";
 import { ProductsTable } from "../../_primary/products/~components/-products-table";
@@ -59,8 +60,7 @@ function DashboardPage() {
         </TabsContent>
 
         <TabsContent value="clients">
-          {/*<ClientsTable />*/}
-          <h1>Tabela de Clientes</h1>
+          <ClientsTable />
         </TabsContent>
 
         <TabsContent value="products">

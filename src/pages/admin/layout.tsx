@@ -63,13 +63,17 @@ function AdminLayout() {
     "/admin/products": "Produtos",
     "/admin/products/$productId": "Detalhes do Produto",
 
-    "/admin/payments": "Pagamentos",
-    "/admin/payments/$paymentId": "Detalhes do Pagamento",
-
     "/admin/orders": "Pedidos",
     "/admin/orders/$orderId": "Detalhes do Pedido",
 
-    "/admin/roadmap": "Roadmap",
+    "/admin/payments": "Pagamentos",
+    "/admin/payments/$paymentId": "Detalhes do Pagamento",
+
+    "/admin/clients": "Clientes",
+    "/admin/clients/$clientId": "Detalhes do Cliente",
+
+    "/admin/admins": "Administradores",
+    "/admin/admins/$adminId": "Detalhes do Administrador",
   };
 
   function derivativePaths(path: string) {
@@ -81,12 +85,20 @@ function AdminLayout() {
       return "/admin/products/$productId";
     }
 
+    if (path.startsWith("/admin/orders/")) {
+      return "/admin/orders/$orderId";
+    }
+
     if (path.startsWith("/admin/payments/")) {
       return "/admin/payments/$paymentId";
     }
 
-    if (path.startsWith("/admin/orders/")) {
-      return "/admin/orders/$orderId";
+    if (path.startsWith("/admin/clients/")) {
+      return "/admin/clients/$clientId";
+    }
+
+    if (path.startsWith("/admin/admins/")) {
+      return "/admin/admins/$adminId";
     }
 
     return path;

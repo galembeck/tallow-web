@@ -14,6 +14,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { OrderLoading } from "./~components/-order-loading";
 import { OrderNotFound } from "./~components/-order-not-found";
+import { InfoRow } from "@/components/info-row";
 
 export const Route = createFileRoute("/admin/_primary/orders/$orderId/")({
   component: OrderDetailsPage,
@@ -51,17 +52,6 @@ function paymentStatusVariant(
     default:
       return "secondary";
   }
-}
-
-function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
-        {label}
-      </span>
-      <span className="text-sm font-medium">{value ?? "—"}</span>
-    </div>
-  );
 }
 
 function OrderDetailsPage() {

@@ -22,11 +22,15 @@ import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index
 import { Route as AdminPrimaryProductsIndexRouteImport } from './pages/admin/_primary/products/index'
 import { Route as AdminPrimaryPaymentsIndexRouteImport } from './pages/admin/_primary/payments/index'
 import { Route as AdminPrimaryOrdersIndexRouteImport } from './pages/admin/_primary/orders/index'
+import { Route as AdminPrimaryClientsIndexRouteImport } from './pages/admin/_primary/clients/index'
+import { Route as AdminPrimaryAdminsIndexRouteImport } from './pages/admin/_primary/admins/index'
 import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
 import { Route as AdminPrimaryProductsProductIdIndexRouteImport } from './pages/admin/_primary/products/$productId/index'
 import { Route as AdminPrimaryPaymentsPaymentIdIndexRouteImport } from './pages/admin/_primary/payments/$paymentId/index'
 import { Route as AdminPrimaryOrdersOrderIdIndexRouteImport } from './pages/admin/_primary/orders/$orderId/index'
+import { Route as AdminPrimaryClientsClientIdIndexRouteImport } from './pages/admin/_primary/clients/$clientId/index'
+import { Route as AdminPrimaryAdminsAdminIdIndexRouteImport } from './pages/admin/_primary/admins/$adminId/index'
 
 const AdminLayoutRoute = AdminLayoutRouteImport.update({
   id: '/admin',
@@ -94,6 +98,17 @@ const AdminPrimaryOrdersIndexRoute = AdminPrimaryOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const AdminPrimaryClientsIndexRoute =
+  AdminPrimaryClientsIndexRouteImport.update({
+    id: '/_primary/clients/',
+    path: '/clients/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminPrimaryAdminsIndexRoute = AdminPrimaryAdminsIndexRouteImport.update({
+  id: '/_primary/admins/',
+  path: '/admins/',
+  getParentRoute: () => AdminLayoutRoute,
+} as any)
 const AdminOverviewDashboardIndexRoute =
   AdminOverviewDashboardIndexRouteImport.update({
     id: '/_overview/dashboard/',
@@ -124,6 +139,18 @@ const AdminPrimaryOrdersOrderIdIndexRoute =
     path: '/orders/$orderId/',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AdminPrimaryClientsClientIdIndexRoute =
+  AdminPrimaryClientsClientIdIndexRouteImport.update({
+    id: '/_primary/clients/$clientId/',
+    path: '/clients/$clientId/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminPrimaryAdminsAdminIdIndexRoute =
+  AdminPrimaryAdminsAdminIdIndexRouteImport.update({
+    id: '/_primary/admins/$adminId/',
+    path: '/admins/$adminId/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
@@ -137,9 +164,13 @@ export interface FileRoutesByFullPath {
   '/products/': typeof PublicProductsIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
+  '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
+  '/admin/clients/': typeof AdminPrimaryClientsIndexRoute
   '/admin/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products/': typeof AdminPrimaryProductsIndexRoute
+  '/admin/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
+  '/admin/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
   '/admin/payments/$paymentId/': typeof AdminPrimaryPaymentsPaymentIdIndexRoute
   '/admin/products/$productId/': typeof AdminPrimaryProductsProductIdIndexRoute
@@ -155,9 +186,13 @@ export interface FileRoutesByTo {
   '/products': typeof PublicProductsIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
+  '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
+  '/admin/clients': typeof AdminPrimaryClientsIndexRoute
   '/admin/orders': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products': typeof AdminPrimaryProductsIndexRoute
+  '/admin/admins/$adminId': typeof AdminPrimaryAdminsAdminIdIndexRoute
+  '/admin/clients/$clientId': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId': typeof AdminPrimaryOrdersOrderIdIndexRoute
   '/admin/payments/$paymentId': typeof AdminPrimaryPaymentsPaymentIdIndexRoute
   '/admin/products/$productId': typeof AdminPrimaryProductsProductIdIndexRoute
@@ -176,9 +211,13 @@ export interface FileRoutesById {
   '/_public/products/': typeof PublicProductsIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
+  '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
+  '/admin/_primary/clients/': typeof AdminPrimaryClientsIndexRoute
   '/admin/_primary/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/_primary/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/_primary/products/': typeof AdminPrimaryProductsIndexRoute
+  '/admin/_primary/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
+  '/admin/_primary/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/_primary/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
   '/admin/_primary/payments/$paymentId/': typeof AdminPrimaryPaymentsPaymentIdIndexRoute
   '/admin/_primary/products/$productId/': typeof AdminPrimaryProductsProductIdIndexRoute
@@ -197,9 +236,13 @@ export interface FileRouteTypes {
     | '/products/'
     | '/products/$productId/'
     | '/admin/dashboard/'
+    | '/admin/admins/'
+    | '/admin/clients/'
     | '/admin/orders/'
     | '/admin/payments/'
     | '/admin/products/'
+    | '/admin/admins/$adminId/'
+    | '/admin/clients/$clientId/'
     | '/admin/orders/$orderId/'
     | '/admin/payments/$paymentId/'
     | '/admin/products/$productId/'
@@ -215,9 +258,13 @@ export interface FileRouteTypes {
     | '/products'
     | '/products/$productId'
     | '/admin/dashboard'
+    | '/admin/admins'
+    | '/admin/clients'
     | '/admin/orders'
     | '/admin/payments'
     | '/admin/products'
+    | '/admin/admins/$adminId'
+    | '/admin/clients/$clientId'
     | '/admin/orders/$orderId'
     | '/admin/payments/$paymentId'
     | '/admin/products/$productId'
@@ -235,9 +282,13 @@ export interface FileRouteTypes {
     | '/_public/products/'
     | '/_public/products/$productId/'
     | '/admin/_overview/dashboard/'
+    | '/admin/_primary/admins/'
+    | '/admin/_primary/clients/'
     | '/admin/_primary/orders/'
     | '/admin/_primary/payments/'
     | '/admin/_primary/products/'
+    | '/admin/_primary/admins/$adminId/'
+    | '/admin/_primary/clients/$clientId/'
     | '/admin/_primary/orders/$orderId/'
     | '/admin/_primary/payments/$paymentId/'
     | '/admin/_primary/products/$productId/'
@@ -344,6 +395,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPrimaryOrdersIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/admin/_primary/clients/': {
+      id: '/admin/_primary/clients/'
+      path: '/clients'
+      fullPath: '/admin/clients/'
+      preLoaderRoute: typeof AdminPrimaryClientsIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_primary/admins/': {
+      id: '/admin/_primary/admins/'
+      path: '/admins'
+      fullPath: '/admin/admins/'
+      preLoaderRoute: typeof AdminPrimaryAdminsIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/admin/_overview/dashboard/': {
       id: '/admin/_overview/dashboard/'
       path: '/dashboard'
@@ -379,6 +444,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPrimaryOrdersOrderIdIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/admin/_primary/clients/$clientId/': {
+      id: '/admin/_primary/clients/$clientId/'
+      path: '/clients/$clientId'
+      fullPath: '/admin/clients/$clientId/'
+      preLoaderRoute: typeof AdminPrimaryClientsClientIdIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_primary/admins/$adminId/': {
+      id: '/admin/_primary/admins/$adminId/'
+      path: '/admins/$adminId'
+      fullPath: '/admin/admins/$adminId/'
+      preLoaderRoute: typeof AdminPrimaryAdminsAdminIdIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
   }
 }
 
@@ -405,9 +484,13 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 interface AdminLayoutRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminOverviewDashboardIndexRoute: typeof AdminOverviewDashboardIndexRoute
+  AdminPrimaryAdminsIndexRoute: typeof AdminPrimaryAdminsIndexRoute
+  AdminPrimaryClientsIndexRoute: typeof AdminPrimaryClientsIndexRoute
   AdminPrimaryOrdersIndexRoute: typeof AdminPrimaryOrdersIndexRoute
   AdminPrimaryPaymentsIndexRoute: typeof AdminPrimaryPaymentsIndexRoute
   AdminPrimaryProductsIndexRoute: typeof AdminPrimaryProductsIndexRoute
+  AdminPrimaryAdminsAdminIdIndexRoute: typeof AdminPrimaryAdminsAdminIdIndexRoute
+  AdminPrimaryClientsClientIdIndexRoute: typeof AdminPrimaryClientsClientIdIndexRoute
   AdminPrimaryOrdersOrderIdIndexRoute: typeof AdminPrimaryOrdersOrderIdIndexRoute
   AdminPrimaryPaymentsPaymentIdIndexRoute: typeof AdminPrimaryPaymentsPaymentIdIndexRoute
   AdminPrimaryProductsProductIdIndexRoute: typeof AdminPrimaryProductsProductIdIndexRoute
@@ -416,9 +499,13 @@ interface AdminLayoutRouteChildren {
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminOverviewDashboardIndexRoute: AdminOverviewDashboardIndexRoute,
+  AdminPrimaryAdminsIndexRoute: AdminPrimaryAdminsIndexRoute,
+  AdminPrimaryClientsIndexRoute: AdminPrimaryClientsIndexRoute,
   AdminPrimaryOrdersIndexRoute: AdminPrimaryOrdersIndexRoute,
   AdminPrimaryPaymentsIndexRoute: AdminPrimaryPaymentsIndexRoute,
   AdminPrimaryProductsIndexRoute: AdminPrimaryProductsIndexRoute,
+  AdminPrimaryAdminsAdminIdIndexRoute: AdminPrimaryAdminsAdminIdIndexRoute,
+  AdminPrimaryClientsClientIdIndexRoute: AdminPrimaryClientsClientIdIndexRoute,
   AdminPrimaryOrdersOrderIdIndexRoute: AdminPrimaryOrdersOrderIdIndexRoute,
   AdminPrimaryPaymentsPaymentIdIndexRoute:
     AdminPrimaryPaymentsPaymentIdIndexRoute,
