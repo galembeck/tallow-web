@@ -1,6 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, Lock, Mail, Sparkles } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  Sparkles,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,6 +31,8 @@ export function SignInForm() {
   const { login, isLoggingIn } = useAuth();
 
   const [serverError, setServerError] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -155,8 +165,20 @@ export function SignInForm() {
                     {...form.register("password")}
                     className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 transition-colors focus:border-amber-900 focus:outline-none"
                     placeholder="••••••••"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                   />
+
+                  <button
+                    type="button"
+                    className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
 
                 {form.formState.errors.password && (

@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
+import { DataTableColumnSearch } from "@/components/data-table-column-search";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/services/use-user";
+import { profileTypeLabel } from "@/types/enums/profile-type";
 import type { User } from "@/types/services/user";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -75,23 +78,53 @@ export const adminsTableColumns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "document",
-    header: () => <span>CPF</span>,
-    cell: ({ row }) => (
-      <span className="text-xs">{row.getValue("document") ?? "—"}</span>
+    header: ({ column }) => (
+      <DataTableColumnSearch
+        column={column}
+        placeholder="Buscar por CPF..."
+        title="CPF"
+      />
     ),
+    cell: ({ row }) => <span>{row.getValue("document") ?? "—"}</span>,
   },
   {
     accessorKey: "cellphone",
-    header: () => <span>Telefone</span>,
-    cell: ({ row }) => (
-      <span className="text-sm">{row.getValue("cellphone") ?? "—"}</span>
+    header: ({ column }) => (
+      <DataTableColumnSearch
+        column={column}
+        placeholder="Buscar por telefone..."
+        title="Telefone"
+      />
     ),
+    cell: ({ row }) => <span>{row.getValue("cellphone") ?? "—"}</span>,
+  },
+  {
+    accessorKey: "profileType",
+    header: () => (
+      <div className="text-center">
+        <span>Perfil</span>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const type = row.getValue("profileType") as number;
+      return (
+        <div className="flex justify-center">
+          <Badge variant="default" className="uppercase font-semibold">
+            {profileTypeLabel(type)}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "createdAt",
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filterFn: "dateRange" as any,
-    header: () => <span className="flex justify-center">Cadastrado em</span>,
+    header: ({ column }) => (
+      <div className="flex justify-center">
+        <DataTableColumnHeader column={column} title="Cadastrado em" />
+      </div>
+    ),
     cell: ({ row }) => {
       const raw = row.getValue("createdAt") as string | null;
       if (!raw) return <div className="flex justify-center">—</div>;
@@ -104,7 +137,11 @@ export const adminsTableColumns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "lastAccessAt",
-    header: () => <span className="flex justify-center">Último acesso</span>,
+    header: ({ column }) => (
+      <div className="flex justify-center">
+        <DataTableColumnHeader column={column} title="Último acesso" />
+      </div>
+    ),
     cell: ({ row }) => {
       const raw = row.getValue("lastAccessAt") as string | null;
       if (!raw) return <div className="flex justify-center">—</div>;

@@ -122,6 +122,7 @@ function ProductDetailsPage() {
               />
 
               <ProductActions
+                productId={product.id}
                 handleAddToCart={handleAddToCart}
                 isAddingItem={isAddingItem}
                 price={product.price}

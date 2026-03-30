@@ -1,8 +1,10 @@
-import { Heart, Minus, Plus, ShoppingCart } from "lucide-react";
+import { WishlistButton } from "@/components/wishlist-button";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { Minus, Plus, ShoppingCart } from "lucide-react";
 
 interface ProductActionsProps {
+  productId: string;
   price: number;
   stockAmount: number;
   quantity: number;
@@ -12,6 +14,7 @@ interface ProductActionsProps {
 }
 
 export function ProductActions({
+  productId,
   price,
   stockAmount,
   quantity,
@@ -84,13 +87,11 @@ export function ProductActions({
           )}
         </Button>
 
-        <Button
-          className="flex w-full cursor-pointer items-center border-2 border-amber-900 bg-white py-6 text-base text-black"
-          variant="outline"
-        >
-          <Heart />
-          Adicionar aos favoritos
-        </Button>
+        <WishlistButton
+          productId={productId}
+          showLabel
+          className="w-full border-2 border-amber-900 bg-white py-6 text-base text-black hover:bg-amber-50"
+        />
       </div>
     </>
   );

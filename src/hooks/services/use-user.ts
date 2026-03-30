@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userModule } from "@/api/http/routes/user";
 import type { ProfileType } from "@/types/enums/profile-type";
-import type { UpdateUserData, User } from "@/types/services/user";
+import type { UpdateProfileData, User } from "@/types/services/user";
 
 interface UseUserOptions {
   clientId?: string;
@@ -55,8 +55,13 @@ export function useUser({
   });
 
   const updateClientMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateUserData }) =>
-      userModule.updateClient(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Pick<UpdateProfileData, "name" | "email">;
+    }) => userModule.updateClient(id, data),
     onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: ["users", "admin", "clients"] });
       queryClient.setQueryData(["users", "admin", "clients", updated.id], updated);
@@ -68,6 +73,16 @@ export function useUser({
       userModule.updateProfileType(id, profileType),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users", "admin"] });
+    },
+  });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: UpdateProfileData) => userModule.updateProfile(data),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<User | null>(["auth", "user"], (old) => {
+        if (!old) return updated;
+        return { ...old, ...updated };
+      });
     },
   });
 
@@ -89,5 +104,8 @@ export function useUser({
 
     updateProfileType: updateProfileTypeMutation.mutateAsync,
     isUpdatingProfileType: updateProfileTypeMutation.isPending,
+
+    updateProfile: updateProfileMutation.mutateAsync,
+    isUpdatingProfile: updateProfileMutation.isPending,
   };
 }

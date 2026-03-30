@@ -14,6 +14,7 @@ import { Route as PublicLayoutRouteImport } from './pages/_public/layout'
 import { Route as AdminIndexRouteImport } from './pages/admin/index'
 import { Route as PublicIndexRouteImport } from './pages/_public/index'
 import { Route as ErrorNotFoundRouteImport } from './pages/_error/not-found'
+import { Route as PublicProfileIndexRouteImport } from './pages/_public/profile/index'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
 import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkout/index'
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
@@ -55,6 +56,11 @@ const ErrorNotFoundRoute = ErrorNotFoundRouteImport.update({
   id: '/_error/not-found',
   path: '/not-found',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PublicProfileIndexRoute = PublicProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => PublicLayoutRoute,
 } as any)
 const PublicProductsIndexRoute = PublicProductsIndexRouteImport.update({
   id: '/products/',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/cart/': typeof PublicCartIndexRoute
   '/checkout/': typeof PublicCheckoutIndexRoute
   '/products/': typeof PublicProductsIndexRoute
+  '/profile/': typeof PublicProfileIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/cart': typeof PublicCartIndexRoute
   '/checkout': typeof PublicCheckoutIndexRoute
   '/products': typeof PublicProductsIndexRoute
+  '/profile': typeof PublicProfileIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/_public/cart/': typeof PublicCartIndexRoute
   '/_public/checkout/': typeof PublicCheckoutIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
+  '/_public/profile/': typeof PublicProfileIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
@@ -234,6 +243,7 @@ export interface FileRouteTypes {
     | '/cart/'
     | '/checkout/'
     | '/products/'
+    | '/profile/'
     | '/products/$productId/'
     | '/admin/dashboard/'
     | '/admin/admins/'
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/products'
+    | '/profile'
     | '/products/$productId'
     | '/admin/dashboard'
     | '/admin/admins'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/_public/cart/'
     | '/_public/checkout/'
     | '/_public/products/'
+    | '/_public/profile/'
     | '/_public/products/$productId/'
     | '/admin/_overview/dashboard/'
     | '/admin/_primary/admins/'
@@ -338,6 +350,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/not-found'
       preLoaderRoute: typeof ErrorNotFoundRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_public/profile/': {
+      id: '/_public/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof PublicProfileIndexRouteImport
+      parentRoute: typeof PublicLayoutRoute
     }
     '/_public/products/': {
       id: '/_public/products/'
@@ -466,6 +485,7 @@ interface PublicLayoutRouteChildren {
   PublicCartIndexRoute: typeof PublicCartIndexRoute
   PublicCheckoutIndexRoute: typeof PublicCheckoutIndexRoute
   PublicProductsIndexRoute: typeof PublicProductsIndexRoute
+  PublicProfileIndexRoute: typeof PublicProfileIndexRoute
   PublicProductsProductIdIndexRoute: typeof PublicProductsProductIdIndexRoute
 }
 
@@ -474,6 +494,7 @@ const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
   PublicCartIndexRoute: PublicCartIndexRoute,
   PublicCheckoutIndexRoute: PublicCheckoutIndexRoute,
   PublicProductsIndexRoute: PublicProductsIndexRoute,
+  PublicProfileIndexRoute: PublicProfileIndexRoute,
   PublicProductsProductIdIndexRoute: PublicProductsProductIdIndexRoute,
 }
 

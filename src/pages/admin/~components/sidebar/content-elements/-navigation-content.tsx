@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -31,7 +31,9 @@ export function NavigationContent({
     isActive?: boolean;
     items?: {
       title: string;
+      description?: string;
       url: string;
+      icon?: LucideIcon;
     }[];
   }[];
 }>) {
@@ -64,9 +66,10 @@ export function NavigationContent({
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild>
-                          <a href={subItem.url}>
+                          <Link to={subItem.url}>
+                            {subItem.icon && <subItem.icon />}
                             <span>{subItem.title}</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

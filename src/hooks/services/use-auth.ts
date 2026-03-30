@@ -24,7 +24,7 @@ export function useAuth() {
         cookies.set("RefreshToken", data.refreshToken, 30);
       }
 
-      await queryClient.refetchQueries({ queryKey: ["auth", "user"] });
+      await queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
   });
 
@@ -34,13 +34,16 @@ export function useAuth() {
     if (token) {
       try {
         await authModule.logout(token);
-      } catch (_error) {}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        //
+      }
     }
 
     cookies.remove("AccessToken");
     cookies.remove("RefreshToken");
 
-    queryClient.clear();
+    queryClient.setQueryData(["auth", "user"], null);
   };
 
   const { data: user, isLoading } = useQuery({
@@ -58,6 +61,8 @@ export function useAuth() {
         if (error instanceof Error && error.message.includes("UNAUTHORIZED")) {
           cookies.remove("AccessToken");
           cookies.remove("RefreshToken");
+
+          queryClient.setQueryData(["auth", "user"], null);
         }
 
         return null;

@@ -1,6 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, Leaf, Lock, Mail, User } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  Leaf,
+  Lock,
+  Mail,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -46,6 +55,10 @@ export function SignUpForm() {
 
   const [serverError, setServerError] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirmation, setShowPasswordConfirmation] =
+    useState(false);
+
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     mode: "onChange",
@@ -72,7 +85,7 @@ export function SignUpForm() {
         password: values.password,
         cellphone: cleanCellphone,
         document: cleanDocument,
-        role: 2, // Cliente
+        profileType: 2,
       });
 
       await login({
@@ -273,8 +286,20 @@ export function SignUpForm() {
                     {...form.register("password")}
                     className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
                     placeholder="Mínimo 8 caracteres"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                   />
+
+                  <button
+                    type="button"
+                    className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
 
                 {form.formState.errors.password && (
@@ -299,8 +324,20 @@ export function SignUpForm() {
                     {...form.register("confirmPassword")}
                     className="w-full rounded-lg border-2 border-gray-200 py-3 pr-4 pl-12 focus:border-amber-900 focus:outline-none"
                     placeholder="Digite a senha novamente"
-                    type="password"
+                    type={showPasswordConfirmation ? "text" : "password"}
                   />
+
+                  <button
+                    type="button"
+                    className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => setShowPasswordConfirmation((v) => !v)}
+                  >
+                    {showPasswordConfirmation ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
 
                 {form.formState.errors.confirmPassword && (

@@ -53,6 +53,13 @@ export function ProfileDropdown() {
           Painel de usuário
         </DropdownMenuLabel>
         <DropdownMenuGroup>
+          {user && (
+            <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
+              <User />
+              Perfil
+            </DropdownMenuItem>
+          )}
+
           <DropdownMenuItem onClick={() => navigate({ to: "/cart" })}>
             <ShoppingCart />
             Carrinho

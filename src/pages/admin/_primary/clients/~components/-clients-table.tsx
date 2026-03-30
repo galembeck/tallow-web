@@ -22,23 +22,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/services/use-user";
-import { ProfileType } from "@/types/enums/profile-type";
+import { profileTypeLabel } from "@/types/enums/profile-type";
 import type { User } from "@/types/services/user";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-
-function profileTypeVariant(
-  profileType: number,
-): "default" | "secondary" | "outline" {
-  return profileType === ProfileType.ADMIN ? "default" : "secondary";
-}
-
-function profileTypeLabel(profileType: number): string {
-  return profileType === ProfileType.ADMIN ? "Admin" : "Cliente";
-}
 
 export const clientsTableColumns: ColumnDef<User>[] = [
   {
@@ -103,27 +93,31 @@ export const clientsTableColumns: ColumnDef<User>[] = [
         title="CPF"
       />
     ),
-    cell: ({ row }) => (
-      <span className="text-xs">{row.getValue("document") ?? "—"}</span>
-    ),
+    cell: ({ row }) => <span>{row.getValue("document") ?? "—"}</span>,
   },
   {
     accessorKey: "cellphone",
-    header: () => <span>Telefone</span>,
-    cell: ({ row }) => (
-      <span className="text-sm">{row.getValue("cellphone") ?? "—"}</span>
+    header: ({ column }) => (
+      <DataTableColumnSearch
+        column={column}
+        placeholder="Buscar por telefone..."
+        title="Telefone"
+      />
     ),
+    cell: ({ row }) => <span>{row.getValue("cellphone") ?? "—"}</span>,
   },
   {
     accessorKey: "profileType",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Perfil" />
+    header: () => (
+      <div className="text-center">
+        <span>Perfil</span>
+      </div>
     ),
     cell: ({ row }) => {
       const type = row.getValue("profileType") as number;
       return (
         <div className="flex justify-center">
-          <Badge variant={profileTypeVariant(type)}>
+          <Badge variant="secondary" className="uppercase font-semibold">
             {profileTypeLabel(type)}
           </Badge>
         </div>
@@ -134,7 +128,11 @@ export const clientsTableColumns: ColumnDef<User>[] = [
     accessorKey: "createdAt",
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filterFn: "dateRange" as any,
-    header: () => <span className="flex justify-center">Cadastrado em</span>,
+    header: ({ column }) => (
+      <div className="flex justify-center">
+        <DataTableColumnHeader column={column} title="Criado em" />
+      </div>
+    ),
     cell: ({ row }) => {
       const raw = row.getValue("createdAt") as string | null;
       if (!raw) return <div className="flex justify-center">—</div>;
@@ -147,7 +145,11 @@ export const clientsTableColumns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "lastAccessAt",
-    header: () => <span className="flex justify-center">Último acesso</span>,
+    header: ({ column }) => (
+      <div className="flex justify-center">
+        <DataTableColumnHeader column={column} title="Último acesso" />
+      </div>
+    ),
     cell: ({ row }) => {
       const raw = row.getValue("lastAccessAt") as string | null;
       if (!raw) return <div className="flex justify-center">—</div>;
