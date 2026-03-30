@@ -190,7 +190,6 @@ export function CreateProductModal() {
           >
             <ScrollArea className="max-h-[65vh] pr-4">
               <div className="space-y-6 pb-2">
-                {/* Image upload */}
                 <FormField
                   control={form.control}
                   name="image"

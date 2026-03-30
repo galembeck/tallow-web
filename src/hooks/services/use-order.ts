@@ -1,17 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { orderModule } from "@/api/http/routes/order";
-import type { CreateOrderDTO, OrderResponseDTO } from "@/types/services/order";
+import type {
+  CreateOrderDTO,
+  OrderAdminSummaryDTO,
+  OrderResponseDTO,
+} from "@/types/services/order";
 
 interface UseOrderOptions {
   orderId?: string;
   enableOrderQuery?: boolean;
   enableUserOrdersQuery?: boolean;
+  enableAllOrdersQuery?: boolean;
+  enableAdminOrderQuery?: boolean;
 }
 
 export function useOrder({
   orderId,
   enableOrderQuery = true,
   enableUserOrdersQuery = false,
+  enableAllOrdersQuery = false,
+  enableAdminOrderQuery = false,
 }: UseOrderOptions = {}) {
   const queryClient = useQueryClient();
 
@@ -53,6 +61,24 @@ export function useOrder({
     staleTime: 0,
   });
 
+  const allOrdersQuery = useQuery<OrderAdminSummaryDTO[]>({
+    queryKey: ["orders", "admin", "all"],
+    queryFn: () => orderModule.getAllAdmin(),
+    enabled: enableAllOrdersQuery,
+    retry: 1,
+    staleTime: 0,
+  });
+
+  const adminOrderQuery = useQuery<OrderResponseDTO>({
+    queryKey: ["orders", "admin", "details", orderId],
+    queryFn: async () => {
+      if (!orderId) throw new Error("ID do pedido não encontrado!");
+      return await orderModule.getAdminById(orderId);
+    },
+    enabled: enableAdminOrderQuery && !!orderId,
+    retry: false,
+  });
+
   return {
     createOrder: createOrderMutation.mutateAsync,
     createdOrders: createOrderMutation.data,
@@ -76,6 +102,13 @@ export function useOrder({
       queryClient.getQueryData<OrderResponseDTO[]>(["orders", "user"]),
     isUserOrdersLoading: userOrdersQuery.isLoading,
     userOrdersError: userOrdersQuery.error,
+
+    allOrders: allOrdersQuery.data ?? [],
+    isAllOrdersLoading: allOrdersQuery.isLoading,
+
+    adminOrder: adminOrderQuery.data,
+    isAdminOrderLoading: adminOrderQuery.isLoading,
+    adminOrderError: adminOrderQuery.error,
 
     refetchOrder: orderQuery.refetch,
     refetchUserOrders: userOrdersQuery.refetch,

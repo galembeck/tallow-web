@@ -8,6 +8,8 @@ import type {
   BuildCreditCardPaymentParams,
   BuildPixPaymentParams,
   CreatePaymentDTO,
+  PaymentAdminDTO,
+  PaymentDetailDTO,
   PaymentResponseDTO,
 } from "@/types/services/payment";
 
@@ -98,6 +100,8 @@ interface UsePaymentOptions {
   paymentId?: string;
   enablePaymentQuery?: boolean;
   enableUserPaymentsQuery?: boolean;
+  enableAllPaymentsQuery?: boolean;
+  enableAdminPaymentQuery?: boolean;
   pollingIntervalMs?: number | false;
 }
 
@@ -105,6 +109,8 @@ export function usePayment({
   paymentId,
   enablePaymentQuery = false,
   enableUserPaymentsQuery = false,
+  enableAllPaymentsQuery = false,
+  enableAdminPaymentQuery = false,
   pollingIntervalMs = false,
 }: UsePaymentOptions = {}) {
   const queryClient = useQueryClient();
@@ -156,6 +162,24 @@ export function usePayment({
     staleTime: 0,
   });
 
+  const allPaymentsQuery = useQuery<PaymentAdminDTO[]>({
+    queryKey: ["payments", "all"],
+    queryFn: () => paymentModule.getAll(),
+    enabled: enableAllPaymentsQuery,
+    retry: 1,
+    staleTime: 0,
+  });
+
+  const adminPaymentQuery = useQuery<PaymentDetailDTO>({
+    queryKey: ["payments", "admin", "details", paymentId],
+    queryFn: async () => {
+      if (!paymentId) throw new Error("ID do pagamento não encontrado.");
+      return await paymentModule.getAdminById(paymentId);
+    },
+    enabled: enableAdminPaymentQuery && !!paymentId,
+    retry: false,
+  });
+
   return {
     processPayment: processPaymentMutation.mutateAsync,
     isProcessingPayment: processPaymentMutation.isPending,
@@ -181,6 +205,12 @@ export function usePayment({
     isUserPaymentsLoading: userPaymentsQuery.isLoading,
     userPaymentsError: userPaymentsQuery.error,
     refetchUserPayments: userPaymentsQuery.refetch,
+
+    allPayments: allPaymentsQuery.data ?? [],
+    isAllPaymentsLoading: allPaymentsQuery.isLoading,
+
+    adminPayment: adminPaymentQuery.data,
+    isAdminPaymentLoading: adminPaymentQuery.isLoading,
 
     buildCreditCardPayload,
     buildPixPayload,

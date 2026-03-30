@@ -37,7 +37,6 @@ import {
 import type { Product } from "@/types/services/product";
 import { formatCurrency } from "@/utils/format-currency";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
 import { Check, ImagePlus, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
