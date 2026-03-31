@@ -9,15 +9,16 @@ export interface OrderStatus {
   REFUNDED: "REFUNDED";
 }
 
+// Backend OrderStatus enum starts at 1 (PENDING = 1 … REFUNDED = 8)
 const numericToOrderStatus: Record<string, string> = {
-  "0": "PENDING",
-  "1": "PAYMENT_PENDING",
-  "2": "PAYMENT_APPROVED",
-  "3": "PROCESSING",
-  "4": "SHIPPED",
-  "5": "DELIVERED",
-  "6": "CANCELLED",
-  "7": "REFUNDED",
+  "1": "PENDING",
+  "2": "PAYMENT_PENDING",
+  "3": "PAYMENT_APPROVED",
+  "4": "PROCESSING",
+  "5": "SHIPPED",
+  "6": "DELIVERED",
+  "7": "CANCELLED",
+  "8": "REFUNDED",
 };
 
 export function normalizeOrderStatus(status: string | number): string {
