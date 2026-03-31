@@ -20,6 +20,7 @@ import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkou
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index'
+import { Route as AuthPasswordRecoveryIndexRouteImport } from './pages/_auth/password-recovery/index'
 import { Route as AdminPrimaryProductsIndexRouteImport } from './pages/admin/_primary/products/index'
 import { Route as AdminPrimaryPaymentsIndexRouteImport } from './pages/admin/_primary/payments/index'
 import { Route as AdminPrimaryOrdersIndexRouteImport } from './pages/admin/_primary/orders/index'
@@ -27,6 +28,7 @@ import { Route as AdminPrimaryClientsIndexRouteImport } from './pages/admin/_pri
 import { Route as AdminPrimaryAdminsIndexRouteImport } from './pages/admin/_primary/admins/index'
 import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
+import { Route as AuthPasswordRecoveryResetIndexRouteImport } from './pages/_auth/password-recovery/reset/index'
 import { Route as AdminPrimaryProductsProductIdIndexRouteImport } from './pages/admin/_primary/products/$productId/index'
 import { Route as AdminPrimaryPaymentsPaymentIdIndexRouteImport } from './pages/admin/_primary/payments/$paymentId/index'
 import { Route as AdminPrimaryOrdersOrderIdIndexRouteImport } from './pages/admin/_primary/orders/$orderId/index'
@@ -87,6 +89,12 @@ const AuthSignInIndexRoute = AuthSignInIndexRouteImport.update({
   path: '/sign-in/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthPasswordRecoveryIndexRoute =
+  AuthPasswordRecoveryIndexRouteImport.update({
+    id: '/_auth/password-recovery/',
+    path: '/password-recovery/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminPrimaryProductsIndexRoute =
   AdminPrimaryProductsIndexRouteImport.update({
     id: '/_primary/products/',
@@ -127,6 +135,12 @@ const PublicProductsProductIdIndexRoute =
     path: '/products/$productId/',
     getParentRoute: () => PublicLayoutRoute,
   } as any)
+const AuthPasswordRecoveryResetIndexRoute =
+  AuthPasswordRecoveryResetIndexRouteImport.update({
+    id: '/_auth/password-recovery/reset/',
+    path: '/password-recovery/reset/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminPrimaryProductsProductIdIndexRoute =
   AdminPrimaryProductsProductIdIndexRouteImport.update({
     id: '/_primary/products/$productId/',
@@ -163,12 +177,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminLayoutRouteWithChildren
   '/not-found': typeof ErrorNotFoundRoute
   '/admin/': typeof AdminIndexRoute
+  '/password-recovery/': typeof AuthPasswordRecoveryIndexRoute
   '/sign-in/': typeof AuthSignInIndexRoute
   '/sign-up/': typeof AuthSignUpIndexRoute
   '/cart/': typeof PublicCartIndexRoute
   '/checkout/': typeof PublicCheckoutIndexRoute
   '/products/': typeof PublicProductsIndexRoute
   '/profile/': typeof PublicProfileIndexRoute
+  '/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
@@ -186,12 +202,14 @@ export interface FileRoutesByTo {
   '/not-found': typeof ErrorNotFoundRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/password-recovery': typeof AuthPasswordRecoveryIndexRoute
   '/sign-in': typeof AuthSignInIndexRoute
   '/sign-up': typeof AuthSignUpIndexRoute
   '/cart': typeof PublicCartIndexRoute
   '/checkout': typeof PublicCheckoutIndexRoute
   '/products': typeof PublicProductsIndexRoute
   '/profile': typeof PublicProfileIndexRoute
+  '/password-recovery/reset': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
@@ -212,12 +230,14 @@ export interface FileRoutesById {
   '/_error/not-found': typeof ErrorNotFoundRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/_auth/password-recovery/': typeof AuthPasswordRecoveryIndexRoute
   '/_auth/sign-in/': typeof AuthSignInIndexRoute
   '/_auth/sign-up/': typeof AuthSignUpIndexRoute
   '/_public/cart/': typeof PublicCartIndexRoute
   '/_public/checkout/': typeof PublicCheckoutIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
   '/_public/profile/': typeof PublicProfileIndexRoute
+  '/_auth/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
@@ -238,12 +258,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/not-found'
     | '/admin/'
+    | '/password-recovery/'
     | '/sign-in/'
     | '/sign-up/'
     | '/cart/'
     | '/checkout/'
     | '/products/'
     | '/profile/'
+    | '/password-recovery/reset/'
     | '/products/$productId/'
     | '/admin/dashboard/'
     | '/admin/admins/'
@@ -261,12 +283,14 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/'
     | '/admin'
+    | '/password-recovery'
     | '/sign-in'
     | '/sign-up'
     | '/cart'
     | '/checkout'
     | '/products'
     | '/profile'
+    | '/password-recovery/reset'
     | '/products/$productId'
     | '/admin/dashboard'
     | '/admin/admins'
@@ -286,12 +310,14 @@ export interface FileRouteTypes {
     | '/_error/not-found'
     | '/_public/'
     | '/admin/'
+    | '/_auth/password-recovery/'
     | '/_auth/sign-in/'
     | '/_auth/sign-up/'
     | '/_public/cart/'
     | '/_public/checkout/'
     | '/_public/products/'
     | '/_public/profile/'
+    | '/_auth/password-recovery/reset/'
     | '/_public/products/$productId/'
     | '/admin/_overview/dashboard/'
     | '/admin/_primary/admins/'
@@ -310,8 +336,10 @@ export interface RootRouteChildren {
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
   AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
   ErrorNotFoundRoute: typeof ErrorNotFoundRoute
+  AuthPasswordRecoveryIndexRoute: typeof AuthPasswordRecoveryIndexRoute
   AuthSignInIndexRoute: typeof AuthSignInIndexRoute
   AuthSignUpIndexRoute: typeof AuthSignUpIndexRoute
+  AuthPasswordRecoveryResetIndexRoute: typeof AuthPasswordRecoveryResetIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -393,6 +421,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/password-recovery/': {
+      id: '/_auth/password-recovery/'
+      path: '/password-recovery'
+      fullPath: '/password-recovery/'
+      preLoaderRoute: typeof AuthPasswordRecoveryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/_primary/products/': {
       id: '/admin/_primary/products/'
       path: '/products'
@@ -441,6 +476,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/$productId/'
       preLoaderRoute: typeof PublicProductsProductIdIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
+    }
+    '/_auth/password-recovery/reset/': {
+      id: '/_auth/password-recovery/reset/'
+      path: '/password-recovery/reset'
+      fullPath: '/password-recovery/reset/'
+      preLoaderRoute: typeof AuthPasswordRecoveryResetIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/_primary/products/$productId/': {
       id: '/admin/_primary/products/$productId/'
@@ -542,8 +584,10 @@ const rootRouteChildren: RootRouteChildren = {
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
   AdminLayoutRoute: AdminLayoutRouteWithChildren,
   ErrorNotFoundRoute: ErrorNotFoundRoute,
+  AuthPasswordRecoveryIndexRoute: AuthPasswordRecoveryIndexRoute,
   AuthSignInIndexRoute: AuthSignInIndexRoute,
   AuthSignUpIndexRoute: AuthSignUpIndexRoute,
+  AuthPasswordRecoveryResetIndexRoute: AuthPasswordRecoveryResetIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

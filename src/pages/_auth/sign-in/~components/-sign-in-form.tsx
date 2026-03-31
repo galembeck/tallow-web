@@ -181,6 +181,13 @@ export function SignInForm() {
                   </button>
                 </div>
 
+                <Link
+                  to="/password-recovery"
+                  className="text-sm hover:underline text-amber-900 flex justify-end mt-1"
+                >
+                  Esqueceu a senha?
+                </Link>
+
                 {form.formState.errors.password && (
                   <p className="mt-1 text-red-500 text-sm">
                     {form.formState.errors.password.message}

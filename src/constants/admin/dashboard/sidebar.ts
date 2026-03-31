@@ -26,18 +26,18 @@ export const dashboardData = {
       icon: ShoppingBag,
     },
     {
-      title: "Pedidos",
-      description:
-        "Visualize e gerencie todos os pedidos realizados na sua loja",
-      url: "/admin/orders",
-      icon: Package,
-    },
-    {
       title: "Pagamentos",
       description:
         "Crie e gerencie as cobranças/pagamentos através de nossa plataforma",
       url: "/admin/payments",
       icon: Banknote,
+    },
+    {
+      title: "Pedidos",
+      description:
+        "Visualize e gerencie todos os pedidos realizados na sua loja",
+      url: "/admin/orders",
+      icon: Package,
     },
     {
       title: "Usuários",

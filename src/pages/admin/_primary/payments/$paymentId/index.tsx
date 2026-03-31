@@ -7,7 +7,6 @@ import { paymentMethodLabel } from "@/types/enums/payment-method";
 import { paymentStatusLabel } from "@/types/enums/payment-status";
 import { formatCurrency } from "@/utils/format-currency";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { format } from "date-fns";
 import { ArrowLeft, Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { PaymentLoading } from "./~components/-payment-loading";
