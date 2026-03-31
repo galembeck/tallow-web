@@ -34,7 +34,7 @@ export const searchNavigationItems: NavigationItem[] = [
   {
     id: "settings",
     title: "Configurações",
-    url: "/app/settings",
+    url: "/admin/settings",
     description: "Configurações do sistema",
     group: "Sistema",
     keywords: [

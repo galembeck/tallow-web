@@ -21,6 +21,7 @@ import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
 import { Route as AuthSignInIndexRouteImport } from './pages/_auth/sign-in/index'
 import { Route as AuthPasswordRecoveryIndexRouteImport } from './pages/_auth/password-recovery/index'
+import { Route as AdminSystemSettingsIndexRouteImport } from './pages/admin/_system/settings/index'
 import { Route as AdminPrimaryProductsIndexRouteImport } from './pages/admin/_primary/products/index'
 import { Route as AdminPrimaryPaymentsIndexRouteImport } from './pages/admin/_primary/payments/index'
 import { Route as AdminPrimaryOrdersIndexRouteImport } from './pages/admin/_primary/orders/index'
@@ -94,6 +95,12 @@ const AuthPasswordRecoveryIndexRoute =
     id: '/_auth/password-recovery/',
     path: '/password-recovery/',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminSystemSettingsIndexRoute =
+  AdminSystemSettingsIndexRouteImport.update({
+    id: '/_system/settings/',
+    path: '/settings/',
+    getParentRoute: () => AdminLayoutRoute,
   } as any)
 const AdminPrimaryProductsIndexRoute =
   AdminPrimaryProductsIndexRouteImport.update({
@@ -192,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/admin/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products/': typeof AdminPrimaryProductsIndexRoute
+  '/admin/settings/': typeof AdminSystemSettingsIndexRoute
   '/admin/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -217,6 +225,7 @@ export interface FileRoutesByTo {
   '/admin/orders': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products': typeof AdminPrimaryProductsIndexRoute
+  '/admin/settings': typeof AdminSystemSettingsIndexRoute
   '/admin/admins/$adminId': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/clients/$clientId': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -245,6 +254,7 @@ export interface FileRoutesById {
   '/admin/_primary/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/_primary/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/_primary/products/': typeof AdminPrimaryProductsIndexRoute
+  '/admin/_system/settings/': typeof AdminSystemSettingsIndexRoute
   '/admin/_primary/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/_primary/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/_primary/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -273,6 +283,7 @@ export interface FileRouteTypes {
     | '/admin/orders/'
     | '/admin/payments/'
     | '/admin/products/'
+    | '/admin/settings/'
     | '/admin/admins/$adminId/'
     | '/admin/clients/$clientId/'
     | '/admin/orders/$orderId/'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/admin/orders'
     | '/admin/payments'
     | '/admin/products'
+    | '/admin/settings'
     | '/admin/admins/$adminId'
     | '/admin/clients/$clientId'
     | '/admin/orders/$orderId'
@@ -325,6 +337,7 @@ export interface FileRouteTypes {
     | '/admin/_primary/orders/'
     | '/admin/_primary/payments/'
     | '/admin/_primary/products/'
+    | '/admin/_system/settings/'
     | '/admin/_primary/admins/$adminId/'
     | '/admin/_primary/clients/$clientId/'
     | '/admin/_primary/orders/$orderId/'
@@ -427,6 +440,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/password-recovery/'
       preLoaderRoute: typeof AuthPasswordRecoveryIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/_system/settings/': {
+      id: '/admin/_system/settings/'
+      path: '/settings'
+      fullPath: '/admin/settings/'
+      preLoaderRoute: typeof AdminSystemSettingsIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
     '/admin/_primary/products/': {
       id: '/admin/_primary/products/'
@@ -552,6 +572,7 @@ interface AdminLayoutRouteChildren {
   AdminPrimaryOrdersIndexRoute: typeof AdminPrimaryOrdersIndexRoute
   AdminPrimaryPaymentsIndexRoute: typeof AdminPrimaryPaymentsIndexRoute
   AdminPrimaryProductsIndexRoute: typeof AdminPrimaryProductsIndexRoute
+  AdminSystemSettingsIndexRoute: typeof AdminSystemSettingsIndexRoute
   AdminPrimaryAdminsAdminIdIndexRoute: typeof AdminPrimaryAdminsAdminIdIndexRoute
   AdminPrimaryClientsClientIdIndexRoute: typeof AdminPrimaryClientsClientIdIndexRoute
   AdminPrimaryOrdersOrderIdIndexRoute: typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -567,6 +588,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminPrimaryOrdersIndexRoute: AdminPrimaryOrdersIndexRoute,
   AdminPrimaryPaymentsIndexRoute: AdminPrimaryPaymentsIndexRoute,
   AdminPrimaryProductsIndexRoute: AdminPrimaryProductsIndexRoute,
+  AdminSystemSettingsIndexRoute: AdminSystemSettingsIndexRoute,
   AdminPrimaryAdminsAdminIdIndexRoute: AdminPrimaryAdminsAdminIdIndexRoute,
   AdminPrimaryClientsClientIdIndexRoute: AdminPrimaryClientsClientIdIndexRoute,
   AdminPrimaryOrdersOrderIdIndexRoute: AdminPrimaryOrdersOrderIdIndexRoute,

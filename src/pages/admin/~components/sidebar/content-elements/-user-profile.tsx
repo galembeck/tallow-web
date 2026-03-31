@@ -4,6 +4,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
+  Settings,
   Sparkles,
   User,
 } from "lucide-react";
@@ -114,26 +115,25 @@ export function UserProfile() {
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <CreditCard />
-                Faturamento
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notificações
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate({ to: "/admin" })}>
                 <User />
                 Perfil
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate({ to: "/admin/settings" })}
+              >
+                <Settings />
+                Configurações
+              </DropdownMenuItem>
+
+              <DropdownMenuItem>
+                <Bell />
+                Notificações
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
