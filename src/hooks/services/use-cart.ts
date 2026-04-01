@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { cartModule } from "@/api/http/routes/cart";
@@ -59,7 +61,7 @@ export function useCart({ enableCartQuery = false }: UseCartOptions = {}) {
       toast.success("Produto removido do carrinho!");
     },
 
-    onError: (_error: Error) => {
+    onError: (_error) => {
       toast.error("Erro ao remover produto!", {
         description: "Tente remover o produto novamente ou contate o suporte.",
       });
@@ -79,7 +81,7 @@ export function useCart({ enableCartQuery = false }: UseCartOptions = {}) {
       });
     },
 
-    onError: (_error: Error) => {
+    onError: (_error) => {
       toast.error("Erro ao limpar carrinho!", {
         description:
           "Não foi possível limpar o carrinho, tente novamente ou contate o suporte.",

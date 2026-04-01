@@ -193,7 +193,8 @@ export function useCheckout(
       }
 
       onPaymentSuccess?.(payment.id);
-      await clearCart();
+
+      // await clearCart();
 
       toast.success("Parabéns! Pagamento realizado com sucesso.", {
         description:

@@ -26,11 +26,12 @@ export function PaymentPending({ payment, onApproved }: PaymentPendingProps) {
     if (status === "APPROVED") {
       onApproved();
     } else if (status === "REJECTED" || status === "CANCELLED") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRejectionReason(
         polledPayment?.statusDetail ?? "Pagamento recusado ou cancelado.",
       );
     }
-  }, [status]);
+  }, [status, onApproved, polledPayment?.statusDetail]);
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -44,7 +45,9 @@ export function PaymentPending({ payment, onApproved }: PaymentPendingProps) {
     <div className="rounded-lg bg-white p-8 shadow-md space-y-6">
       <div>
         <h2 className="font-medium text-2xl text-gray-900">
-          {rejectionReason ? "Pagamento não confirmado" : "Aguardando pagamento"}
+          {rejectionReason
+            ? "Pagamento não confirmado"
+            : "Aguardando pagamento"}
         </h2>
         <p className="mt-1 text-gray-500 text-sm">
           {rejectionReason
@@ -107,7 +110,11 @@ export function PaymentPending({ payment, onApproved }: PaymentPendingProps) {
       {isBoleto && (
         <div className="space-y-4">
           {payment.boletoUrl && (
-            <a href={payment.boletoUrl} rel="noopener noreferrer" target="_blank">
+            <a
+              href={payment.boletoUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               <Button className="w-full cursor-pointer bg-amber-900 text-white hover:bg-amber-900/90">
                 <ExternalLink className="mr-2 size-4" />
                 Abrir / Imprimir boleto

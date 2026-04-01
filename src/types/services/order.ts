@@ -1,7 +1,10 @@
+import type { CheckoutFormData } from "@/constants/checkout";
 import type { OrderStatus } from "../enums/order-status";
 import type { PaymentMethod } from "../enums/payment-method";
 import type { PaymentStatus } from "../enums/payment-status";
 import type { ShippingService } from "../enums/shipping-service";
+import type { Cart } from "./cart";
+import type { ShippingInformation } from "./shipping";
 
 export interface BuyerInfoDTO {
   name: string;
@@ -107,6 +110,13 @@ export interface OrderShippingStatusDTO {
   shippedAt: string | null;
   deliveredAt: string | null;
   live: LiveShippingDTO | null;
+}
+
+export interface OrderSnapshot {
+  orderNumber: string | null;
+  userInformation: CheckoutFormData;
+  cartSnapshot: Cart;
+  shippingOption: ShippingInformation;
 }
 
 /**

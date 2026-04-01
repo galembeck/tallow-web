@@ -1,7 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,15 +10,23 @@ import { useCart } from "@/hooks/services/use-cart";
 import { useCheckout } from "@/hooks/use-checkout";
 import { useCheckoutSteps } from "@/hooks/use-checkout-steps";
 import type { PaymentResponseDTO } from "@/types/services/payment";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { OrderConfirmation } from "../-order-confirmation";
 import { OrderSummary } from "../-order-summary-card";
 import { PaymentPending } from "../-payment-pending";
 import { PaymentFormStep } from "./checkout-form-steps/-payment-form-step";
 import { PersonalFormStep } from "./checkout-form-steps/-personal-form-step";
 import { ShippingFormStep } from "./checkout-form-steps/-shipping-form-step";
+import type { OrderSnapshot } from "@/types/services/order";
 
 export function CheckoutForm() {
   const navigate = useNavigate();
+
+  const [confirmedOrderData, setConfirmedOrderData] =
+    useState<OrderSnapshot | null>(null);
 
   const { user } = useAuth();
   const { cart, isLoading } = useCart({
@@ -60,13 +64,31 @@ export function CheckoutForm() {
 
   const shippingCost = selectedShippingOption?.price ?? 0;
 
-  const { isProcessing, handleCreateOrder, handleProcessPayment, orderId, clearCart } =
-    useCheckout(form, {
-      shippingCost,
-      onOrderCreated: () => goToStep(3),
-      onPaymentSuccess: () => goToStep(4),
-      onPaymentPending: (payment) => setPendingPayment(payment),
-    });
+  const {
+    isProcessing,
+    handleCreateOrder,
+    handleProcessPayment,
+    orderId,
+    clearCart,
+  } = useCheckout(form, {
+    shippingCost,
+    onOrderCreated: () => goToStep(3),
+    onPaymentSuccess: async () => {
+      const orderSnapshot = {
+        orderNumber: orderId,
+        userInformation: form.getValues(),
+        cartSnapshot: { ...cart },
+        shippingOption: selectedShippingOption,
+      } as OrderSnapshot;
+
+      setConfirmedOrderData(orderSnapshot);
+
+      await clearCart();
+
+      goToStep(4);
+    },
+    onPaymentPending: (payment) => setPendingPayment(payment),
+  });
 
   useEffect(() => {
     if (!user) {
@@ -80,10 +102,15 @@ export function CheckoutForm() {
   }, [user, form]);
 
   useEffect(() => {
-    if (!isLoading && step !== 4 && (!cart || cart.items.length === 0)) {
+    if (
+      !isLoading &&
+      step !== 4 &&
+      !confirmedOrderData &&
+      (!cart || cart.items.length === 0)
+    ) {
       navigate({ to: "/products", replace: true });
     }
-  }, [isLoading, step, cart, navigate]);
+  }, [isLoading, step, cart, navigate, confirmedOrderData]);
 
   if (isLoading) {
     return (
@@ -115,7 +142,16 @@ export function CheckoutForm() {
   }
 
   if (step === 4) {
-    return <OrderConfirmation orderNumber={orderId} />;
+    if (!confirmedOrderData) return <Spinner />;
+
+    return (
+      <OrderConfirmation
+        orderNumber={confirmedOrderData.orderNumber}
+        userInformation={confirmedOrderData.userInformation}
+        cart={confirmedOrderData.cartSnapshot}
+        shippingOption={confirmedOrderData.shippingOption}
+      />
+    );
   }
 
   return (
@@ -150,7 +186,11 @@ export function CheckoutForm() {
 
                 {step === 3 && (
                   <PaymentFormStep
-                    amount={Math.round(((cart?.totalAmount ?? 0) + shippingCost) * 100) / 100}
+                    amount={
+                      Math.round(
+                        ((cart?.totalAmount ?? 0) + shippingCost) * 100,
+                      ) / 100
+                    }
                     onSubmitPayment={handleProcessPayment}
                   />
                 )}
