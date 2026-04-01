@@ -1,3 +1,4 @@
+import { API } from "@/api/connections/tallow";
 import { Card, CardContent } from "@/components/ui/card";
 import { useOrder } from "@/hooks/services/use-order";
 import { normalizeOrderStatus } from "@/types/enums/order-status";
@@ -128,6 +129,12 @@ function OrderDetailsPage() {
       {(isShipped || hasShipped) && (
         <ShippingResultCard
           result={adminShippingStatus}
+          onPrintLabel={() =>
+            window.open(
+              `${API.baseURL}/order/admin/${orderId}/label`,
+              "_blank",
+            )
+          }
           isLoading={isAdminShippingLoading || !adminShippingStatus}
         />
       )}

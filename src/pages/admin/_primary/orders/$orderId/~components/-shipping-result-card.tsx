@@ -20,6 +20,7 @@ const superFreteStatusLabel: Record<string, string> = {
 
 interface ShippingResultCardProps {
   result: OrderShippingStatusDTO | null | undefined;
+  onPrintLabel: () => void;
   isLoading?: boolean;
 }
 
@@ -38,10 +39,10 @@ function ShippingResultSkeleton() {
 
 export function ShippingResultCard({
   result,
+  onPrintLabel,
   isLoading,
 }: ShippingResultCardProps) {
   const ready = !isLoading && result != null;
-  const labelUrl = ready ? result.labelUrl : null;
 
   const trackingCode = ready
     ? (result.trackingCode ?? result.live?.trackingCode)
@@ -63,8 +64,8 @@ export function ShippingResultCard({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => labelUrl && window.open(labelUrl, "_blank")}
-            disabled={!ready || !labelUrl}
+            onClick={onPrintLabel}
+            disabled={!ready}
             className="cursor-pointer"
           >
             <Printer className="h-4 w-4" />
