@@ -17,6 +17,7 @@ import { CompanyInformation } from "./content-elements/-company-information";
 import { NavigationContent } from "./content-elements/-navigation-content";
 import { SearchSection } from "./content-elements/-search-section";
 import { UserProfile } from "./content-elements/-user-profile";
+import { Badge } from "@/components/ui/badge";
 
 export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
@@ -46,12 +47,16 @@ export function AdminSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Sistema</SidebarGroupLabel>
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => navigate({ to: "/admin/settings" })}
+              // onClick={() => navigate({ to: "/admin/settings" })}
               tooltip="Configurações"
-              className="cursor-pointer"
+              className="cursor-not-allowed justify-between"
             >
-              <Settings2 />
-              <span>Configurações</span>
+              <p className="flex items-center gap-1">
+                <Settings2 size="16" />
+                Configurações
+              </p>
+
+              <Badge className="uppercase text-[10px]">Em breve</Badge>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarGroup>
