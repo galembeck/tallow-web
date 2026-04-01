@@ -12,11 +12,11 @@ export function CompanyInformation() {
   return (
     <SidebarMenu>
       <SidebarMenuItem className="flex flex-col items-center justify-center gap-3 py-6">
-        <Link className="flex gap-2" to="/">
+        <Link className="flex flex-col items-center gap-2" to="/">
           {/** biome-ignore lint/correctness/useImageSize: sized by @TailwindCSS */}
           <img
             alt="Terra & Tallow"
-            className="size-10"
+            className="size-15"
             src="/assets/icons/logo.svg"
           />
 
