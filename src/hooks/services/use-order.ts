@@ -83,7 +83,9 @@ export function useOrder({
       await queryClient.invalidateQueries({
         queryKey: ["orders", "admin", "details", orderId],
       });
-      await queryClient.invalidateQueries({ queryKey: ["orders", "admin", "all"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["orders", "admin", "all"],
+      });
     },
   });
 
@@ -94,7 +96,9 @@ export function useOrder({
       await queryClient.invalidateQueries({
         queryKey: ["orders", "admin", "details", orderId],
       });
-      await queryClient.invalidateQueries({ queryKey: ["orders", "admin", "all"] });
+      await queryClient.invalidateQueries({
+        queryKey: ["orders", "admin", "all"],
+      });
       // Invalidate shipping status so it refetches as soon as the order flips to SHIPPED
       await queryClient.invalidateQueries({
         queryKey: ["orders", "admin", "shipping", orderId],
@@ -123,17 +127,14 @@ export function useOrder({
       return await orderModule.getAdminShippingStatus(orderId);
     },
     enabled:
-      enableAdminShippingQuery &&
-      !!orderId &&
-      adminOrderStatus === "SHIPPED",
+      enableAdminShippingQuery && !!orderId && adminOrderStatus === "SHIPPED",
     retry: false,
     staleTime: 0,
     // Poll every 6 s until SuperFrete assigns the tracking code.
     // Once a non-empty tracking code is present, polling stops automatically.
     refetchInterval: (query) => {
       const data = query.state.data;
-      const hasTracking =
-        !!data?.trackingCode || !!data?.live?.trackingCode;
+      const hasTracking = !!data?.trackingCode || !!data?.live?.trackingCode;
       return hasTracking ? false : 6_000;
     },
   });

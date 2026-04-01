@@ -90,7 +90,7 @@ export function ShippingResultCard({
                   </p>
                 ) : (
                   <p className="text-muted-foreground text-sm italic">
-                    Aguardando código
+                    Código não dispoível, aguarde...
                   </p>
                 )}
               </div>
@@ -99,14 +99,16 @@ export function ShippingResultCard({
                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                   ID SuperFrete
                 </p>
-                <p className="font-mono text-sm">{result.superFreteOrderId}</p>
+                <p className="text-sm font-semibold">
+                  {result.superFreteOrderId}
+                </p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                   Status
                 </p>
-                <p className="text-sm font-medium">
+                <p className="text-sm uppercase font-semibold">
                   {result.live
                     ? (superFreteStatusLabel[result.live.superFreteStatus] ??
                       result.live.superFreteStatus)
@@ -125,7 +127,7 @@ export function ShippingResultCard({
                       <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                         Transportadora
                       </p>
-                      <p className="text-sm font-medium">{carrierLabel}</p>
+                      <p className="text-sm font-semibold">{carrierLabel}</p>
                     </div>
                   )}
 
@@ -133,9 +135,9 @@ export function ShippingResultCard({
                     <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                       Prazo estimado
                     </p>
-                    <p className="text-sm font-medium">
+                    <p className="text-sm font-semibold">
                       {result.live.deliveryDays > 0
-                        ? `${result.live.deliveryMin}–${result.live.deliveryMax} dias úteis`
+                        ? `De ${result.live.deliveryMin} a ${result.live.deliveryMax} dias úteis`
                         : "—"}
                     </p>
                   </div>
@@ -145,7 +147,7 @@ export function ShippingResultCard({
                       <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                         Postado em
                       </p>
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-semibold">
                         {new Date(result.live.postedAt).toLocaleDateString(
                           "pt-BR",
                         )}
@@ -158,7 +160,7 @@ export function ShippingResultCard({
                       <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
                         Entregue em
                       </p>
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-semibold">
                         {new Date(result.deliveredAt).toLocaleDateString(
                           "pt-BR",
                         )}

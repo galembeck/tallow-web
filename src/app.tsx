@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { NotificationsProvider } from "@/contexts/notifications-context";
 
 import { routeTree } from "./route-tree-gen";
 
@@ -23,7 +24,9 @@ declare module "@tanstack/react-router" {
 export function App() {
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} />
+			<NotificationsProvider>
+				<RouterProvider router={router} />
+			</NotificationsProvider>
 		</QueryClientProvider>
 	);
 }

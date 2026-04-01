@@ -1,6 +1,7 @@
 import type { OrderStatus } from "../enums/order-status";
 import type { PaymentMethod } from "../enums/payment-method";
 import type { PaymentStatus } from "../enums/payment-status";
+import type { ShippingService } from "../enums/shipping-service";
 
 export interface BuyerInfoDTO {
   name: string;
@@ -74,6 +75,38 @@ export interface OrderAdminSummaryDTO {
   shippedAt?: string | null;
   deliveredAt?: string | null;
   cancelledAt?: string | null;
+}
+
+export interface OrderShippingRequestDTO {
+  serviceId: ShippingService | number;
+}
+
+export interface OrderShippingResponseDTO {
+  superFreteOrderId: string;
+  trackingCode: string | null;
+  labelUrl: string;
+}
+
+export interface LiveShippingDTO {
+  superFreteStatus: string;
+  trackingCode: string | null;
+  carrier: number;
+  deliveryDays: number;
+  deliveryMin: number;
+  deliveryMax: number;
+  postedAt: string | null;
+  generatedAt: string | null;
+}
+
+export interface OrderShippingStatusDTO {
+  orderId: string;
+  status: number;
+  superFreteOrderId: string;
+  trackingCode: string | null;
+  labelUrl: string;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+  live: LiveShippingDTO | null;
 }
 
 /**

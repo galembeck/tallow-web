@@ -3,6 +3,9 @@ import type {
   CreateOrderDTO,
   OrderAdminSummaryDTO,
   OrderResponseDTO,
+  OrderShippingRequestDTO,
+  OrderShippingResponseDTO,
+  OrderShippingStatusDTO,
 } from "@/types/services/order";
 
 export const orderModule = {
@@ -35,5 +38,34 @@ export const orderModule = {
     return await API.fetch(`/order/admin/${orderId}`, {
       method: "GET",
     });
+  },
+
+  async updateOrderStatus(orderId: string): Promise<string> {
+    return await API.fetch(`/order/admin/${orderId}/prepare`, {
+      method: "PATCH",
+    });
+  },
+
+  async updateOrderShipping(
+    orderId: string,
+    data: OrderShippingRequestDTO,
+  ): Promise<OrderShippingResponseDTO> {
+    return await API.fetch(`/order/admin/${orderId}/ship`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  },
+
+  async getAdminShippingStatus(orderId: string): Promise<OrderShippingStatusDTO> {
+    return await API.fetch(`/order/admin/${orderId}/shipping`, {
+      method: "GET",
+    });
+  },
+
+  async getAdminLabel(orderId: string): Promise<Blob> {
+    const url = `${API.baseURL}/order/admin/${orderId}/label`;
+    const res = await fetch(url, { credentials: "include" });
+    if (!res.ok) throw new Error(`Erro ao buscar etiqueta: ${res.status}`);
+    return res.blob();
   },
 };
