@@ -15,12 +15,16 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/services/use-auth";
 import { cookies } from "@/lib/cookies";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 import { RecoveryTokenModal } from "./~components/-recovery-token-modal";
+import { Mail } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/password-recovery/")({
   component: PasswordRecoveryPage,
@@ -29,35 +33,39 @@ export const Route = createFileRoute("/_auth/password-recovery/")({
   }),
   beforeLoad: () => {
     const token = cookies.get("AccessToken");
-
-    if (token) {
-      throw redirect({
-        to: "/cart",
-      });
-    }
+    if (token) throw redirect({ to: "/cart" });
   },
 });
 
-const passwordRecoveryFormSchema = z.object({
+const schema = z.object({
   email: z.string().email({
     message: "O endereço de e-mail deve ter um formato válido.",
   }),
 });
 
-type PasswordRecoveryFormData = z.infer<typeof passwordRecoveryFormSchema>;
+type FormData = z.infer<typeof schema>;
 
 function PasswordRecoveryPage() {
-  const form = useForm<PasswordRecoveryFormData>({
-    resolver: zodResolver(passwordRecoveryFormSchema),
-    defaultValues: {
-      email: "",
-    },
+  const { requestPasswordRecovery, isRequestingRecovery } = useAuth();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [confirmedEmail, setConfirmedEmail] = useState("");
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: "" },
   });
 
-  function onSubmit(data: PasswordRecoveryFormData) {
-    // TODO: Implement password recovery logic
+  async function onSubmit(data: FormData) {
+    try {
+      await requestPasswordRecovery(data.email);
 
-    console.log(data);
+      toast.success("Código de verificação enviado com sucesso!");
+
+      setConfirmedEmail(data.email);
+      setModalOpen(true);
+    } catch {
+      toast.error("Não foi possível enviar o código, tente novamente.");
+    }
   }
 
   return (
@@ -87,17 +95,25 @@ function PasswordRecoveryPage() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="password-recovery-form-email">
+                      <FieldLabel
+                        htmlFor="password-recovery-form-email"
+                        className="text-base"
+                      >
                         E-mail
                       </FieldLabel>
 
-                      <Input
-                        {...field}
-                        id="password-recovery-form-email"
-                        aria-invalid={fieldState.invalid}
-                        placeholder="seu@email.com"
-                        type="email"
-                      />
+                      <div className="relative">
+                        <Mail className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400" />
+
+                        <input
+                          {...field}
+                          id="password-recovery-form-email"
+                          aria-invalid={fieldState.invalid}
+                          placeholder="seu@email.com"
+                          type="email"
+                          className="w-full rounded-lg border-2 border-gray-200 py-3 pl-12 transition-colors focus:border-amber-900 focus:outline-none"
+                        />
+                      </div>
 
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -109,19 +125,24 @@ function PasswordRecoveryPage() {
             </form>
 
             <div className="flex justify-end mt-4">
-              <RecoveryTokenModal>
-                <Button
-                  type="submit"
-                  form="password-recovery-form"
-                  className="bg-amber-900 hover:bg-amber-900/90 text-white"
-                >
-                  Continuar
-                </Button>
-              </RecoveryTokenModal>
+              <Button
+                type="submit"
+                form="password-recovery-form"
+                disabled={isRequestingRecovery}
+                className="bg-amber-900 hover:bg-amber-900/90 text-white"
+              >
+                {isRequestingRecovery ? "Enviando..." : "Continuar"}
+              </Button>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <RecoveryTokenModal
+        open={modalOpen}
+        email={confirmedEmail}
+        onOpenChange={setModalOpen}
+      />
 
       <Footer />
     </main>

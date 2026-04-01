@@ -74,6 +74,27 @@ export function useAuth() {
     refetchOnWindowFocus: false,
   });
 
+  const requestPasswordRecovery = useMutation({
+    mutationFn: authModule.requestPasswordRecovery,
+  });
+
+  const verifyRecoveryToken = useMutation({
+    mutationFn: ({ email, token }: { email: string; token: string }) =>
+      authModule.verifyRecoveryToken(email, token),
+  });
+
+  const resetPassword = useMutation({
+    mutationFn: ({
+      email,
+      token,
+      newPassword,
+    }: {
+      email: string;
+      token: string;
+      newPassword: string;
+    }) => authModule.resetPassword(email, token, newPassword),
+  });
+
   return {
     register: registerMutation.mutateAsync,
     isRegistering: registerMutation.isPending,
@@ -86,5 +107,14 @@ export function useAuth() {
     user,
     isLoading,
     isAuthenticated: !!user,
+
+    requestPasswordRecovery: requestPasswordRecovery.mutateAsync,
+    isRequestingRecovery: requestPasswordRecovery.isPending,
+
+    verifyRecoveryToken: verifyRecoveryToken.mutateAsync,
+    isVerifyingToken: verifyRecoveryToken.isPending,
+
+    resetPassword: resetPassword.mutateAsync,
+    isResettingPassword: resetPassword.isPending,
   };
 }

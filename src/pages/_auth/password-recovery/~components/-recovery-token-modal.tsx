@@ -6,93 +6,159 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTrigger,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { useAuth } from "@/hooks/services/use-auth";
 import { useNavigate } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import { Controller, useForm } from "react-hook-form";
-import z from "zod";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
-const recoveryTokenFormSchema = z.object({
-  token: z.string().min(1, "Informe o token de verificação."),
-});
+const RESEND_COOLDOWN_SECONDS = 120;
 
-type RecoveryTokenFormData = z.infer<typeof recoveryTokenFormSchema>;
-
-interface RecoveryTokenModal {
-  children: ReactNode;
+interface RecoveryTokenModalProps {
+  open: boolean;
+  email: string;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function RecoveryTokenModal({ children }: RecoveryTokenModal) {
+function formatCountdown(seconds: number): string {
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+export function RecoveryTokenModal({
+  open,
+  email,
+  onOpenChange,
+}: RecoveryTokenModalProps) {
   const navigate = useNavigate();
+  const { verifyRecoveryToken, isVerifyingToken, requestPasswordRecovery } =
+    useAuth();
 
-  const form = useForm<RecoveryTokenFormData>({
-    resolver: zodResolver(recoveryTokenFormSchema),
-    defaultValues: {
-      token: "",
-    },
-  });
+  const [otp, setOtp] = useState("");
+  const [countdown, setCountdown] = useState(RESEND_COOLDOWN_SECONDS);
+  const [isResending, setIsResending] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  function onSubmit(data: RecoveryTokenFormData) {
-    // TODO: Implementar verificação de token de recuperação
+  useEffect(() => {
+    if (!open) return;
 
-    console.log(data);
+    setCountdown(RESEND_COOLDOWN_SECONDS);
+
+    intervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current!);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalRef.current!);
+  }, [open]);
+
+  function resetCountdown() {
+    clearInterval(intervalRef.current!);
+    setCountdown(RESEND_COOLDOWN_SECONDS);
+
+    intervalRef.current = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current!);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+
+  async function handleResend() {
+    setIsResending(true);
+    try {
+      await requestPasswordRecovery(email);
+      setOtp("");
+      resetCountdown();
+      toast.success("Código reenviado para o seu e-mail.");
+    } catch {
+      toast.error("Não foi possível reenviar o código. Tente novamente.");
+    } finally {
+      setIsResending(false);
+    }
+  }
+
+  async function handleConfirm() {
+    if (otp.length < 6) return;
+
+    try {
+      await verifyRecoveryToken({ email, token: otp });
+
+      toast.success("Token verificado com sucesso!");
+
+      onOpenChange(false);
+
+      navigate({
+        to: "/password-recovery/reset",
+        search: { email, token: otp },
+      });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error("O código informado é inválido ou está expirado.");
+    }
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader className="font-bold text-xl">
-          Token de verificação
+        <DialogHeader>
+          <DialogTitle className="font-bold text-xl">
+            Token de verificação
+          </DialogTitle>
         </DialogHeader>
 
         <DialogDescription>
-          Um token de verificação foi enviado para o seu e-mail informado no
-          campo anterior.
+          Um código de 6 caracteres foi enviado para{" "}
+          <span className="font-medium text-foreground">{email}</span>. Informe
+          abaixo para continuar.
         </DialogDescription>
 
-        <form id="recovery-token-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              name="token"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="recovery-token-form-token">
-                    <h6>Token</h6>
-                  </FieldLabel>
+        <div className="flex flex-col items-center gap-4 py-2">
+          <InputOTP
+            maxLength={6}
+            value={otp}
+            onChange={(value) => setOtp(value.toUpperCase())}
+          >
+            <InputOTPGroup>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <InputOTPSlot
+                  key={i}
+                  index={i}
+                  className="uppercase h-12 w-12 text-base font-semibold"
+                />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>
 
-                  <Input
-                    {...field}
-                    id="recovery-token-form-token"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="XXXXXX"
-                    type="text"
-                  />
-
-                  <FieldDescription>
-                    Informe-o no campo acima para continuar com a recuperação.
-                  </FieldDescription>
-
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </form>
+          <Button
+            variant="link"
+            size="sm"
+            className="text-blue-500 h-auto p-0"
+            disabled={countdown > 0 || isResending}
+            onClick={handleResend}
+          >
+            {isResending
+              ? "Reenviando..."
+              : countdown > 0
+                ? `Reenviar código (${formatCountdown(countdown)})`
+                : "Reenviar código"}
+          </Button>
+        </div>
 
         <DialogFooter>
           <DialogClose asChild>
@@ -100,12 +166,11 @@ export function RecoveryTokenModal({ children }: RecoveryTokenModal) {
           </DialogClose>
 
           <Button
-            type="submit"
-            form="recovery-token-form"
             className="bg-amber-900 hover:bg-amber-900/90 text-white"
-            onClick={() => navigate({ to: "/password-recovery/reset" })}
+            disabled={otp.length < 6 || isVerifyingToken}
+            onClick={handleConfirm}
           >
-            Confirmar
+            {isVerifyingToken ? "Verificando..." : "Confirmar"}
           </Button>
         </DialogFooter>
       </DialogContent>

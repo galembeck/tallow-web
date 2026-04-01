@@ -15,4 +15,25 @@ export const authModule = {
       headers: { Authorization: `Bearer ${token}` },
     });
   },
+
+  async requestPasswordRecovery(email: string) {
+    return await API.fetch("/auth/recovery/request", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  async verifyRecoveryToken(email: string, token: string) {
+    return await API.fetch("/auth/recovery/verify", {
+      method: "POST",
+      body: JSON.stringify({ email, token }),
+    });
+  },
+
+  async resetPassword(email: string, token: string, newPassword: string) {
+    return await API.fetch("/auth/recovery/reset", {
+      method: "POST",
+      body: JSON.stringify({ email, token, newPassword }),
+    });
+  },
 };
