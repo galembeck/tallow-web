@@ -22,29 +22,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useOrder } from "@/hooks/services/use-order";
 import type { OrderAdminSummaryDTO } from "@/types/services/order";
-import { normalizeOrderStatus, orderStatusLabel } from "@/types/enums/order-status";
+import {
+  getOrderStatusColor,
+  normalizeOrderStatus,
+  orderStatusLabel,
+} from "@/types/enums/order-status";
 import { formatCurrency } from "@/utils/format-currency";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Copy, Eye, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-
-function orderStatusVariant(
-  status: string,
-): "default" | "secondary" | "destructive" | "outline" {
-  switch (status) {
-    case "DELIVERED":
-      return "default";
-    case "CANCELLED":
-    case "REFUNDED":
-      return "destructive";
-    case "SHIPPED":
-      return "outline";
-    default:
-      return "secondary";
-  }
-}
+import { cn } from "@/lib/utils";
 
 export const ordersTableColumns: ColumnDef<OrderAdminSummaryDTO>[] = [
   {
@@ -91,11 +80,19 @@ export const ordersTableColumns: ColumnDef<OrderAdminSummaryDTO>[] = [
       />
     ),
     cell: ({ row }) => {
-      const status = normalizeOrderStatus(row.getValue("status") as string);
+      const rawStatus = row.getValue("status") as string | number;
+      const currentStatus = normalizeOrderStatus(rawStatus);
+
       return (
         <div className="flex justify-center">
-          <Badge variant={orderStatusVariant(status)} className="uppercase">
-            {orderStatusLabel[status] ?? status}
+          <Badge
+            variant="outline"
+            className={cn(
+              "uppercase font-semibold",
+              getOrderStatusColor(currentStatus),
+            )}
+          >
+            {orderStatusLabel[currentStatus] ?? currentStatus}
           </Badge>
         </div>
       );
