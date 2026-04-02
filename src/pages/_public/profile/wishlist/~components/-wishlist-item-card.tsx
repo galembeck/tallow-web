@@ -1,10 +1,11 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCart } from "@/hooks/services/use-cart";
 import type { WishlistItemDTO } from "@/types/services/wishlist";
 import { formatCurrency } from "@/utils/format-currency";
-import { useNavigate } from "@tanstack/react-router";
-import { Check, Trash2, X } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface WishlistItemCardProps {
   item: WishlistItemDTO;
@@ -17,86 +18,138 @@ export function WishlistItemCard({
   onRemove,
   isRemoving,
 }: WishlistItemCardProps) {
-  const navigate = useNavigate();
+  const [quantity, setQuantity] = useState(1);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
-  const isOutOfStock = item.productStock <= 0;
+  const stockAmount = item.productStock;
+
+  const { addItem } = useCart();
+
+  const handleQuantityChange = (delta: number) => {
+    const newQuantity = quantity + delta;
+    if (newQuantity >= 1 && newQuantity <= stockAmount) {
+      setQuantity(newQuantity);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    setIsAddingToCart(true);
+    try {
+      await addItem({
+        productId: item.productId,
+        quantity,
+      });
+
+      toast.success("Item adicionado ao carrinho!");
+    } catch {
+      toast.error("Erro ao adicionar item ao carrinho.", {
+        description:
+          "Tente novamente mais tarde ou confira a página do produto.",
+      });
+    } finally {
+      setIsAddingToCart(false);
+    }
+  };
 
   return (
-    <Card key={item.id} className="relative overflow-hidden">
-      <CardContent className="flex items-center justify-between gap-4">
-        <div className="flex flex-col gap-4">
-          {!isOutOfStock ? (
-            <Badge className="w-fit bg-lime-100 text-green-600 hover:bg-lime-100 uppercase font-bold border-none">
-              <article className="flex items-center gap-1">
-                <Check className="size-3" />
+    <Card className="relative overflow-hidden bg-white border-amber-900/30 rounded-xl">
+      <CardContent>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="flex flex-col gap-1">
+              <div className="shrink-0 border border-muted-foreground/20 rounded-lg p-2 flex items-center justify-center bg-gray-50 h-20 w-20">
+                <img
+                  src={item.productImageUrl}
+                  alt={item.productName}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
 
-                <span>Em estoque</span>
-              </article>
-            </Badge>
-          ) : (
-            <Badge className="w-fit bg-red-100 text-red-600 hover:bg-red-100 uppercase font-bold border-none">
-              <article className="flex items-center gap-1">
-                <X className="size-3" />
-                <span>Indisponível</span>
-              </article>
-            </Badge>
-          )}
-
-          <div className="flex items-center gap-4">
-            <div className="relative h-20 w-20 shrink-0">
-              <img
-                src={item.productImageUrl}
-                alt={item.productName}
-                className={`h-full w-full rounded-md object-cover ${
-                  isOutOfStock ? "grayscale opacity-50" : ""
-                }`}
-              />
-
-              {isOutOfStock && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="bg-destructive/90 text-destructive-foreground text-[10px] font-bold uppercase px-1 py-0.5 rounded shadow-sm rotate-[-15deg]">
-                    Esgotado
-                  </span>
-                </div>
-              )}
+              <button
+                onClick={onRemove}
+                disabled={isRemoving}
+                className="text-xs text-red-600 hover:underline flex items-center gap-1 mt-1 disabled:opacity-50"
+              >
+                <Trash2 size={14} />
+                {isRemoving ? "Removendo..." : "Remover"}
+              </button>
             </div>
 
-            <div className="flex flex-1 flex-col gap-1 min-w-0">
-              <span
-                className={`font-semibold text-sm truncate ${isOutOfStock ? "text-muted-foreground" : ""}`}
-              >
+            <div className="flex flex-col">
+              <h2 className="font-semibold text-amber-950 text-lg line-clamp-2">
                 {item.productName}
-              </span>
-              <span className="text-muted-foreground text-sm font-medium">
+              </h2>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-6 w-full md:w-auto border-t md:border-none pt-4 md:pt-0">
+            <div className="text-center md:text-right min-w-25">
+              <p className="text-[10px] uppercase text-center tracking-wider text-muted-foreground font-medium">
+                Preço unitário (R$)
+              </p>
+
+              <span className="text-amber-950 font-bold text-center text-base block">
                 {formatCurrency(item.productPrice)}
               </span>
             </div>
+
+            <div className="text-center min-w-25">
+              <p className="text-[10px] uppercase text-center tracking-wider text-muted-foreground font-medium">
+                Quantidade
+              </p>
+
+              <div className="flex items-center gap-4">
+                <button
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-amber-900 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={quantity <= 1}
+                  onClick={() => handleQuantityChange(-1)}
+                  type="button"
+                >
+                  <Minus className="h-4 w-4" />
+                </button>
+
+                <input
+                  className="w-12 rounded border border-gray-300 px-2 py-1 text-center text-lg"
+                  readOnly
+                  type="text"
+                  value={quantity}
+                />
+
+                <button
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:border-amber-900 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={quantity >= stockAmount}
+                  onClick={() => handleQuantityChange(1)}
+                  type="button"
+                >
+                  <Plus className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className="w-full sm:w-auto">
+              {item.productStock > 0 ? (
+                <Button
+                  className="w-full flex items-center gap-2 bg-lime-800 hover:bg-lime-900 text-white transition-colors"
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart}
+                >
+                  <ShoppingCart size={18} />
+
+                  <span className="whitespace-nowrap">
+                    Adicionar ao carrinho
+                  </span>
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  disabled
+                  className="w-full whitespace-nowrap bg-red-100 text-red-500 disabled:opacity-100"
+                >
+                  Produto indisponível
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              navigate({
-                to: "/products/$productId",
-                params: { productId: item.productId },
-              })
-            }
-          >
-            Ver produto
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            disabled={isRemoving}
-            className="text-muted-foreground hover:text-destructive"
-            onClick={onRemove}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
         </div>
       </CardContent>
     </Card>

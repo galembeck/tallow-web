@@ -1,3 +1,5 @@
+import { formatCurrency } from "@/utils/format-currency";
+
 interface OrderItemCardProps {
   imageUrl: string;
   name: string;
@@ -11,13 +13,6 @@ export function OrderItemCard({
   unitPrice,
   quantity,
 }: OrderItemCardProps) {
-  // Formatador de moeda brasileiro
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-
   return (
     <div className="bg-white border border-muted-foreground/20 rounded-lg p-4 flex flex-col md:flex-row items-center gap-6">
       <div className="flex items-center gap-6">
