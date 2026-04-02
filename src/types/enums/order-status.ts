@@ -36,3 +36,25 @@ export const orderStatusLabel: Record<string, string> = {
   CANCELLED: "Cancelado",
   REFUNDED: "Reembolsado",
 };
+
+export function getOrderStatusColor(status: string): string {
+  switch (status) {
+    case "PENDING":
+      return "bg-red-100 text-red-700 hover:bg-red-200 border-transparent";
+    case "PAYMENT_PENDING":
+      return "bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-transparent";
+    case "PAYMENT_APPROVED":
+      return "bg-sky-100 text-sky-700 hover:bg-sky-200 border-transparent";
+    // case "PROCESSING":
+    // return "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-transparent";
+    case "SHIPPED":
+      return "bg-green-600/80 text-white hover:bg-green-600 border-transparent";
+    case "DELIVERED":
+      return "bg-blue-500 text-white hover:bg-blue-900 border-transparent";
+    case "CANCELLED":
+    case "REFUNDED":
+      return "bg-red-500/15 text-red-600 hover:bg-red-500/25 border-transparent";
+    default:
+      return "bg-gray-100 text-gray-700 hover:bg-gray-200 border-transparent";
+  }
+}

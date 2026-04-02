@@ -2,29 +2,28 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
 } from "@/components/ui/card";
 import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
+    Field,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/services/use-auth";
 import { cookies } from "@/lib/cookies";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Mail } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { RecoveryTokenModal } from "./~components/-recovery-token-modal";
-import { Mail } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/password-recovery/")({
   component: PasswordRecoveryPage,

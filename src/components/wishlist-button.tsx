@@ -4,6 +4,7 @@ import { useWishlist } from "@/hooks/services/use-wishlist";
 import { useNavigate } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface WishlistButtonProps {
   productId: string;
@@ -41,8 +42,10 @@ export function WishlistButton({
 
     if (isInWishlist) {
       await removeFromWishlist(productId);
+      toast.success("Produto removido da sua lista de favoritos.");
     } else {
       await addToWishlist(productId);
+      toast.success("Produto adicionado à sua lista de favoritos.");
     }
   };
 
@@ -54,7 +57,9 @@ export function WishlistButton({
       disabled={isPending || isCheckLoading}
       onClick={handleClick}
       aria-label={
-        isInWishlist ? "Remover da lista de desejos" : "Adicionar à lista de desejos"
+        isInWishlist
+          ? "Remover da lista de desejos"
+          : "Adicionar à lista de desejos"
       }
       className={cn("cursor-pointer", className)}
     >
@@ -65,7 +70,9 @@ export function WishlistButton({
         )}
       />
       {showLabel && (
-        <span>{isInWishlist ? "Remover dos favoritos" : "Adicionar aos favoritos"}</span>
+        <span>
+          {isInWishlist ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        </span>
       )}
     </Button>
   );

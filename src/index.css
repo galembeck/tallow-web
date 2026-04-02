@@ -3,6 +3,7 @@
 
 @theme {
   --font-dm-sans: "DM Sans", sans-serif;
+  --font-sagona: "Sagona", sans-serif;
 
   --color-primary-black: oklch(0.1684 0 0);
   --color-primary-dark: oklch(0.2293 0.0078 297.22);

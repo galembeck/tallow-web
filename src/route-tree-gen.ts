@@ -14,6 +14,7 @@ import { Route as PublicLayoutRouteImport } from './pages/_public/layout'
 import { Route as AdminIndexRouteImport } from './pages/admin/index'
 import { Route as PublicIndexRouteImport } from './pages/_public/index'
 import { Route as ErrorNotFoundRouteImport } from './pages/_error/not-found'
+import { Route as PublicProfileLayoutRouteImport } from './pages/_public/profile/layout'
 import { Route as PublicProfileIndexRouteImport } from './pages/_public/profile/index'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
 import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkout/index'
@@ -28,6 +29,8 @@ import { Route as AdminPrimaryOrdersIndexRouteImport } from './pages/admin/_prim
 import { Route as AdminPrimaryClientsIndexRouteImport } from './pages/admin/_primary/clients/index'
 import { Route as AdminPrimaryAdminsIndexRouteImport } from './pages/admin/_primary/admins/index'
 import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
+import { Route as PublicProfileWishlistIndexRouteImport } from './pages/_public/profile/wishlist/index'
+import { Route as PublicProfileOrdersHistoryIndexRouteImport } from './pages/_public/profile/orders-history/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
 import { Route as AuthPasswordRecoveryResetIndexRouteImport } from './pages/_auth/password-recovery/reset/index'
 import { Route as AdminPrimaryProductsProductIdIndexRouteImport } from './pages/admin/_primary/products/$productId/index'
@@ -35,6 +38,9 @@ import { Route as AdminPrimaryPaymentsPaymentIdIndexRouteImport } from './pages/
 import { Route as AdminPrimaryOrdersOrderIdIndexRouteImport } from './pages/admin/_primary/orders/$orderId/index'
 import { Route as AdminPrimaryClientsClientIdIndexRouteImport } from './pages/admin/_primary/clients/$clientId/index'
 import { Route as AdminPrimaryAdminsAdminIdIndexRouteImport } from './pages/admin/_primary/admins/$adminId/index'
+import { Route as PublicProfileOrdersHistoryOrderIdIndexRouteImport } from './pages/_public/profile/orders-history/$orderId/index'
+import { Route as PublicProfileRegistrationDataRegistrationIndexRouteImport } from './pages/_public/profile/_registration-data/registration/index'
+import { Route as PublicProfileRegistrationDataPasswordIndexRouteImport } from './pages/_public/profile/_registration-data/password/index'
 
 const AdminLayoutRoute = AdminLayoutRouteImport.update({
   id: '/admin',
@@ -60,10 +66,15 @@ const ErrorNotFoundRoute = ErrorNotFoundRouteImport.update({
   path: '/not-found',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PublicProfileIndexRoute = PublicProfileIndexRouteImport.update({
-  id: '/profile/',
-  path: '/profile/',
+const PublicProfileLayoutRoute = PublicProfileLayoutRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => PublicLayoutRoute,
+} as any)
+const PublicProfileIndexRoute = PublicProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicProfileLayoutRoute,
 } as any)
 const PublicProductsIndexRoute = PublicProductsIndexRouteImport.update({
   id: '/products/',
@@ -136,6 +147,18 @@ const AdminOverviewDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const PublicProfileWishlistIndexRoute =
+  PublicProfileWishlistIndexRouteImport.update({
+    id: '/wishlist/',
+    path: '/wishlist/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
+const PublicProfileOrdersHistoryIndexRoute =
+  PublicProfileOrdersHistoryIndexRouteImport.update({
+    id: '/orders-history/',
+    path: '/orders-history/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
 const PublicProductsProductIdIndexRoute =
   PublicProductsProductIdIndexRouteImport.update({
     id: '/products/$productId/',
@@ -178,10 +201,29 @@ const AdminPrimaryAdminsAdminIdIndexRoute =
     path: '/admins/$adminId/',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const PublicProfileOrdersHistoryOrderIdIndexRoute =
+  PublicProfileOrdersHistoryOrderIdIndexRouteImport.update({
+    id: '/orders-history/$orderId/',
+    path: '/orders-history/$orderId/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
+const PublicProfileRegistrationDataRegistrationIndexRoute =
+  PublicProfileRegistrationDataRegistrationIndexRouteImport.update({
+    id: '/_registration-data/registration/',
+    path: '/registration/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
+const PublicProfileRegistrationDataPasswordIndexRoute =
+  PublicProfileRegistrationDataPasswordIndexRouteImport.update({
+    id: '/_registration-data/password/',
+    path: '/password/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminLayoutRouteWithChildren
+  '/profile': typeof PublicProfileLayoutRouteWithChildren
   '/not-found': typeof ErrorNotFoundRoute
   '/admin/': typeof AdminIndexRoute
   '/password-recovery/': typeof AuthPasswordRecoveryIndexRoute
@@ -193,6 +235,8 @@ export interface FileRoutesByFullPath {
   '/profile/': typeof PublicProfileIndexRoute
   '/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
+  '/profile/orders-history/': typeof PublicProfileOrdersHistoryIndexRoute
+  '/profile/wishlist/': typeof PublicProfileWishlistIndexRoute
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
   '/admin/clients/': typeof AdminPrimaryClientsIndexRoute
@@ -200,6 +244,9 @@ export interface FileRoutesByFullPath {
   '/admin/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products/': typeof AdminPrimaryProductsIndexRoute
   '/admin/settings/': typeof AdminSystemSettingsIndexRoute
+  '/profile/password/': typeof PublicProfileRegistrationDataPasswordIndexRoute
+  '/profile/registration/': typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  '/profile/orders-history/$orderId/': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   '/admin/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -219,6 +266,8 @@ export interface FileRoutesByTo {
   '/profile': typeof PublicProfileIndexRoute
   '/password-recovery/reset': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
+  '/profile/orders-history': typeof PublicProfileOrdersHistoryIndexRoute
+  '/profile/wishlist': typeof PublicProfileWishlistIndexRoute
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
   '/admin/clients': typeof AdminPrimaryClientsIndexRoute
@@ -226,6 +275,9 @@ export interface FileRoutesByTo {
   '/admin/payments': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products': typeof AdminPrimaryProductsIndexRoute
   '/admin/settings': typeof AdminSystemSettingsIndexRoute
+  '/profile/password': typeof PublicProfileRegistrationDataPasswordIndexRoute
+  '/profile/registration': typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  '/profile/orders-history/$orderId': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   '/admin/admins/$adminId': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/clients/$clientId': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -236,6 +288,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicLayoutRouteWithChildren
   '/admin': typeof AdminLayoutRouteWithChildren
+  '/_public/profile': typeof PublicProfileLayoutRouteWithChildren
   '/_error/not-found': typeof ErrorNotFoundRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
@@ -248,6 +301,8 @@ export interface FileRoutesById {
   '/_public/profile/': typeof PublicProfileIndexRoute
   '/_auth/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
+  '/_public/profile/orders-history/': typeof PublicProfileOrdersHistoryIndexRoute
+  '/_public/profile/wishlist/': typeof PublicProfileWishlistIndexRoute
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
   '/admin/_primary/clients/': typeof AdminPrimaryClientsIndexRoute
@@ -255,6 +310,9 @@ export interface FileRoutesById {
   '/admin/_primary/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/_primary/products/': typeof AdminPrimaryProductsIndexRoute
   '/admin/_system/settings/': typeof AdminSystemSettingsIndexRoute
+  '/_public/profile/_registration-data/password/': typeof PublicProfileRegistrationDataPasswordIndexRoute
+  '/_public/profile/_registration-data/registration/': typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  '/_public/profile/orders-history/$orderId/': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   '/admin/_primary/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/_primary/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/_primary/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -266,6 +324,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/profile'
     | '/not-found'
     | '/admin/'
     | '/password-recovery/'
@@ -277,6 +336,8 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/password-recovery/reset/'
     | '/products/$productId/'
+    | '/profile/orders-history/'
+    | '/profile/wishlist/'
     | '/admin/dashboard/'
     | '/admin/admins/'
     | '/admin/clients/'
@@ -284,6 +345,9 @@ export interface FileRouteTypes {
     | '/admin/payments/'
     | '/admin/products/'
     | '/admin/settings/'
+    | '/profile/password/'
+    | '/profile/registration/'
+    | '/profile/orders-history/$orderId/'
     | '/admin/admins/$adminId/'
     | '/admin/clients/$clientId/'
     | '/admin/orders/$orderId/'
@@ -303,6 +367,8 @@ export interface FileRouteTypes {
     | '/profile'
     | '/password-recovery/reset'
     | '/products/$productId'
+    | '/profile/orders-history'
+    | '/profile/wishlist'
     | '/admin/dashboard'
     | '/admin/admins'
     | '/admin/clients'
@@ -310,6 +376,9 @@ export interface FileRouteTypes {
     | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
+    | '/profile/password'
+    | '/profile/registration'
+    | '/profile/orders-history/$orderId'
     | '/admin/admins/$adminId'
     | '/admin/clients/$clientId'
     | '/admin/orders/$orderId'
@@ -319,6 +388,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_public'
     | '/admin'
+    | '/_public/profile'
     | '/_error/not-found'
     | '/_public/'
     | '/admin/'
@@ -331,6 +401,8 @@ export interface FileRouteTypes {
     | '/_public/profile/'
     | '/_auth/password-recovery/reset/'
     | '/_public/products/$productId/'
+    | '/_public/profile/orders-history/'
+    | '/_public/profile/wishlist/'
     | '/admin/_overview/dashboard/'
     | '/admin/_primary/admins/'
     | '/admin/_primary/clients/'
@@ -338,6 +410,9 @@ export interface FileRouteTypes {
     | '/admin/_primary/payments/'
     | '/admin/_primary/products/'
     | '/admin/_system/settings/'
+    | '/_public/profile/_registration-data/password/'
+    | '/_public/profile/_registration-data/registration/'
+    | '/_public/profile/orders-history/$orderId/'
     | '/admin/_primary/admins/$adminId/'
     | '/admin/_primary/clients/$clientId/'
     | '/admin/_primary/orders/$orderId/'
@@ -392,12 +467,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ErrorNotFoundRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_public/profile': {
+      id: '/_public/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof PublicProfileLayoutRouteImport
+      parentRoute: typeof PublicLayoutRoute
+    }
     '/_public/profile/': {
       id: '/_public/profile/'
-      path: '/profile'
+      path: '/'
       fullPath: '/profile/'
       preLoaderRoute: typeof PublicProfileIndexRouteImport
-      parentRoute: typeof PublicLayoutRoute
+      parentRoute: typeof PublicProfileLayoutRoute
     }
     '/_public/products/': {
       id: '/_public/products/'
@@ -490,6 +572,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOverviewDashboardIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_public/profile/wishlist/': {
+      id: '/_public/profile/wishlist/'
+      path: '/wishlist'
+      fullPath: '/profile/wishlist/'
+      preLoaderRoute: typeof PublicProfileWishlistIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
+    '/_public/profile/orders-history/': {
+      id: '/_public/profile/orders-history/'
+      path: '/orders-history'
+      fullPath: '/profile/orders-history/'
+      preLoaderRoute: typeof PublicProfileOrdersHistoryIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
     '/_public/products/$productId/': {
       id: '/_public/products/$productId/'
       path: '/products/$productId'
@@ -539,24 +635,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPrimaryAdminsAdminIdIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_public/profile/orders-history/$orderId/': {
+      id: '/_public/profile/orders-history/$orderId/'
+      path: '/orders-history/$orderId'
+      fullPath: '/profile/orders-history/$orderId/'
+      preLoaderRoute: typeof PublicProfileOrdersHistoryOrderIdIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
+    '/_public/profile/_registration-data/registration/': {
+      id: '/_public/profile/_registration-data/registration/'
+      path: '/registration'
+      fullPath: '/profile/registration/'
+      preLoaderRoute: typeof PublicProfileRegistrationDataRegistrationIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
+    '/_public/profile/_registration-data/password/': {
+      id: '/_public/profile/_registration-data/password/'
+      path: '/password'
+      fullPath: '/profile/password/'
+      preLoaderRoute: typeof PublicProfileRegistrationDataPasswordIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
   }
 }
 
+interface PublicProfileLayoutRouteChildren {
+  PublicProfileIndexRoute: typeof PublicProfileIndexRoute
+  PublicProfileOrdersHistoryIndexRoute: typeof PublicProfileOrdersHistoryIndexRoute
+  PublicProfileWishlistIndexRoute: typeof PublicProfileWishlistIndexRoute
+  PublicProfileRegistrationDataPasswordIndexRoute: typeof PublicProfileRegistrationDataPasswordIndexRoute
+  PublicProfileRegistrationDataRegistrationIndexRoute: typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  PublicProfileOrdersHistoryOrderIdIndexRoute: typeof PublicProfileOrdersHistoryOrderIdIndexRoute
+}
+
+const PublicProfileLayoutRouteChildren: PublicProfileLayoutRouteChildren = {
+  PublicProfileIndexRoute: PublicProfileIndexRoute,
+  PublicProfileOrdersHistoryIndexRoute: PublicProfileOrdersHistoryIndexRoute,
+  PublicProfileWishlistIndexRoute: PublicProfileWishlistIndexRoute,
+  PublicProfileRegistrationDataPasswordIndexRoute:
+    PublicProfileRegistrationDataPasswordIndexRoute,
+  PublicProfileRegistrationDataRegistrationIndexRoute:
+    PublicProfileRegistrationDataRegistrationIndexRoute,
+  PublicProfileOrdersHistoryOrderIdIndexRoute:
+    PublicProfileOrdersHistoryOrderIdIndexRoute,
+}
+
+const PublicProfileLayoutRouteWithChildren =
+  PublicProfileLayoutRoute._addFileChildren(PublicProfileLayoutRouteChildren)
+
 interface PublicLayoutRouteChildren {
+  PublicProfileLayoutRoute: typeof PublicProfileLayoutRouteWithChildren
   PublicIndexRoute: typeof PublicIndexRoute
   PublicCartIndexRoute: typeof PublicCartIndexRoute
   PublicCheckoutIndexRoute: typeof PublicCheckoutIndexRoute
   PublicProductsIndexRoute: typeof PublicProductsIndexRoute
-  PublicProfileIndexRoute: typeof PublicProfileIndexRoute
   PublicProductsProductIdIndexRoute: typeof PublicProductsProductIdIndexRoute
 }
 
 const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
+  PublicProfileLayoutRoute: PublicProfileLayoutRouteWithChildren,
   PublicIndexRoute: PublicIndexRoute,
   PublicCartIndexRoute: PublicCartIndexRoute,
   PublicCheckoutIndexRoute: PublicCheckoutIndexRoute,
   PublicProductsIndexRoute: PublicProductsIndexRoute,
-  PublicProfileIndexRoute: PublicProfileIndexRoute,
   PublicProductsProductIdIndexRoute: PublicProductsProductIdIndexRoute,
 }
 

@@ -69,6 +69,7 @@ interface DataTableProps<TData, TValue> {
     placeholder: string;
   };
   filterableColumns?: ColumnFilter[];
+  pagination?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -76,6 +77,7 @@ export function DataTable<TData, TValue>({
   data,
   searchableColumn,
   filterableColumns,
+  pagination = true,
 }: DataTableProps<TData, TValue>) {
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as any;
@@ -457,7 +459,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <DataTablePagination table={table} />
+      {pagination && <DataTablePagination table={table} />}
     </div>
   );
 }

@@ -1,4 +1,3 @@
-// hooks/services/use-payment.tsx
 /** biome-ignore-all lint/suspicious/noExplicitAny: used for now... */
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
