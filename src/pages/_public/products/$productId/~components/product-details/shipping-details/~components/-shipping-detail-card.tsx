@@ -1,5 +1,6 @@
 import { Zap } from "lucide-react";
 import { RadioGroupItem } from "@/components/ui/radio-group";
+import { formatCurrency } from "@/utils/format-currency";
 
 interface ShippingDetailCardProps {
   id: string;
@@ -50,7 +51,7 @@ export function ShippingDetailCard({
           </article>
 
           <p className="border-gray-300 border-l pl-4 font-semibold text-green-600 text-lg">
-            R$ {String(price).replace(".", ",")}
+            {formatCurrency(price)}
           </p>
         </div>
       </label>
@@ -77,7 +78,7 @@ export function ShippingDetailCard({
       </div>
 
       <p className="font-semibold text-green-600 text-lg">
-        R$ {String(price).replace(".", ",")}
+        {formatCurrency(price)}
       </p>
     </label>
   );

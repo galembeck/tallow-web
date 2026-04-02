@@ -62,20 +62,20 @@ export function ShippingDetailsForm({
     try {
       const cleanZipCode = removeFormat(values.zipcode);
 
-      await calculateShipping({
+      calculateShipping({
         toZipCode: cleanZipCode,
         productId,
         quantity,
       });
 
-      await calculateFastest({
+      calculateFastest({
         toZipCode: cleanZipCode,
         productId,
         quantity,
       });
 
-      // biome-ignore lint/suspicious/noExplicitAny: error handling...
-    } catch (_error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error("Ocorreu um erro ao calcular as informações de envio.");
     }
   }

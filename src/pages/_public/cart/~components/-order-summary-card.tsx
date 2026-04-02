@@ -1,11 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Info } from "lucide-react";
+import { Info, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCart } from "@/hooks/services/use-cart";
+import { toast } from "sonner";
+import { useState } from "react";
+import { ClearConfirmationModal } from "./-clear-confirmation-modal";
 
 interface OrderSummaryCardProps {
   totalAmount: number;
@@ -14,9 +18,28 @@ interface OrderSummaryCardProps {
 export function OrderSummaryCard({ totalAmount }: OrderSummaryCardProps) {
   const navigate = useNavigate();
 
+  const { clearCart } = useCart();
+
+  const [isClearingModalOpen, setIsClearingModalOpen] = useState(false);
+
+  const handleClearCart = async () => {
+    try {
+      await clearCart();
+
+      setIsClearingModalOpen(false);
+
+      toast.success("Carrinho esvaziado com sucesso!");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error(
+        "Ocorreu um erro ao esvaziar o carrinho, tente novamente mais tarde.",
+      );
+    }
+  };
+
   return (
     <div className="lg:col-span-1">
-      <div className="sticky top-24 rounded-lg bg-white p-4 shadow-lg">
+      <div className="sticky top-24 rounded-lg bg-white p-4 shadow-lg flex flex-col justify-center">
         <h2 className="mb-6 font-semibold text-2xl text-gray-900">
           Resumo do pedido
         </h2>
@@ -68,7 +91,22 @@ export function OrderSummaryCard({ totalAmount }: OrderSummaryCardProps) {
         >
           Continuar comprando
         </Button>
+
+        <Button
+          variant="link"
+          className="text-red-500 hover:underline mt-2"
+          onClick={() => setIsClearingModalOpen(true)}
+        >
+          <Trash2 className="size-4" />
+          Esvaziar carrinho
+        </Button>
       </div>
+
+      <ClearConfirmationModal
+        open={isClearingModalOpen}
+        onOpenChange={setIsClearingModalOpen}
+        onConfirm={handleClearCart}
+      />
     </div>
   );
 }

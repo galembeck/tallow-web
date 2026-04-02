@@ -44,7 +44,9 @@ export function CartItemCard({
 
         <div className="flex-1">
           <div className="flex justify-between">
-            <h3 className="font-medium text-gray-900 text-xl">{productName}</h3>
+            <h3 className="font-semibold text-amber-950 text-xl">
+              {productName}
+            </h3>
 
             <Button
               className="cursor-pointer text-red-500 transition-colors hover:text-red-700"

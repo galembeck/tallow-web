@@ -39,6 +39,7 @@ export function ShippingDetails({ productId, quantity }: ShippingDetailsProps) {
         fastestShippingOption && (
           <div className="flex flex-col gap-4">
             <ShippingDetailCard
+              id={fastestShippingOption.carrierName}
               carrierName={fastestShippingOption.carrierName}
               deliveryTimeLabel={fastestShippingOption.deliveryTimeLabel}
               fastestOption
@@ -52,6 +53,7 @@ export function ShippingDetails({ productId, quantity }: ShippingDetailsProps) {
                 )
                 .map((option) => (
                   <ShippingDetailCard
+                    id={option.carrierName}
                     carrierName={option.carrierName}
                     deliveryTimeLabel={option.deliveryTimeLabel}
                     key={option.carrierName}

@@ -71,7 +71,8 @@ function ProductDetailsPage() {
       navigate({
         to: "/cart",
       });
-    } catch (_error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       toast.error("Erro ao adicionar produto!", {
         description: "Tente adicioná-lo novamente ou contate o suporte.",
       });
