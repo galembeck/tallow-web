@@ -30,6 +30,7 @@ import { Route as AdminPrimaryClientsIndexRouteImport } from './pages/admin/_pri
 import { Route as AdminPrimaryAdminsIndexRouteImport } from './pages/admin/_primary/admins/index'
 import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
 import { Route as PublicProfileWishlistIndexRouteImport } from './pages/_public/profile/wishlist/index'
+import { Route as PublicProfileRegisteredAddressesIndexRouteImport } from './pages/_public/profile/registered-addresses/index'
 import { Route as PublicProfileOrdersHistoryIndexRouteImport } from './pages/_public/profile/orders-history/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
 import { Route as AuthPasswordRecoveryResetIndexRouteImport } from './pages/_auth/password-recovery/reset/index'
@@ -153,6 +154,12 @@ const PublicProfileWishlistIndexRoute =
     path: '/wishlist/',
     getParentRoute: () => PublicProfileLayoutRoute,
   } as any)
+const PublicProfileRegisteredAddressesIndexRoute =
+  PublicProfileRegisteredAddressesIndexRouteImport.update({
+    id: '/registered-addresses/',
+    path: '/registered-addresses/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
 const PublicProfileOrdersHistoryIndexRoute =
   PublicProfileOrdersHistoryIndexRouteImport.update({
     id: '/orders-history/',
@@ -236,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/profile/orders-history/': typeof PublicProfileOrdersHistoryIndexRoute
+  '/profile/registered-addresses/': typeof PublicProfileRegisteredAddressesIndexRoute
   '/profile/wishlist/': typeof PublicProfileWishlistIndexRoute
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
@@ -267,6 +275,7 @@ export interface FileRoutesByTo {
   '/password-recovery/reset': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
   '/profile/orders-history': typeof PublicProfileOrdersHistoryIndexRoute
+  '/profile/registered-addresses': typeof PublicProfileRegisteredAddressesIndexRoute
   '/profile/wishlist': typeof PublicProfileWishlistIndexRoute
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
@@ -302,6 +311,7 @@ export interface FileRoutesById {
   '/_auth/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
   '/_public/profile/orders-history/': typeof PublicProfileOrdersHistoryIndexRoute
+  '/_public/profile/registered-addresses/': typeof PublicProfileRegisteredAddressesIndexRoute
   '/_public/profile/wishlist/': typeof PublicProfileWishlistIndexRoute
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/password-recovery/reset/'
     | '/products/$productId/'
     | '/profile/orders-history/'
+    | '/profile/registered-addresses/'
     | '/profile/wishlist/'
     | '/admin/dashboard/'
     | '/admin/admins/'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/password-recovery/reset'
     | '/products/$productId'
     | '/profile/orders-history'
+    | '/profile/registered-addresses'
     | '/profile/wishlist'
     | '/admin/dashboard'
     | '/admin/admins'
@@ -402,6 +414,7 @@ export interface FileRouteTypes {
     | '/_auth/password-recovery/reset/'
     | '/_public/products/$productId/'
     | '/_public/profile/orders-history/'
+    | '/_public/profile/registered-addresses/'
     | '/_public/profile/wishlist/'
     | '/admin/_overview/dashboard/'
     | '/admin/_primary/admins/'
@@ -579,6 +592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicProfileWishlistIndexRouteImport
       parentRoute: typeof PublicProfileLayoutRoute
     }
+    '/_public/profile/registered-addresses/': {
+      id: '/_public/profile/registered-addresses/'
+      path: '/registered-addresses'
+      fullPath: '/profile/registered-addresses/'
+      preLoaderRoute: typeof PublicProfileRegisteredAddressesIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
     '/_public/profile/orders-history/': {
       id: '/_public/profile/orders-history/'
       path: '/orders-history'
@@ -662,6 +682,7 @@ declare module '@tanstack/react-router' {
 interface PublicProfileLayoutRouteChildren {
   PublicProfileIndexRoute: typeof PublicProfileIndexRoute
   PublicProfileOrdersHistoryIndexRoute: typeof PublicProfileOrdersHistoryIndexRoute
+  PublicProfileRegisteredAddressesIndexRoute: typeof PublicProfileRegisteredAddressesIndexRoute
   PublicProfileWishlistIndexRoute: typeof PublicProfileWishlistIndexRoute
   PublicProfileRegistrationDataPasswordIndexRoute: typeof PublicProfileRegistrationDataPasswordIndexRoute
   PublicProfileRegistrationDataRegistrationIndexRoute: typeof PublicProfileRegistrationDataRegistrationIndexRoute
@@ -671,6 +692,8 @@ interface PublicProfileLayoutRouteChildren {
 const PublicProfileLayoutRouteChildren: PublicProfileLayoutRouteChildren = {
   PublicProfileIndexRoute: PublicProfileIndexRoute,
   PublicProfileOrdersHistoryIndexRoute: PublicProfileOrdersHistoryIndexRoute,
+  PublicProfileRegisteredAddressesIndexRoute:
+    PublicProfileRegisteredAddressesIndexRoute,
   PublicProfileWishlistIndexRoute: PublicProfileWishlistIndexRoute,
   PublicProfileRegistrationDataPasswordIndexRoute:
     PublicProfileRegistrationDataPasswordIndexRoute,

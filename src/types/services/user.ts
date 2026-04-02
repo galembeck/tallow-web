@@ -34,3 +34,48 @@ export interface UpdateProfileData {
   receiveWhatsappOffers?: boolean;
   avatar?: File;
 }
+
+export interface UserAddress {
+  id: string;
+
+  addressTitle: string;
+
+  receiverName: string;
+  receiverLastname: string;
+  contactCellphone: string;
+
+  zipcode: string;
+  address: string;
+  number: string;
+  complement?: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+
+  createdAt?: string;
+  createdBy?: string;
+
+  updatedAt?: string;
+  updatedBy?: string;
+}
+
+export type RegisterAddressData = Omit<
+  UserAddress,
+  "id" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy"
+>;
+
+export interface UpdateAddressData {
+  addressTitle?: string;
+
+  receiverName?: string;
+  receiverLastname?: string;
+  contactCellphone?: string;
+
+  zipcode?: string;
+  address?: string;
+  number?: string;
+  complement?: string;
+  neighborhood: string;
+  city?: string;
+  state?: string;
+}

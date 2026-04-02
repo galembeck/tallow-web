@@ -3,7 +3,13 @@
 import { API } from "@/api/connections/tallow";
 import type { RegisterData } from "@/types/services/auth";
 import type { ProfileType } from "@/types/enums/profile-type";
-import type { UpdateProfileData, User } from "@/types/services/user";
+import type {
+  RegisterAddressData,
+  UpdateAddressData,
+  UpdateProfileData,
+  User,
+  UserAddress,
+} from "@/types/services/user";
 
 export const userModule = {
   async register(data: RegisterData): Promise<User> {
@@ -41,6 +47,41 @@ export const userModule = {
     return await API.fetch("/user/me", {
       method: "PUT",
       body: formData,
+    });
+  },
+
+  async registerAddress(data: RegisterAddressData): Promise<UserAddress> {
+    return API.fetch("/user/address", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  async getUserAddresses(): Promise<UserAddress[]> {
+    return await API.fetch("/user/address", {
+      method: "GET",
+    });
+  },
+
+  async getAddressById(addressId: string): Promise<UserAddress> {
+    return await API.fetch(`/user/address/${addressId}`, {
+      method: "GET",
+    });
+  },
+
+  async updateAddress(
+    addressId: string,
+    data: UpdateAddressData,
+  ): Promise<UserAddress> {
+    return await API.fetch(`/user/address/${addressId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deleteAddress(addressId: string): Promise<void> {
+    return await API.fetch(`/user/address/${addressId}`, {
+      method: "DELETE",
     });
   },
 

@@ -26,6 +26,11 @@ export const SECTION_META = {
       },
     },
   },
+  addresses: {
+    title: "Meus endereços",
+    description:
+      "Adicione e edite seus endereços cadastrados em nossa plataforma.",
+  },
   wishlist: {
     title: "Lista de desejos",
     description:
