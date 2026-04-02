@@ -1,9 +1,11 @@
+import { DeleteConfirmation } from "@/components/delete-confirmation";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/services/use-user";
 import type { UserAddress } from "@/types/services/user";
 import { formatWhatsApp } from "@/utils/format-masks";
 import { useNavigate } from "@tanstack/react-router";
 import { Edit, X } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface RegisteredAddressCardProps {
@@ -17,6 +19,8 @@ export function RegisteredAddressCard({
 }: RegisteredAddressCardProps) {
   const navigate = useNavigate();
 
+  const [isConfirmtionModalOpen, setConfirmationModalOpen] = useState(false);
+
   const { deleteAddress, isDeletingAddress } = useUser();
 
   const handleDelete = async () => {
@@ -25,6 +29,8 @@ export function RegisteredAddressCard({
       toast.success("Endereço cadastrado excluído com sucesso.");
     } catch {
       toast.error("Ocorreu um erro ao excluir o endereço cadastrado.");
+    } finally {
+      setConfirmationModalOpen(false);
     }
   };
 
@@ -38,7 +44,7 @@ export function RegisteredAddressCard({
           size="icon"
           className="bg-inherit hover:bg-inherit border border-amber-900"
           disabled={isDeletingAddress}
-          onClick={handleDelete}
+          onClick={() => setConfirmationModalOpen(true)}
         >
           <X className="text-amber-900" />
         </Button>
@@ -77,6 +83,14 @@ export function RegisteredAddressCard({
           Editar
         </Button>
       </div>
+
+      <DeleteConfirmation
+        title="Deseja excluir este endereço?"
+        description="Caso realmente queira excluir o endereço em questão, ele será removido permanentemente de sua conta em nossa plataforma, e terá de ser adicionado novamente."
+        open={isConfirmtionModalOpen}
+        onClick={handleDelete}
+        onOpenChange={() => setConfirmationModalOpen(!isConfirmtionModalOpen)}
+      />
     </div>
   );
 }
