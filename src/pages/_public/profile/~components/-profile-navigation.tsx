@@ -49,7 +49,7 @@ export function ProfileNavigation({ items }: ProfileNavigationProps) {
   return (
     <Card className="p-0!">
       <CardContent className="p-4">
-        <nav className="flex-col gap-0.5 hidden md:flex">
+        <nav className="flex-col gap-0.5 hidden lg:flex">
           {items.map((item) => {
             const isActive = checkIsActive(item);
 
@@ -88,7 +88,7 @@ export function ProfileNavigation({ items }: ProfileNavigationProps) {
           })}
         </nav>
 
-        <Accordion className="w-full md:hidden block" collapsible type="single">
+        <Accordion className="w-full lg:hidden block" collapsible type="single">
           <AccordionItem value="profile-navigation">
             <AccordionTrigger className="text-lg font-bold font-sagona text-amber-950 p-0!">
               Minha conta
