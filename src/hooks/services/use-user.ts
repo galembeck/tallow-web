@@ -136,7 +136,7 @@ export function useUser({
       userModule.updateAddress(addressId!, data),
     onSuccess: (updated) => {
       queryClient.setQueryData<UserAddress | null>(
-        ["user", "addresses", addressId!],
+        ["user", "addresses", addressId],
         (old) => {
           if (!old) return updated;
           return { ...old, ...updated };
@@ -144,14 +144,11 @@ export function useUser({
       );
 
       queryClient.invalidateQueries({ queryKey: ["user", "addresses"] });
-      queryClient.invalidateQueries({
-        queryKey: ["user", "addresses", addressId],
-      });
     },
   });
 
   const deleteAddressMutation = useMutation({
-    mutationFn: () => userModule.deleteAddress(addressId!),
+    mutationFn: (addressId: string) => userModule.deleteAddress(addressId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "addresses"] });
     },

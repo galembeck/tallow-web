@@ -27,17 +27,31 @@ interface ProfileNavigationProps {
 export function ProfileNavigation({ items }: ProfileNavigationProps) {
   const pathname = useLocation({ select: (loc) => loc.pathname });
 
+  const checkIsActive = (item: ProfileNavigationItem) => {
+    const isRoot = item.path === "/profile";
+
+    if (isRoot) {
+      return (
+        pathname === "/profile" ||
+        pathname === "/profile/" ||
+        item.aliases?.some(
+          (alias) => pathname === alias || pathname.startsWith(alias),
+        )
+      );
+    }
+
+    return (
+      pathname.startsWith(item.path) ||
+      item.aliases?.some((alias) => pathname.startsWith(alias))
+    );
+  };
+
   return (
     <Card className="p-0!">
       <CardContent className="p-4">
         <nav className="flex-col gap-0.5 hidden md:flex">
           {items.map((item) => {
-            const isRoot = item.path === "/profile";
-
-            const isActive = isRoot
-              ? pathname === "/profile" || pathname === "/profile/"
-              : pathname.startsWith(item.path) ||
-                item.aliases?.some((alias) => pathname.startsWith(alias));
+            const isActive = checkIsActive(item);
 
             return (
               <Link
@@ -83,12 +97,7 @@ export function ProfileNavigation({ items }: ProfileNavigationProps) {
             <AccordionContent>
               <nav className="flex flex-col gap-0.5">
                 {items.map((item) => {
-                  const isRoot = item.path === "/profile";
-
-                  const isActive = isRoot
-                    ? pathname === "/profile" || pathname === "/profile/"
-                    : pathname.startsWith(item.path) ||
-                      item.aliases?.some((alias) => pathname.startsWith(alias));
+                  const isActive = checkIsActive(item);
 
                   return (
                     <Link

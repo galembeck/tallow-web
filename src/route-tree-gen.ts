@@ -39,6 +39,7 @@ import { Route as AdminPrimaryPaymentsPaymentIdIndexRouteImport } from './pages/
 import { Route as AdminPrimaryOrdersOrderIdIndexRouteImport } from './pages/admin/_primary/orders/$orderId/index'
 import { Route as AdminPrimaryClientsClientIdIndexRouteImport } from './pages/admin/_primary/clients/$clientId/index'
 import { Route as AdminPrimaryAdminsAdminIdIndexRouteImport } from './pages/admin/_primary/admins/$adminId/index'
+import { Route as PublicProfileRegisteredAddressesAddressIdIndexRouteImport } from './pages/_public/profile/registered-addresses/$addressId/index'
 import { Route as PublicProfileOrdersHistoryOrderIdIndexRouteImport } from './pages/_public/profile/orders-history/$orderId/index'
 import { Route as PublicProfileRegistrationDataRegistrationIndexRouteImport } from './pages/_public/profile/_registration-data/registration/index'
 import { Route as PublicProfileRegistrationDataPasswordIndexRouteImport } from './pages/_public/profile/_registration-data/password/index'
@@ -208,6 +209,12 @@ const AdminPrimaryAdminsAdminIdIndexRoute =
     path: '/admins/$adminId/',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const PublicProfileRegisteredAddressesAddressIdIndexRoute =
+  PublicProfileRegisteredAddressesAddressIdIndexRouteImport.update({
+    id: '/registered-addresses/$addressId/',
+    path: '/registered-addresses/$addressId/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
 const PublicProfileOrdersHistoryOrderIdIndexRoute =
   PublicProfileOrdersHistoryOrderIdIndexRouteImport.update({
     id: '/orders-history/$orderId/',
@@ -255,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/profile/password/': typeof PublicProfileRegistrationDataPasswordIndexRoute
   '/profile/registration/': typeof PublicProfileRegistrationDataRegistrationIndexRoute
   '/profile/orders-history/$orderId/': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
+  '/profile/registered-addresses/$addressId/': typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
   '/admin/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -287,6 +295,7 @@ export interface FileRoutesByTo {
   '/profile/password': typeof PublicProfileRegistrationDataPasswordIndexRoute
   '/profile/registration': typeof PublicProfileRegistrationDataRegistrationIndexRoute
   '/profile/orders-history/$orderId': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
+  '/profile/registered-addresses/$addressId': typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
   '/admin/admins/$adminId': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/clients/$clientId': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/orders/$orderId': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -323,6 +332,7 @@ export interface FileRoutesById {
   '/_public/profile/_registration-data/password/': typeof PublicProfileRegistrationDataPasswordIndexRoute
   '/_public/profile/_registration-data/registration/': typeof PublicProfileRegistrationDataRegistrationIndexRoute
   '/_public/profile/orders-history/$orderId/': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
+  '/_public/profile/registered-addresses/$addressId/': typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
   '/admin/_primary/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
   '/admin/_primary/clients/$clientId/': typeof AdminPrimaryClientsClientIdIndexRoute
   '/admin/_primary/orders/$orderId/': typeof AdminPrimaryOrdersOrderIdIndexRoute
@@ -359,6 +369,7 @@ export interface FileRouteTypes {
     | '/profile/password/'
     | '/profile/registration/'
     | '/profile/orders-history/$orderId/'
+    | '/profile/registered-addresses/$addressId/'
     | '/admin/admins/$adminId/'
     | '/admin/clients/$clientId/'
     | '/admin/orders/$orderId/'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/profile/password'
     | '/profile/registration'
     | '/profile/orders-history/$orderId'
+    | '/profile/registered-addresses/$addressId'
     | '/admin/admins/$adminId'
     | '/admin/clients/$clientId'
     | '/admin/orders/$orderId'
@@ -426,6 +438,7 @@ export interface FileRouteTypes {
     | '/_public/profile/_registration-data/password/'
     | '/_public/profile/_registration-data/registration/'
     | '/_public/profile/orders-history/$orderId/'
+    | '/_public/profile/registered-addresses/$addressId/'
     | '/admin/_primary/admins/$adminId/'
     | '/admin/_primary/clients/$clientId/'
     | '/admin/_primary/orders/$orderId/'
@@ -655,6 +668,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPrimaryAdminsAdminIdIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/_public/profile/registered-addresses/$addressId/': {
+      id: '/_public/profile/registered-addresses/$addressId/'
+      path: '/registered-addresses/$addressId'
+      fullPath: '/profile/registered-addresses/$addressId/'
+      preLoaderRoute: typeof PublicProfileRegisteredAddressesAddressIdIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
     '/_public/profile/orders-history/$orderId/': {
       id: '/_public/profile/orders-history/$orderId/'
       path: '/orders-history/$orderId'
@@ -687,6 +707,7 @@ interface PublicProfileLayoutRouteChildren {
   PublicProfileRegistrationDataPasswordIndexRoute: typeof PublicProfileRegistrationDataPasswordIndexRoute
   PublicProfileRegistrationDataRegistrationIndexRoute: typeof PublicProfileRegistrationDataRegistrationIndexRoute
   PublicProfileOrdersHistoryOrderIdIndexRoute: typeof PublicProfileOrdersHistoryOrderIdIndexRoute
+  PublicProfileRegisteredAddressesAddressIdIndexRoute: typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
 }
 
 const PublicProfileLayoutRouteChildren: PublicProfileLayoutRouteChildren = {
@@ -701,6 +722,8 @@ const PublicProfileLayoutRouteChildren: PublicProfileLayoutRouteChildren = {
     PublicProfileRegistrationDataRegistrationIndexRoute,
   PublicProfileOrdersHistoryOrderIdIndexRoute:
     PublicProfileOrdersHistoryOrderIdIndexRoute,
+  PublicProfileRegisteredAddressesAddressIdIndexRoute:
+    PublicProfileRegisteredAddressesAddressIdIndexRoute,
 }
 
 const PublicProfileLayoutRouteWithChildren =

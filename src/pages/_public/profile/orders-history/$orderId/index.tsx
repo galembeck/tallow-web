@@ -87,7 +87,7 @@ function ProfileOrderHistoryDetailsPage() {
   return (
     <Card>
       <CardHeader className="flex flex-col gap-8">
-        <CardTitle className="font-bold text-xl text-amber-950">
+        <CardTitle className="font-bold text-xl text-amber-950 font-sagona">
           Pedido #{order.id.slice(0, 8).toUpperCase()}
         </CardTitle>
 

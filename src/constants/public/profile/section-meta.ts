@@ -30,6 +30,13 @@ export const SECTION_META = {
     title: "Meus endereços",
     description:
       "Adicione e edite seus endereços cadastrados em nossa plataforma.",
+    pages: {
+      addressDetails: {
+        title: "Editar endereço",
+        description:
+          "Altere os detalhes doendereço cadastrado em nossa plataforma.",
+      },
+    },
   },
   wishlist: {
     title: "Lista de desejos",

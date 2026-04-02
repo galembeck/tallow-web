@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/suspicious/useAwait: required to suppress linting errors */
 
 import { API } from "@/api/connections/tallow";
-import type { RegisterData } from "@/types/services/auth";
 import type { ProfileType } from "@/types/enums/profile-type";
+import type { RegisterData } from "@/types/services/auth";
 import type {
   RegisterAddressData,
   UpdateAddressData,
@@ -73,9 +73,29 @@ export const userModule = {
     addressId: string,
     data: UpdateAddressData,
   ): Promise<UserAddress> {
+    const formData = new FormData();
+
+    if (data.addressTitle !== undefined)
+      formData.append("addressTitle", data.addressTitle);
+    if (data.receiverName !== undefined)
+      formData.append("receiverName", data.receiverName);
+    if (data.receiverLastname !== undefined)
+      formData.append("receiverLastname", data.receiverLastname);
+    if (data.contactCellphone !== undefined)
+      formData.append("contactCellphone", data.contactCellphone);
+    if (data.address !== undefined) formData.append("address", data.address);
+    if (data.number !== undefined) formData.append("number", data.number);
+    if (data.complement !== undefined)
+      formData.append("complement", data.complement);
+    if (data.neighborhood !== undefined)
+      formData.append("neighborhood", data.neighborhood);
+    if (data.city !== undefined) formData.append("city", data.city);
+    if (data.state !== undefined) formData.append("state", data.state);
+    if (data.zipcode !== undefined) formData.append("zipcode", data.zipcode);
+
     return await API.fetch(`/user/address/${addressId}`, {
       method: "PUT",
-      body: JSON.stringify(data),
+      body: formData,
     });
   },
 

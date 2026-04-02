@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,9 +9,10 @@ import { Separator } from "@/components/ui/separator";
 import { SECTION_META } from "@/constants/public/profile/section-meta";
 import { useUser } from "@/hooks/services/use-user";
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPin, Plus } from "lucide-react";
-import { RegisteredAddressCard } from "./~components/-registered-address-card";
+import { MapPin } from "lucide-react";
 import { RegisterAddressModal } from "./~components/-register-address-modal";
+import { RegisteredAddressCard } from "./~components/-registered-address-card";
+import { RegisteredAddressSkeleton } from "./~components/_related/-registered-addresses-skeleton";
 
 export const Route = createFileRoute("/_public/profile/registered-addresses/")({
   component: ProfileRegisteredAddressesPage,
@@ -38,37 +38,44 @@ function ProfileRegisteredAddressesPage() {
       <Separator />
 
       <CardContent>
-        {addresses.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-4 py-16">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <MapPin className="h-8 w-8 text-muted-foreground" />
+        {isAddressesLoading ? (
+          <RegisteredAddressSkeleton />
+        ) : (
+          <>
+            {addresses.length === 0 && (
+              <div className="flex flex-col items-center justify-center gap-4 py-16">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                  <MapPin className="h-8 w-8 text-muted-foreground" />
+                </div>
+
+                <div className="text-center">
+                  <h3 className="font-semibold text-lg">
+                    Nenhum endereço cadastrado
+                  </h3>
+
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Você ainda não cadastrou nenhum endereço em nossa
+                    plataforma.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {addresses.map((address) => (
+                <RegisteredAddressCard
+                  key={address.id}
+                  title={address.addressTitle}
+                  addressInfo={address}
+                />
+              ))}
             </div>
 
-            <div className="text-center">
-              <h3 className="font-semibold text-lg">
-                Nenhum endereço cadastrado
-              </h3>
-
-              <p className="text-muted-foreground text-sm mt-1">
-                Você ainda não cadastrou nenhum endereço em nossa plataforma.
-              </p>
+            <div className="flex justify-end">
+              <RegisterAddressModal />
             </div>
-          </div>
+          </>
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {addresses.map((address) => (
-            <RegisteredAddressCard
-              key={address.id}
-              title={address.addressTitle}
-              addressInfo={address}
-            />
-          ))}
-        </div>
-
-        <div className="flex justify-end">
-          <RegisterAddressModal />
-        </div>
       </CardContent>
     </Card>
   );

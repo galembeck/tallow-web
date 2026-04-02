@@ -75,7 +75,7 @@ export interface UpdateAddressData {
   address?: string;
   number?: string;
   complement?: string;
-  neighborhood: string;
+  neighborhood?: string;
   city?: string;
   state?: string;
 }

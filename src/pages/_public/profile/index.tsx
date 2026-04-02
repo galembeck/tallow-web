@@ -29,7 +29,7 @@ function ProfilePage() {
     <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
       <Card>
         <CardHeader>
-          <CardTitle className="font-bold text-xl text-amber-950">
+          <CardTitle className="font-bold text-xl text-amber-950 font-sagona">
             {title}
           </CardTitle>
 

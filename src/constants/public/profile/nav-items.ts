@@ -5,6 +5,7 @@ export const navItems: ProfileNavigationItem[] = [
   {
     id: "profile",
     path: "/profile",
+    aliases: ["/profile/registration", "/profile/password"],
     label: "Dados cadastrais",
     icon: User,
   },

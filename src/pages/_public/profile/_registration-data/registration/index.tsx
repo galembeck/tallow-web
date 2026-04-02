@@ -43,7 +43,7 @@ function ProfileRegistrationPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-bold text-xl text-amber-950">
+        <CardTitle className="font-bold text-xl text-amber-950 font-sagona">
           {registrationData.title}
         </CardTitle>
 
