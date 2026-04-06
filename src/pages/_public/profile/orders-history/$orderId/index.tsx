@@ -12,7 +12,8 @@ import {
 import { formatDate } from "@/utils/format-date";
 import { formatWhatsApp } from "@/utils/format-masks";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, Truck } from "lucide-react";
+import { paymentMethodLabel } from "@/types/enums/payment-method";
+import { CreditCard, ShoppingCart, Tag, Truck } from "lucide-react";
 import { OrderInformationCard } from "./~components/-order-information-card";
 import { OrderTimeline } from "./~components/-order-status-timeline";
 import { toast } from "sonner";
@@ -128,8 +129,22 @@ function ProfileOrderHistoryDetailsPage() {
         <OrderTimeline status={normalizedStatus} updatedAt={order.createdAt} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <OrderInformationCard title="Método de pagamento">
-            <p>Em breve...</p>
+          <OrderInformationCard title="Método de pagamento" className="flex flex-col gap-2">
+            {order.payment ? (
+              <>
+                <div className="flex items-center gap-2 text-sm text-black/80">
+                  <CreditCard className="w-4 h-4 shrink-0 text-amber-900" />
+                  <span className="font-semibold">
+                    {paymentMethodLabel[String(order.payment.paymentMethod)] ?? String(order.payment.paymentMethod)}
+                  </span>
+                </div>
+                <p className="text-sm text-black/60">
+                  Valor: R$ {Number(order.payment.transactionAmount).toFixed(2)}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">Pagamento não encontrado.</p>
+            )}
           </OrderInformationCard>
 
           <OrderInformationCard
@@ -221,6 +236,19 @@ function ProfileOrderHistoryDetailsPage() {
                   R$ {order.shippingAmount}
                 </span>
               </article>
+
+              {order.discountAmount && order.discountAmount > 0 ? (
+                <article className="flex items-center justify-between">
+                  <p className="flex items-center gap-2 text-green-700 font-semibold">
+                    <Tag className="w-4 h-4" />
+                    Desconto{order.couponCode ? ` (${order.couponCode})` : ""}
+                  </p>
+
+                  <span className="text-green-700 font-bold">
+                    - R$ {Number(order.discountAmount).toFixed(2)}
+                  </span>
+                </article>
+              ) : null}
             </div>
 
             <Separator className="bg-muted-foreground/30" />

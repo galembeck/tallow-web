@@ -10,6 +10,7 @@ import {
 import { paymentMethodLabel } from "@/types/enums/payment-method";
 import { paymentStatusLabel } from "@/types/enums/payment-status";
 import type { PaymentSummaryDTO } from "@/types/services/order";
+import { Tag } from "lucide-react";
 
 function orderStatusVariant(
   status: string,
@@ -48,6 +49,9 @@ interface OrderSummaryProps {
   shippingAmount: number;
   totalAmount: number;
   payment?: PaymentSummaryDTO | null;
+  couponCode?: string | null;
+  discountPercentage?: number | null;
+  discountAmount?: number | null;
 }
 
 export function OrderSummary({
@@ -56,6 +60,9 @@ export function OrderSummary({
   shippingAmount,
   totalAmount,
   payment,
+  couponCode,
+  discountPercentage,
+  discountAmount,
 }: OrderSummaryProps) {
   const normalizedStatus = normalizeOrderStatus(String(status));
 
@@ -79,7 +86,7 @@ export function OrderSummary({
           />
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className={`grid gap-4 mb-4 ${discountAmount ? "grid-cols-2" : "grid-cols-3"}`}>
           <div className="rounded-lg bg-gray-50 p-3">
             <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
               Subtotal
@@ -96,6 +103,23 @@ export function OrderSummary({
               {formatCurrency(shippingAmount)}
             </p>
           </div>
+          {discountAmount ? (
+            <div className="rounded-lg bg-green-50 border border-green-200 p-3">
+              <p className="text-green-700 text-xs font-medium uppercase tracking-wide flex items-center gap-1">
+                <Tag className="h-3 w-3" />
+                Desconto
+                {couponCode && (
+                  <span className="font-mono lowercase normal-case">({couponCode})</span>
+                )}
+              </p>
+              <p className="mt-1 font-semibold text-sm text-green-700">
+                - {formatCurrency(discountAmount)}
+                {discountPercentage && (
+                  <span className="text-xs ml-1 font-normal">({discountPercentage}%)</span>
+                )}
+              </p>
+            </div>
+          ) : null}
           <div className="rounded-lg bg-gray-50 p-3">
             <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
               Total

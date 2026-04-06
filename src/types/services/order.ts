@@ -30,6 +30,7 @@ export interface CreateOrderDTO {
   cartId: string;
   buyerInfo: BuyerInfoDTO;
   shippingInfo: ShippingInfoDTO;
+  couponCode?: string | null;
 }
 
 export interface OrderItemDTO {
@@ -59,6 +60,9 @@ export interface OrderResponseDTO {
   shippingInfo: ShippingInfoDTO;
   createdAt: string;
   payment?: PaymentSummaryDTO | null;
+  couponCode?: string | null;
+  discountPercentage?: number | null;
+  discountAmount?: number | null;
 }
 
 export interface OrderAdminSummaryDTO {

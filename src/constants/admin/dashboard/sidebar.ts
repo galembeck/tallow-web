@@ -4,6 +4,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   SquareTerminal,
+  Tag,
   User,
   Users,
 } from "lucide-react";
@@ -38,6 +39,12 @@ export const dashboardData = {
         "Visualize e gerencie todos os pedidos realizados na sua loja",
       url: "/admin/orders",
       icon: Package,
+    },
+    {
+      title: "Cupons",
+      description: "Crie e gerencie cupons de desconto para seus clientes",
+      url: "/admin/coupons",
+      icon: Tag,
     },
     {
       title: "Usuários",

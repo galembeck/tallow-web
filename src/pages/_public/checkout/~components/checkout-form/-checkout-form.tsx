@@ -21,6 +21,7 @@ import { PaymentFormStep } from "./checkout-form-steps/-payment-form-step";
 import { PersonalFormStep } from "./checkout-form-steps/-personal-form-step";
 import { ShippingFormStep } from "./checkout-form-steps/-shipping-form-step";
 import type { OrderSnapshot } from "@/types/services/order";
+import type { CouponValidateResponse } from "@/types/services/coupon";
 
 export function CheckoutForm() {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ export function CheckoutForm() {
 
   const [pendingPayment, setPendingPayment] =
     useState<PaymentResponseDTO | null>(null);
+
+  const [appliedCoupon, setAppliedCoupon] =
+    useState<CouponValidateResponse | null>(null);
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormSchema),
@@ -64,6 +68,13 @@ export function CheckoutForm() {
 
   const shippingCost = selectedShippingOption?.price ?? 0;
 
+  const discountAmount =
+    appliedCoupon?.isValid && appliedCoupon.discountPercentage && cart
+      ? Math.round(
+          cart.totalAmount * (appliedCoupon.discountPercentage / 100) * 100,
+        ) / 100
+      : 0;
+
   const {
     isProcessing,
     handleCreateOrder,
@@ -72,6 +83,8 @@ export function CheckoutForm() {
     clearCart,
   } = useCheckout(form, {
     shippingCost,
+    couponCode: appliedCoupon?.isValid ? appliedCoupon.code : undefined,
+    discountAmount,
     onOrderCreated: () => goToStep(3),
     onPaymentSuccess: async () => {
       const orderSnapshot = {
@@ -188,7 +201,7 @@ export function CheckoutForm() {
                   <PaymentFormStep
                     amount={
                       Math.round(
-                        ((cart?.totalAmount ?? 0) + shippingCost) * 100,
+                        ((cart?.totalAmount ?? 0) + shippingCost - discountAmount) * 100,
                       ) / 100
                     }
                     onSubmitPayment={handleProcessPayment}
@@ -207,7 +220,12 @@ export function CheckoutForm() {
             </Form>
           </div>
 
-          <OrderSummary cart={cart} shippingCost={shippingCost} />
+          <OrderSummary
+            cart={cart}
+            shippingCost={shippingCost}
+            appliedCoupon={appliedCoupon}
+            onCouponApplied={setAppliedCoupon}
+          />
         </div>
       </div>
     </main>

@@ -21,6 +21,8 @@ interface UseCheckoutOptions {
   onPaymentSuccess?: (paymentId: string) => void;
   onPaymentPending?: (payment: PaymentResponseDTO) => void;
   shippingCost?: number;
+  couponCode?: string | null;
+  discountAmount?: number;
 }
 
 export function useCheckout(
@@ -30,6 +32,8 @@ export function useCheckout(
     onPaymentSuccess,
     onPaymentPending,
     shippingCost = 0,
+    couponCode,
+    discountAmount = 0,
   }: UseCheckoutOptions = {},
 ) {
   const { cart, clearCart } = useCart({
@@ -68,6 +72,7 @@ export function useCheckout(
         shippingCity: values.city,
         shippingState: values.state,
       },
+      couponCode: couponCode ?? null,
     };
   };
 
@@ -148,7 +153,7 @@ export function useCheckout(
       }
 
       const totalAmount =
-        Math.round(((cart.totalAmount ?? 0) + shippingCost) * 100) / 100;
+        Math.round(((cart.totalAmount ?? 0) + shippingCost - discountAmount) * 100) / 100;
       const payer = buildPayerFromForm();
 
       let payload: Parameters<typeof processPayment>[0];

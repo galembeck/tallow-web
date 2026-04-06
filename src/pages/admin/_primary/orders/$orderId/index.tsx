@@ -135,6 +135,9 @@ function OrderDetailsPage() {
                 shippingAmount={order.shippingAmount}
                 totalAmount={order.totalAmount}
                 payment={order.payment}
+                couponCode={order.couponCode}
+                discountPercentage={order.discountPercentage}
+                discountAmount={order.discountAmount}
               />
 
               <OrderItems items={order.items} />
