@@ -101,7 +101,7 @@ function OrderDetailsPage() {
       <OrderHeader
         orderId={order.id}
         canPrepare={normalizedStatus === "PAYMENT_APPROVED"}
-        canShip={normalizedStatus === "PROCESSING"}
+        canShip={normalizedStatus === "PREPARING"}
         canCancelShipment={normalizedStatus === "SHIPPED"}
         isPreparingOrder={isPreparingOrder}
         isShippingOrder={isShippingOrder}
@@ -147,10 +147,7 @@ function OrderDetailsPage() {
         <ShippingResultCard
           result={adminShippingStatus}
           onPrintLabel={() =>
-            window.open(
-              `${API.baseURL}/order/admin/${orderId}/label`,
-              "_blank",
-            )
+            window.open(`${API.baseURL}/order/admin/${orderId}/label`, "_blank")
           }
           isLoading={isAdminShippingLoading || !adminShippingStatus}
         />

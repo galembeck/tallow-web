@@ -24,6 +24,7 @@ import type { ShippingInformation } from "@/types/services/shipping";
 import type { UserAddress } from "@/types/services/user";
 import { fetchAddressByZipcode } from "@/utils/fetch-address";
 import { formatCEP, formatWhatsApp, removeFormat } from "@/utils/format-masks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ShippingFormStepProps {
   form: UseFormReturn<CheckoutFormData>;
@@ -219,7 +220,6 @@ export function ShippingFormStep({
         </div>
       ) : (
         <>
-          {/* Saved address list */}
           {showAddressList && (
             <div className="mb-6">
               <p className="mb-3 text-sm font-medium text-gray-700">
@@ -242,24 +242,27 @@ export function ShippingFormStep({
                     <p className="font-semibold text-sm text-amber-950 mb-2">
                       {address.addressTitle}
                     </p>
+
                     <p className="text-xs text-gray-600">
                       {address.receiverName} {address.receiverLastname} |{" "}
                       {formatWhatsApp(address.contactCellphone)}
                     </p>
+
                     <p className="text-xs text-gray-600">
                       {address.address}, {address.number}
                       {address.complement ? ` - ${address.complement}` : ""}
                     </p>
+
                     <p className="text-xs text-gray-600">
                       {address.neighborhood}
                     </p>
+
                     <p className="text-xs text-gray-600">
                       {address.city}, {address.state} — {address.zipcode}
                     </p>
                   </button>
                 ))}
 
-                {/* Use a different address */}
                 <button
                   type="button"
                   onClick={handleUseManualAddress}
@@ -274,7 +277,6 @@ export function ShippingFormStep({
             </div>
           )}
 
-          {/* Manual address form */}
           {(!hasAddresses || showManualForm) && (
             <>
               {hasAddresses && (
@@ -425,7 +427,20 @@ export function ShippingFormStep({
         </>
       )}
 
-      {/* Shipping options — shown after a zipcode produces results */}
+      {isLoading && (
+        <>
+          <Separator className="my-6" />
+
+          <h3 className="mb-4 font-semibold text-gray-900">
+            Selecione uma opção de entrega
+          </h3>
+
+          <div className="group overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-xl">
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </>
+      )}
+
       {cartShippingOptions &&
         cartShippingOptions.length > 0 &&
         fastestCartShippingOption && (
