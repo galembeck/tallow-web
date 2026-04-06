@@ -34,7 +34,7 @@ export const SECTION_META = {
       addressDetails: {
         title: "Editar endereço",
         description:
-          "Altere os detalhes doendereço cadastrado em nossa plataforma.",
+          "Altere os detalhes do endereço cadastrado em nossa plataforma.",
       },
     },
   },

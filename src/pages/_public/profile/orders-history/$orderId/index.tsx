@@ -37,7 +37,7 @@ function ProfileOrderHistoryDetailsPage() {
   const { orderId } = Route.useParams();
 
   const { addItem } = useCart();
-  const { order, isOrderLoading } = useOrder({
+  const { order, isOrderLoading, cancelOrder, isCancellingOrder } = useOrder({
     orderId,
     enableUserOrdersQuery: true,
   });
@@ -83,6 +83,7 @@ function ProfileOrderHistoryDetailsPage() {
   };
 
   const normalizedStatus = normalizeOrderStatus(String(order.status));
+  const canCancel = !["SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"].includes(normalizedStatus);
 
   return (
     <Card>
@@ -159,13 +160,16 @@ function ProfileOrderHistoryDetailsPage() {
             </h1>
 
             <article className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="uppercase text-red-600/80 font-semibold hover:bg-inherit hover:text-red-600"
-                onClick={() => setOpenCancellationModal(true)}
-              >
-                Cancelar pedido
-              </Button>
+              {canCancel && (
+                <Button
+                  variant="ghost"
+                  className="uppercase text-red-600/80 font-semibold hover:bg-inherit hover:text-red-600"
+                  onClick={() => setOpenCancellationModal(true)}
+                  disabled={isCancellingOrder}
+                >
+                  {isCancellingOrder ? "Cancelando..." : "Cancelar pedido"}
+                </Button>
+              )}
 
               <Button
                 className="bg-lime-800/80 hover:bg-lime-800/90 font-medium"
@@ -235,10 +239,14 @@ function ProfileOrderHistoryDetailsPage() {
       </CardContent>
 
       <OrderCancellationModal
-        // onConfirm={() => deleteProduct(order.id)}
-        onConfirm={() => {
-          // TODO: Implementar cancelamento do pedido
-          toast.success("Pedido cancelado com sucesso!");
+        onConfirm={async () => {
+          try {
+            await cancelOrder(order.id);
+            setOpenCancellationModal(false);
+            toast.success("Pedido cancelado com sucesso!");
+          } catch {
+            toast.error("Erro ao cancelar pedido. Tente novamente.");
+          }
         }}
         onOpenChange={setOpenCancellationModal}
         open={openCancellationModal}

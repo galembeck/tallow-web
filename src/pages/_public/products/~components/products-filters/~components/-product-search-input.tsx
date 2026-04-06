@@ -46,13 +46,13 @@ export function ProductSearchInput({
         <Search />
       </Button>
 
-      <Button
+      {/*<Button
         className="cursor-pointer bg-black text-white hover:bg-black/80"
         onClick={toggleFilters}
         variant="secondary"
       >
         <Filter />
-      </Button>
+      </Button>*/}
     </Field>
   );
 }

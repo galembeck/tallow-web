@@ -68,4 +68,17 @@ export const orderModule = {
     if (!res.ok) throw new Error(`Erro ao buscar etiqueta: ${res.status}`);
     return res.blob();
   },
+
+  async cancelOrder(orderId: string): Promise<void> {
+    return await API.fetch(`/order/${orderId}/cancel`, {
+      method: "PATCH",
+    });
+  },
+
+  async cancelShipment(orderId: string): Promise<{ cancelled: boolean }> {
+    return await API.fetch(`/shipping/admin/order/${orderId}/cancel`, {
+      method: "POST",
+      body: JSON.stringify({ description: "Cancelado pelo admin" }),
+    });
+  },
 };

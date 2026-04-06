@@ -10,7 +10,7 @@ interface OrderTimelineProps {
 
 const TIMELINE_STEPS = [
   { id: 0, label: "Pedido\nrealizado" },
-  { id: 1, label: "Pedido\nconfirmado" },
+  { id: 1, label: "Pedido em\npreparação" },
   { id: 2, label: "Pedido em\nseparação" },
   { id: 3, label: "Pedido em\ntrânsito" },
   { id: 4, label: "Pedido\nentregue" },
@@ -23,7 +23,7 @@ function getStatusIndex(status: string): number {
       return 0;
     case "PAYMENT_APPROVED":
       return 1;
-    case "PROCESSING":
+    case "PREPARING":
       return 2;
     case "SHIPPED":
       return 3;

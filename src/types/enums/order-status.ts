@@ -2,7 +2,7 @@ export interface OrderStatus {
   PENDING: "PENDING";
   PAYMENT_PENDING: "PAYMENT_PENDING";
   PAYMENT_APPROVED: "PAYMENT_APPROVED";
-  PROCESSING: "PROCESSING";
+  PREPARING: "PREPARING";
   SHIPPED: "SHIPPED";
   DELIVERED: "DELIVERED";
   CANCELLED: "CANCELLED";
@@ -14,7 +14,7 @@ const numericToOrderStatus: Record<string, string> = {
   "1": "PENDING",
   "2": "PAYMENT_PENDING",
   "3": "PAYMENT_APPROVED",
-  "4": "PROCESSING",
+  "4": "PREPARING",
   "5": "SHIPPED",
   "6": "DELIVERED",
   "7": "CANCELLED",
@@ -30,7 +30,7 @@ export const orderStatusLabel: Record<string, string> = {
   PENDING: "Pendente",
   PAYMENT_PENDING: "Aguardando pagamento",
   PAYMENT_APPROVED: "Pagamento aprovado",
-  PROCESSING: "Em processamento",
+  PREPARING: "Em preparação",
   SHIPPED: "Enviado",
   DELIVERED: "Entregue",
   CANCELLED: "Cancelado",
@@ -45,12 +45,12 @@ export function getOrderStatusColor(status: string): string {
       return "bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-transparent";
     case "PAYMENT_APPROVED":
       return "bg-sky-100 text-sky-700 hover:bg-sky-200 border-transparent";
-    // case "PROCESSING":
+    // case "PREPARING":
     // return "bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-transparent";
     case "SHIPPED":
-      return "bg-green-600/80 text-white hover:bg-green-600 border-transparent";
+      return "bg-green-100 text-green-700 hover:bg-green-200 border-transparent";
     case "DELIVERED":
-      return "bg-blue-500 text-white hover:bg-blue-900 border-transparent";
+      return "bg-blue-100 text-blue-700 hover:bg-blue-200 border-transparent";
     case "CANCELLED":
     case "REFUNDED":
       return "bg-red-500/15 text-red-600 hover:bg-red-500/25 border-transparent";

@@ -154,6 +154,23 @@ export function useOrder({
     },
   });
 
+  const cancelOrderMutation = useMutation({
+    mutationFn: (id: string) => orderModule.cancelOrder(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["orders", "details", orderId] });
+      await queryClient.invalidateQueries({ queryKey: ["orders", "user"] });
+    },
+  });
+
+  const cancelShipmentMutation = useMutation({
+    mutationFn: (id: string) => orderModule.cancelShipment(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["orders", "admin", "details", orderId] });
+      await queryClient.invalidateQueries({ queryKey: ["orders", "admin", "all"] });
+      await queryClient.invalidateQueries({ queryKey: ["orders", "admin", "shipping", orderId] });
+    },
+  });
+
   return {
     createOrder: createOrderMutation.mutateAsync,
     createdOrders: createOrderMutation.data,
@@ -199,6 +216,14 @@ export function useOrder({
     downloadLabel: downloadLabelMutation.mutateAsync,
     isDownloadingLabel: downloadLabelMutation.isPending,
     downloadLabelError: downloadLabelMutation.error,
+
+    cancelOrder: cancelOrderMutation.mutateAsync,
+    isCancellingOrder: cancelOrderMutation.isPending,
+    cancelOrderError: cancelOrderMutation.error,
+
+    cancelShipment: cancelShipmentMutation.mutateAsync,
+    isCancellingShipment: cancelShipmentMutation.isPending,
+    cancelShipmentError: cancelShipmentMutation.error,
 
     refetchOrder: orderQuery.refetch,
     refetchUserOrders: userOrdersQuery.refetch,

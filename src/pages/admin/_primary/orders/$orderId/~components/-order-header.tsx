@@ -1,31 +1,37 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ExternalLink, Package, Truck } from "lucide-react";
+import { ArrowLeft, ExternalLink, Package, Truck, XCircle } from "lucide-react";
 
 interface OrderHeaderProps {
   orderId: string;
   canPrepare: boolean;
   canShip: boolean;
+  canCancelShipment: boolean;
   isPreparingOrder: boolean;
   isShippingOrder: boolean;
+  isCancellingShipment: boolean;
   paymentId?: string;
   onNavigateBack: () => void;
   onNavigatePayment: () => void;
   onPrepare: () => void;
   onShip: () => void;
+  onCancelShipment: () => void;
 }
 
 export function OrderHeader({
   orderId,
   canPrepare,
   canShip,
+  canCancelShipment,
   isPreparingOrder,
   isShippingOrder,
+  isCancellingShipment,
   paymentId,
   onNavigateBack,
   onNavigatePayment,
   onPrepare,
   onShip,
+  onCancelShipment,
 }: OrderHeaderProps) {
   return (
     <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
@@ -69,6 +75,18 @@ export function OrderHeader({
           >
             <Truck className="h-4 w-4" />
             {isShippingOrder ? "Enviando..." : "Enviar pedido"}
+          </Button>
+        )}
+
+        {canCancelShipment && (
+          <Button
+            variant="destructive"
+            className="flex-1 md:flex-none cursor-pointer"
+            onClick={onCancelShipment}
+            disabled={isCancellingShipment}
+          >
+            <XCircle className="h-4 w-4" />
+            {isCancellingShipment ? "Cancelando envio..." : "Cancelar envio"}
           </Button>
         )}
 

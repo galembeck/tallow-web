@@ -43,6 +43,8 @@ function OrderDetailsPage() {
     isPreparingOrder,
     shipOrder,
     isShippingOrder,
+    cancelShipment,
+    isCancellingShipment,
     adminShippingStatus,
     isAdminShippingLoading,
   } = useOrder({
@@ -82,14 +84,28 @@ function OrderDetailsPage() {
     }
   }
 
+  async function handleCancelShipment() {
+    try {
+      await cancelShipment(orderId);
+      setHasShipped(false);
+      toast.success("Envio cancelado. Pedido voltou para preparação.");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Erro ao cancelar envio.",
+      );
+    }
+  }
+
   return (
     <main className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8">
       <OrderHeader
         orderId={order.id}
         canPrepare={normalizedStatus === "PAYMENT_APPROVED"}
         canShip={normalizedStatus === "PROCESSING"}
+        canCancelShipment={normalizedStatus === "SHIPPED"}
         isPreparingOrder={isPreparingOrder}
         isShippingOrder={isShippingOrder}
+        isCancellingShipment={isCancellingShipment}
         paymentId={order.payment?.id}
         onNavigateBack={() => navigate({ to: "/admin/orders" })}
         onNavigatePayment={() =>
@@ -100,6 +116,7 @@ function OrderDetailsPage() {
         }
         onPrepare={handlePrepare}
         onShip={handleShip}
+        onCancelShipment={handleCancelShipment}
       />
 
       <Card className="w-full">
