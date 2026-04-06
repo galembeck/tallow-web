@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import type { Cart } from "@/types/services/cart";
 import type { ShippingInformation } from "@/types/services/shipping";
 import { useNavigate } from "@tanstack/react-router";
-import { CheckCircle, MapPin, ShoppingCart, Truck } from "lucide-react";
+import { CheckCircle, MapPin, ShoppingCart, Tag, Truck } from "lucide-react";
 
 interface OrderConfirmationProps {
   orderNumber: string | null;
@@ -21,6 +21,7 @@ interface OrderConfirmationProps {
   };
   cart?: Cart;
   shippingOption?: ShippingInformation;
+  discountAmount?: number;
 }
 
 export function OrderConfirmation({
@@ -28,6 +29,7 @@ export function OrderConfirmation({
   userInformation,
   cart,
   shippingOption,
+  discountAmount = 0,
 }: OrderConfirmationProps) {
   const navigate = useNavigate();
 
@@ -120,6 +122,21 @@ export function OrderConfirmation({
             </article>
           </div>
 
+          {discountAmount > 0 && (
+            <div className="px-2 py-4 border-y border-muted-foreground/20">
+              <article className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-green-600" />
+                  <p className="text-xs font-semibold text-green-600">DESCONTO DO CUPOM</p>
+                </div>
+
+                <span className="text-green-600 font-semibold text-sm">
+                  - R$ {discountAmount.toFixed(2)}
+                </span>
+              </article>
+            </div>
+          )}
+
           <div className="bg-gray-light px-2 py-4 text-sm p-3 rounded-b-lg">
             <article className="flex items-center justify-between">
               <p className="font-bold text-amber-900">TOTAL A PAGAR</p>
@@ -127,7 +144,7 @@ export function OrderConfirmation({
               <span className="text-amber-900 font-bold text-xl">
                 R${" "}
                 {(
-                  (cart?.totalAmount ?? 0) + (shippingOption?.price ?? 0)
+                  (cart?.totalAmount ?? 0) + (shippingOption?.price ?? 0) - discountAmount
                 ).toFixed(2)}
               </span>
             </article>

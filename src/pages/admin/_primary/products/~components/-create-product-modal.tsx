@@ -171,7 +171,10 @@ export function CreateProductModal() {
       open={open}
     >
       <DialogTrigger asChild>
-        <Button className="w-full cursor-pointer" onClick={() => setOpen(true)}>
+        <Button
+          className="w-full cursor-pointer bg-amber-900 hover:bg-amber-900/90 text-white hover:text-white"
+          onClick={() => setOpen(true)}
+        >
           <Plus />
           Criar produto
         </Button>
@@ -540,7 +543,7 @@ export function CreateProductModal() {
               </Button>
 
               <Button
-                className="flex cursor-pointer items-center gap-2"
+                className="flex cursor-pointer items-center gap-2 bg-amber-900 hover:bg-amber-900/90 text-white hover:text-white"
                 type="submit"
                 disabled={isCreatingProduct}
               >

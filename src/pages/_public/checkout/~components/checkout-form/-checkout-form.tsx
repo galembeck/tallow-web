@@ -92,6 +92,7 @@ export function CheckoutForm() {
         userInformation: form.getValues(),
         cartSnapshot: { ...cart },
         shippingOption: selectedShippingOption,
+        discountAmount: discountAmount > 0 ? discountAmount : undefined,
       } as OrderSnapshot;
 
       setConfirmedOrderData(orderSnapshot);
@@ -163,6 +164,7 @@ export function CheckoutForm() {
         userInformation={confirmedOrderData.userInformation}
         cart={confirmedOrderData.cartSnapshot}
         shippingOption={confirmedOrderData.shippingOption}
+        discountAmount={confirmedOrderData.discountAmount}
       />
     );
   }

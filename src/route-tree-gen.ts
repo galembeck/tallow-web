@@ -26,6 +26,7 @@ import { Route as AdminSystemSettingsIndexRouteImport } from './pages/admin/_sys
 import { Route as AdminPrimaryProductsIndexRouteImport } from './pages/admin/_primary/products/index'
 import { Route as AdminPrimaryPaymentsIndexRouteImport } from './pages/admin/_primary/payments/index'
 import { Route as AdminPrimaryOrdersIndexRouteImport } from './pages/admin/_primary/orders/index'
+import { Route as AdminPrimaryCouponsIndexRouteImport } from './pages/admin/_primary/coupons/index'
 import { Route as AdminPrimaryClientsIndexRouteImport } from './pages/admin/_primary/clients/index'
 import { Route as AdminPrimaryAdminsIndexRouteImport } from './pages/admin/_primary/admins/index'
 import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_overview/dashboard/index'
@@ -132,6 +133,12 @@ const AdminPrimaryOrdersIndexRoute = AdminPrimaryOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const AdminPrimaryCouponsIndexRoute =
+  AdminPrimaryCouponsIndexRouteImport.update({
+    id: '/_primary/coupons/',
+    path: '/coupons/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminPrimaryClientsIndexRoute =
   AdminPrimaryClientsIndexRouteImport.update({
     id: '/_primary/clients/',
@@ -255,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
   '/admin/clients/': typeof AdminPrimaryClientsIndexRoute
+  '/admin/coupons/': typeof AdminPrimaryCouponsIndexRoute
   '/admin/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products/': typeof AdminPrimaryProductsIndexRoute
@@ -288,6 +296,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminOverviewDashboardIndexRoute
   '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
   '/admin/clients': typeof AdminPrimaryClientsIndexRoute
+  '/admin/coupons': typeof AdminPrimaryCouponsIndexRoute
   '/admin/orders': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products': typeof AdminPrimaryProductsIndexRoute
@@ -325,6 +334,7 @@ export interface FileRoutesById {
   '/admin/_overview/dashboard/': typeof AdminOverviewDashboardIndexRoute
   '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
   '/admin/_primary/clients/': typeof AdminPrimaryClientsIndexRoute
+  '/admin/_primary/coupons/': typeof AdminPrimaryCouponsIndexRoute
   '/admin/_primary/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/_primary/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/_primary/products/': typeof AdminPrimaryProductsIndexRoute
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard/'
     | '/admin/admins/'
     | '/admin/clients/'
+    | '/admin/coupons/'
     | '/admin/orders/'
     | '/admin/payments/'
     | '/admin/products/'
@@ -395,6 +406,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/admins'
     | '/admin/clients'
+    | '/admin/coupons'
     | '/admin/orders'
     | '/admin/payments'
     | '/admin/products'
@@ -431,6 +443,7 @@ export interface FileRouteTypes {
     | '/admin/_overview/dashboard/'
     | '/admin/_primary/admins/'
     | '/admin/_primary/clients/'
+    | '/admin/_primary/coupons/'
     | '/admin/_primary/orders/'
     | '/admin/_primary/payments/'
     | '/admin/_primary/products/'
@@ -575,6 +588,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/admin/orders/'
       preLoaderRoute: typeof AdminPrimaryOrdersIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_primary/coupons/': {
+      id: '/admin/_primary/coupons/'
+      path: '/coupons'
+      fullPath: '/admin/coupons/'
+      preLoaderRoute: typeof AdminPrimaryCouponsIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
     '/admin/_primary/clients/': {
@@ -756,6 +776,7 @@ interface AdminLayoutRouteChildren {
   AdminOverviewDashboardIndexRoute: typeof AdminOverviewDashboardIndexRoute
   AdminPrimaryAdminsIndexRoute: typeof AdminPrimaryAdminsIndexRoute
   AdminPrimaryClientsIndexRoute: typeof AdminPrimaryClientsIndexRoute
+  AdminPrimaryCouponsIndexRoute: typeof AdminPrimaryCouponsIndexRoute
   AdminPrimaryOrdersIndexRoute: typeof AdminPrimaryOrdersIndexRoute
   AdminPrimaryPaymentsIndexRoute: typeof AdminPrimaryPaymentsIndexRoute
   AdminPrimaryProductsIndexRoute: typeof AdminPrimaryProductsIndexRoute
@@ -772,6 +793,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminOverviewDashboardIndexRoute: AdminOverviewDashboardIndexRoute,
   AdminPrimaryAdminsIndexRoute: AdminPrimaryAdminsIndexRoute,
   AdminPrimaryClientsIndexRoute: AdminPrimaryClientsIndexRoute,
+  AdminPrimaryCouponsIndexRoute: AdminPrimaryCouponsIndexRoute,
   AdminPrimaryOrdersIndexRoute: AdminPrimaryOrdersIndexRoute,
   AdminPrimaryPaymentsIndexRoute: AdminPrimaryPaymentsIndexRoute,
   AdminPrimaryProductsIndexRoute: AdminPrimaryProductsIndexRoute,

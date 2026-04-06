@@ -24,17 +24,29 @@ import { useCoupon } from "@/hooks/services/use-coupon";
 import type { Coupon } from "@/types/services/coupon";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Copy, Edit, MoreHorizontal, ToggleLeft, ToggleRight } from "lucide-react";
+import {
+  Copy,
+  Edit,
+  MoreHorizontal,
+  ToggleLeft,
+  ToggleRight,
+  Users,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CreateCouponModal } from "./-create-coupon-modal";
 import { UpdateCouponModal } from "./-update-coupon-modal";
+import { DataTableColumnSearch } from "@/components/data-table-column-search";
 
 export const couponsTableColumns: ColumnDef<Coupon>[] = [
   {
     accessorKey: "code",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Código" />
+      <DataTableColumnSearch
+        column={column}
+        title="Código"
+        placeholder="Buscar por código..."
+      />
     ),
     cell: ({ row }) => (
       <span className="font-mono font-semibold text-amber-900">
@@ -54,6 +66,36 @@ export const couponsTableColumns: ColumnDef<Coupon>[] = [
     ),
   },
   {
+    accessorKey: "usageCount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Usos" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center gap-1.5">
+        <Users className="w-3.5 h-3.5 text-muted-foreground" />
+        <span className="font-semibold">{row.getValue("usageCount")}</span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "expiresAt",
+    header: () => <span className="flex justify-center">Expira em</span>,
+    cell: ({ row }) => {
+      const expiresAt = row.getValue("expiresAt") as string | null | undefined;
+      if (!expiresAt) return <div className="flex justify-center"><span className="text-muted-foreground text-xs">Sem expiração</span></div>;
+      const date = new Date(expiresAt);
+      const isExpired = date <= new Date();
+      return (
+        <div className="flex justify-center">
+          <span className={isExpired ? "text-red-500 font-semibold text-xs" : "text-xs"}>
+            {format(date, "dd/MM/yyyy HH:mm")}
+            {isExpired && " (expirado)"}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "isActive",
     header: () => <span className="flex justify-center">Status</span>,
     cell: ({ row }) => {
@@ -61,11 +103,14 @@ export const couponsTableColumns: ColumnDef<Coupon>[] = [
       return (
         <div className="flex justify-center">
           <Badge
-            className={
-              isActive
-                ? "bg-green-100 text-green-800 hover:bg-green-100"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-100"
-            }
+            className={`
+              uppercase font-bold
+              ${
+                isActive
+                  ? "bg-green-100 text-green-800 hover:bg-green-100"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-100"
+              }
+            `}
           >
             {isActive ? "Ativo" : "Inativo"}
           </Badge>
@@ -78,9 +123,7 @@ export const couponsTableColumns: ColumnDef<Coupon>[] = [
     header: () => <span className="flex justify-center">Criado em</span>,
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <span>
-          {format(new Date(row.getValue("createdAt")), "dd/MM/yyyy")}
-        </span>
+        <span>{format(new Date(row.getValue("createdAt")), "dd/MM/yyyy")}</span>
       </div>
     ),
   },
@@ -146,14 +189,11 @@ export const couponsTableColumns: ColumnDef<Coupon>[] = [
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem
-                onClick={handleToggle}
-                disabled={isToggling}
-              >
+              <DropdownMenuItem onClick={handleToggle} disabled={isToggling}>
                 {coupon.isActive ? (
                   <>
-                    <ToggleLeft className="text-orange-500" />
-                    <p className="text-orange-500">Desativar</p>
+                    <ToggleLeft className="text-red-500" />
+                    <p className="text-red-500">Desativar</p>
                   </>
                 ) : (
                   <>

@@ -27,9 +27,11 @@ export function OrderSummary({
 
   const [couponInput, setCouponInput] = useState("");
 
-  const discountAmount = appliedCoupon?.isValid && appliedCoupon.discountPercentage
-    ? Math.round(subtotal * (appliedCoupon.discountPercentage / 100) * 100) / 100
-    : 0;
+  const discountAmount =
+    appliedCoupon?.isValid && appliedCoupon.discountPercentage
+      ? Math.round(subtotal * (appliedCoupon.discountPercentage / 100) * 100) /
+        100
+      : 0;
 
   const total = subtotal + shippingCost - discountAmount;
 
@@ -41,7 +43,9 @@ export function OrderSummary({
       const result = await validateCoupon(code);
       if (result.isValid) {
         onCouponApplied?.(result);
-        toast.success(`Cupom "${result.code}" aplicado! ${result.discountPercentage}% de desconto.`);
+        toast.success(
+          `Cupom "${result.code}" aplicado! ${result.discountPercentage}% de desconto.`,
+        );
       } else {
         toast.error(result.message ?? "Cupom inválido ou inativo.");
         onCouponApplied?.(null);
@@ -97,7 +101,7 @@ export function OrderSummary({
               <div className="flex items-center gap-2">
                 <Tag className="h-4 w-4 text-green-700" />
                 <div>
-                  <p className="text-sm font-semibold text-green-800 font-mono">
+                  <p className="text-sm font-semibold text-green-800">
                     {appliedCoupon.code}
                   </p>
                   <p className="text-xs text-green-600">
@@ -125,7 +129,7 @@ export function OrderSummary({
                     handleApplyCoupon();
                   }
                 }}
-                className="font-mono text-sm"
+                className="text-sm"
               />
               <Button
                 type="button"
@@ -134,7 +138,11 @@ export function OrderSummary({
                 disabled={isValidating || !couponInput.trim()}
                 className="shrink-0 border-amber-900/40 text-amber-900 hover:bg-amber-900/5 hover:text-amber-900"
               >
-                {isValidating ? <Spinner className="size-4" /> : <Check className="size-4" />}
+                {isValidating ? (
+                  <Spinner className="size-4" />
+                ) : (
+                  <Check className="size-4" />
+                )}
               </Button>
             </div>
           )}
@@ -170,7 +178,9 @@ export function OrderSummary({
                 R$ {(subtotal + shippingCost).toFixed(2)}
               </span>
             )}
-            <span className={`font-semibold ${discountAmount > 0 ? "text-green-700" : "text-amber-900"}`}>
+            <span
+              className={`font-semibold ${discountAmount > 0 ? "text-green-700" : "text-amber-900"}`}
+            >
               R$ {total.toFixed(2)}
             </span>
           </div>

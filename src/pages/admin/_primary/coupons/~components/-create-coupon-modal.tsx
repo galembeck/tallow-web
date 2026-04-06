@@ -10,6 +10,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,11 +35,11 @@ const createCouponSchema = z.object({
     .nonempty({ message: "O código é obrigatório." }),
   discountPercentage: z
     .number({
-      required_error: "A porcentagem de desconto é obrigatória.",
-      invalid_type_error: "Digite um número válido.",
+      message: "Digite um número válido.",
     })
     .min(1, { message: "O desconto mínimo é 1%." })
     .max(100, { message: "O desconto máximo é 100%." }),
+  expiresAt: z.string().optional(),
 });
 
 type CreateCouponFormData = z.infer<typeof createCouponSchema>;
@@ -53,6 +54,7 @@ export function CreateCouponModal() {
     defaultValues: {
       code: "",
       discountPercentage: undefined,
+      expiresAt: "",
     },
   });
 
@@ -66,6 +68,7 @@ export function CreateCouponModal() {
       await createCoupon({
         code: values.code.toUpperCase().trim(),
         discountPercentage: values.discountPercentage,
+        expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : null,
       });
 
       toast.success("Cupom criado com sucesso!");
@@ -111,7 +114,9 @@ export function CreateCouponModal() {
               name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Código do cupom</FormLabel>
+                  <FormLabel className="font-semibold">
+                    Código do cupom
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -119,7 +124,6 @@ export function CreateCouponModal() {
                         field.onChange(e.target.value.toUpperCase())
                       }
                       placeholder="Ex: PROMO10"
-                      className="font-mono"
                     />
                   </FormControl>
                   <FormMessage />
@@ -142,11 +146,32 @@ export function CreateCouponModal() {
                       min={1}
                       max={100}
                       placeholder="Ex: 10"
-                      onChange={(e) =>
-                        field.onChange(Number(e.target.value))
-                      }
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="expiresAt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">
+                    Data de expiração (opcional)
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="datetime-local"
+                      min={new Date().toISOString().slice(0, 16)}
+                    />
+                  </FormControl>
+                  <FormDescription className="text-xs text-muted-foreground">
+                    O cupom será desativado automaticamente após essa data.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

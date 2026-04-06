@@ -9,6 +9,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -39,9 +40,23 @@ const updateCouponSchema = z.object({
     })
     .min(1, { message: "O desconto mínimo é 1%." })
     .max(100, { message: "O desconto máximo é 100%." }),
+  expiresAt: z.string().optional(),
 });
 
 type UpdateCouponFormData = z.infer<typeof updateCouponSchema>;
+
+/** Convert an ISO date string (from the API) to the format required by datetime-local input */
+function toDatetimeLocalValue(iso?: string | null): string {
+  if (!iso) return "";
+  try {
+    const date = new Date(iso);
+    // datetime-local needs "YYYY-MM-DDTHH:mm" in local time
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  } catch {
+    return "";
+  }
+}
 
 interface UpdateCouponModalProps {
   coupon: Coupon;
@@ -62,6 +77,7 @@ export function UpdateCouponModal({
     defaultValues: {
       code: coupon.code,
       discountPercentage: coupon.discountPercentage,
+      expiresAt: toDatetimeLocalValue(coupon.expiresAt),
     },
   });
 
@@ -70,6 +86,7 @@ export function UpdateCouponModal({
       form.reset({
         code: coupon.code,
         discountPercentage: coupon.discountPercentage,
+        expiresAt: toDatetimeLocalValue(coupon.expiresAt),
       });
     }
   }, [open, coupon, form]);
@@ -86,6 +103,7 @@ export function UpdateCouponModal({
         data: {
           code: values.code.toUpperCase().trim(),
           discountPercentage: values.discountPercentage,
+          expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : null,
         },
       });
 
@@ -155,6 +173,29 @@ export function UpdateCouponModal({
                       }
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="expiresAt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold">
+                    Data de expiração (opcional)
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="datetime-local"
+                      min={new Date().toISOString().slice(0, 16)}
+                    />
+                  </FormControl>
+                  <FormDescription className="text-xs text-muted-foreground">
+                    Deixe em branco para não expirar automaticamente.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

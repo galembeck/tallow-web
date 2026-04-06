@@ -121,6 +121,7 @@ export interface OrderSnapshot {
   userInformation: CheckoutFormData;
   cartSnapshot: Cart;
   shippingOption: ShippingInformation;
+  discountAmount?: number;
 }
 
 /**
