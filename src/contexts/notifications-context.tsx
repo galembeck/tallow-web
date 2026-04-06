@@ -17,6 +17,7 @@ interface NotificationsContextValue {
   isConnected: boolean;
   clearAll: () => void;
   dismiss: (id: string) => void;
+  dismissMany: (ids: string[]) => void;
 }
 
 const NotificationsContext = createContext<NotificationsContextValue>({
@@ -24,6 +25,7 @@ const NotificationsContext = createContext<NotificationsContextValue>({
   isConnected: false,
   clearAll: () => {},
   dismiss: () => {},
+  dismissMany: () => {},
 });
 
 export function useNotificationsContext() {
@@ -77,9 +79,14 @@ export function NotificationsProvider({
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   }, []);
 
+  const dismissMany = useCallback((ids: string[]) => {
+    const idSet = new Set(ids);
+    setNotifications((prev) => prev.filter((n) => !idSet.has(n.id)));
+  }, []);
+
   return (
     <NotificationsContext.Provider
-      value={{ notifications, isConnected, clearAll, dismiss }}
+      value={{ notifications, isConnected, clearAll, dismiss, dismissMany }}
     >
       {children}
     </NotificationsContext.Provider>

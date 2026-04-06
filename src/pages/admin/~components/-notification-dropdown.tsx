@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,7 @@ import {
   ShoppingCart,
   Truck,
 } from "lucide-react";
+import { useState } from "react";
 
 function notificationIcon(notification: AdminNotification) {
   switch (notification.category) {
@@ -35,11 +37,37 @@ function notificationIcon(notification: AdminNotification) {
 export function NotificationDropdown() {
   const navigate = useNavigate();
 
-  const { notifications, clearAll } = useNotifications();
+  const { notifications, clearAll, dismissMany } = useNotifications();
   const unreadCount = notifications.length;
 
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const handleMarkSelectedRead = () => {
+    dismissMany(Array.from(selectedIds));
+    setSelectedIds(new Set());
+  };
+
+  const handleClearAll = () => {
+    clearAll();
+    setSelectedIds(new Set());
+  };
+
+  const selectedCount = selectedIds.size;
+
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={(open) => { if (!open) setSelectedIds(new Set()); }}>
       <DropdownMenuTrigger asChild>
         <Button size="icon" variant="ghost" className="relative">
           <Bell className="h-4 w-4" />
@@ -57,13 +85,24 @@ export function NotificationDropdown() {
       >
         <div className="flex items-center justify-between border-b px-4 py-3">
           <p className="font-semibold text-sm">Notificações</p>
+
           {unreadCount > 0 && (
-            <button
-              onClick={clearAll}
-              className="text-muted-foreground text-xs hover:text-foreground transition-colors cursor-pointer"
-            >
-              Limpar tudo
-            </button>
+            <div className="flex items-center gap-3">
+              {selectedCount > 0 && (
+                <button
+                  onClick={handleMarkSelectedRead}
+                  className="text-xs font-medium text-amber-700 hover:text-amber-900 transition-colors cursor-pointer"
+                >
+                  Marcar como lida{selectedCount > 1 ? "s" : ""} ({selectedCount})
+                </button>
+              )}
+              <button
+                onClick={handleClearAll}
+                className="text-muted-foreground text-xs hover:text-foreground transition-colors cursor-pointer"
+              >
+                Limpar tudo
+              </button>
+            </div>
           )}
         </div>
 
@@ -78,39 +117,50 @@ export function NotificationDropdown() {
               {notifications.map((n) => (
                 <li
                   key={n.id}
-                  className="flex items-start justify-between gap-3 px-4 py-3 hover:bg-muted/50 transition-colors"
-                >
-                  <article className="flex items-start gap-3">
-                    <div className="mt-0.5">{notificationIcon(n)}</div>
-
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="text-sm leading-snug"
-                        dangerouslySetInnerHTML={{ __html: n.message }}
-                      />
-
-                      <p className="text-muted-foreground text-xs mt-1">
-                        {formatDate(n.createdAt)}
-                      </p>
-                    </div>
-                  </article>
-
-                  {n.orderId && (
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() =>
-                        navigate({
-                          to: "/admin/orders/$orderId",
-                          params: {
-                            orderId: n.orderId ?? "",
-                          },
-                        })
-                      }
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
+                  className={cn(
+                    "flex items-start gap-3 px-4 py-3 hover:bg-muted/50 transition-colors",
+                    selectedIds.has(n.id) && "bg-amber-50",
                   )}
+                >
+                  <div className="mt-0.5 shrink-0">
+                    <Checkbox
+                      checked={selectedIds.has(n.id)}
+                      onCheckedChange={() => toggleSelect(n.id)}
+                      className="border-amber-900/40 data-[state=checked]:bg-amber-900 data-[state=checked]:border-amber-900"
+                    />
+                  </div>
+
+                  <article className="flex flex-1 items-start justify-between gap-3 min-w-0">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className="mt-0.5">{notificationIcon(n)}</div>
+
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className="text-sm leading-snug"
+                          dangerouslySetInnerHTML={{ __html: n.message }}
+                        />
+                        <p className="text-muted-foreground text-xs mt-1">
+                          {formatDate(n.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {n.orderId && (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="shrink-0"
+                        onClick={() =>
+                          navigate({
+                            to: "/admin/orders/$orderId",
+                            params: { orderId: n.orderId ?? "" },
+                          })
+                        }
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </article>
                 </li>
               ))}
             </ScrollArea>
