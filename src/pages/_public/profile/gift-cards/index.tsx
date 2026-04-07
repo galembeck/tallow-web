@@ -14,27 +14,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useGiftCard } from "@/hooks/services/use-gift-card";
 import type { GiftCard, GiftCardStatus } from "@/types/services/gift-card";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Copy, Gift, Loader2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { Gift, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/_public/profile/gift-cards/")({
   component: ProfileGiftCardsPage,
@@ -44,13 +31,6 @@ export const Route = createFileRoute("/_public/profile/gift-cards/")({
 });
 
 const AMOUNT_PRESETS = [50, 100, 150, 200, 300, 500];
-
-const purchaseSchema = z.object({
-  amount: z.number({ required_error: "Selecione um valor" }).positive(),
-  email: z.string().email("E-mail inválido"),
-});
-
-type PurchaseFormValues = z.infer<typeof purchaseSchema>;
 
 function statusLabel(status: GiftCardStatus): string {
   const labels: Record<GiftCardStatus, string> = {
@@ -76,85 +56,6 @@ function statusBadgeClass(status: GiftCardStatus): string {
 
 function formatBRL(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-interface PixSectionProps {
-  giftCardId: string;
-  pixQrCodeBase64?: string | null;
-  pixCopyPaste?: string | null;
-}
-
-function PixSection({ giftCardId, pixQrCodeBase64, pixCopyPaste }: PixSectionProps) {
-  const { refreshGiftCard } = useGiftCard();
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const [currentStatus, setCurrentStatus] = useState<GiftCardStatus>("PENDING");
-
-  useEffect(() => {
-    intervalRef.current = setInterval(async () => {
-      try {
-        const updated = await refreshGiftCard(giftCardId);
-        setCurrentStatus(updated.status);
-        if (updated.status !== "PENDING") {
-          if (intervalRef.current) clearInterval(intervalRef.current);
-          if (updated.status === "ACTIVE") {
-            toast.success("Vale presente ativado com sucesso!");
-          }
-        }
-      } catch {
-        // silently ignore refresh errors
-      }
-    }, 3000);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [giftCardId, refreshGiftCard]);
-
-  if (currentStatus !== "PENDING") return null;
-
-  return (
-    <div className="space-y-4 mt-4">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Loader2 className="size-4 animate-spin" />
-        <span>Verificando pagamento automaticamente...</span>
-      </div>
-
-      {pixQrCodeBase64 && (
-        <div className="flex justify-center">
-          <img
-            alt="QR Code PIX"
-            className="size-52 rounded-md border border-gray-100"
-            src={`data:image/png;base64,${pixQrCodeBase64}`}
-          />
-        </div>
-      )}
-
-      {pixCopyPaste && (
-        <div className="space-y-2">
-          <p className="text-gray-500 text-xs uppercase tracking-wide">
-            Código PIX (copia e cola)
-          </p>
-          <div className="flex items-center gap-2 rounded-md border border-gray-200 bg-gray-50 p-3">
-            <p className="flex-1 break-all font-mono text-gray-700 text-xs">
-              {pixCopyPaste}
-            </p>
-            <Button
-              className="shrink-0 cursor-pointer"
-              onClick={() => {
-                navigator.clipboard.writeText(pixCopyPaste);
-                toast.success("Código PIX copiado!");
-              }}
-              size="sm"
-              variant="outline"
-            >
-              <Copy className="mr-1.5 size-3.5" />
-              Copiar
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
 }
 
 interface GiftCardItemProps {
@@ -204,157 +105,67 @@ function GiftCardItem({ card }: GiftCardItemProps) {
   );
 }
 
-interface PurchaseModalProps {
+interface AmountModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-function PurchaseModal({ open, onOpenChange }: PurchaseModalProps) {
-  const { purchaseGiftCard, isPurchasing } = useGiftCard();
-  const [purchasedCard, setPurchasedCard] = useState<GiftCard | null>(null);
+function AmountModal({ open, onOpenChange }: AmountModalProps) {
+  const navigate = useNavigate();
+  const [selectedAmount, setSelectedAmount] = useState(100);
 
-  const form = useForm<PurchaseFormValues>({
-    resolver: zodResolver(purchaseSchema),
-    defaultValues: {
-      amount: 100,
-      email: "",
-    },
-  });
-
-  const selectedAmount = form.watch("amount");
-
-  async function onSubmit(values: PurchaseFormValues) {
-    try {
-      const result = await purchaseGiftCard({
-        amount: values.amount,
-        paymentType: "PIX",
-        payer: {
-          email: values.email,
-        },
-      });
-      setPurchasedCard(result);
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Erro ao comprar vale presente.",
-      );
-    }
-  }
-
-  function handleClose(open: boolean) {
-    if (!open) {
-      setPurchasedCard(null);
-      form.reset();
-    }
-    onOpenChange(open);
+  function handleContinue() {
+    onOpenChange(false);
+    navigate({ to: "/gift-card-checkout", search: { amount: selectedAmount } });
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="font-sagona text-amber-950">
             Comprar Vale Presente
           </DialogTitle>
           <DialogDescription>
-            Escolha o valor e pague via PIX. O vale será ativado automaticamente
-            após a confirmação.
+            Escolha o valor do seu vale presente. Você escolherá a forma de
+            pagamento na próxima etapa.
           </DialogDescription>
         </DialogHeader>
 
-        {purchasedCard ? (
-          <div className="space-y-4">
-            <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 text-center">
-              <p className="text-sm text-amber-700 font-medium">
-                Vale de {formatBRL(purchasedCard.amount)} criado!
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Realize o pagamento via PIX para ativá-lo.
-              </p>
-            </div>
-
-            {purchasedCard.status === "PENDING" && (
-              <PixSection
-                giftCardId={purchasedCard.id}
-                pixQrCodeBase64={purchasedCard.pixQrCodeBase64}
-                pixCopyPaste={purchasedCard.pixCopyPaste}
-              />
-            )}
-
-            <Button
-              className="w-full cursor-pointer"
-              variant="outline"
-              onClick={() => handleClose(false)}
-            >
-              Fechar
-            </Button>
-          </div>
-        ) : (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor do vale</FormLabel>
-                    <FormControl>
-                      <div className="grid grid-cols-3 gap-2">
-                        {AMOUNT_PRESETS.map((preset) => (
-                          <button
-                            key={preset}
-                            type="button"
-                            onClick={() => field.onChange(preset)}
-                            className={`rounded-lg border px-3 py-2 text-sm font-semibold transition-colors cursor-pointer ${
-                              selectedAmount === preset
-                                ? "border-amber-700 bg-amber-700 text-white"
-                                : "border-gray-200 bg-white text-gray-700 hover:border-amber-400"
-                            }`}
-                          >
-                            {formatBRL(preset)}
-                          </button>
-                        ))}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Seu e-mail (para o PIX)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="seu@email.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                type="submit"
-                className="w-full cursor-pointer bg-amber-900 hover:bg-amber-900/90 text-white"
-                disabled={isPurchasing}
+        <div className="space-y-5">
+          <div className="grid grid-cols-3 gap-2">
+            {AMOUNT_PRESETS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setSelectedAmount(preset)}
+                className={`rounded-lg border px-3 py-2.5 text-sm font-semibold transition-colors cursor-pointer ${
+                  selectedAmount === preset
+                    ? "border-amber-700 bg-amber-700 text-white"
+                    : "border-gray-200 bg-white text-gray-700 hover:border-amber-400"
+                }`}
               >
-                {isPurchasing ? (
-                  <>
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                    Gerando PIX...
-                  </>
-                ) : (
-                  `Pagar ${formatBRL(selectedAmount)} via PIX`
-                )}
-              </Button>
-            </form>
-          </Form>
-        )}
+                {formatBRL(preset)}
+              </button>
+            ))}
+          </div>
+
+          <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-center">
+            <p className="text-xs text-amber-700">
+              Válido por <span className="font-semibold">6 meses</span> a partir
+              da confirmação do pagamento.
+            </p>
+          </div>
+
+          <Button
+            type="button"
+            className="w-full cursor-pointer bg-amber-900 hover:bg-amber-900/90 text-white"
+            onClick={handleContinue}
+          >
+            <Gift className="mr-2 size-4" />
+            Continuar — {formatBRL(selectedAmount)}
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
@@ -429,7 +240,7 @@ function ProfileGiftCardsPage() {
         </CardContent>
       </Card>
 
-      <PurchaseModal open={purchaseOpen} onOpenChange={setPurchaseOpen} />
+      <AmountModal open={purchaseOpen} onOpenChange={setPurchaseOpen} />
     </div>
   );
 }

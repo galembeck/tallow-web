@@ -17,6 +17,7 @@ import { Route as ErrorNotFoundRouteImport } from './pages/_error/not-found'
 import { Route as PublicProfileLayoutRouteImport } from './pages/_public/profile/layout'
 import { Route as PublicProfileIndexRouteImport } from './pages/_public/profile/index'
 import { Route as PublicProductsIndexRouteImport } from './pages/_public/products/index'
+import { Route as PublicGiftCardCheckoutIndexRouteImport } from './pages/_public/gift-card-checkout/index'
 import { Route as PublicCheckoutIndexRouteImport } from './pages/_public/checkout/index'
 import { Route as PublicCartIndexRouteImport } from './pages/_public/cart/index'
 import { Route as AuthSignUpIndexRouteImport } from './pages/_auth/sign-up/index'
@@ -87,6 +88,12 @@ const PublicProductsIndexRoute = PublicProductsIndexRouteImport.update({
   path: '/products/',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
+const PublicGiftCardCheckoutIndexRoute =
+  PublicGiftCardCheckoutIndexRouteImport.update({
+    id: '/gift-card-checkout/',
+    path: '/gift-card-checkout/',
+    getParentRoute: () => PublicLayoutRoute,
+  } as any)
 const PublicCheckoutIndexRoute = PublicCheckoutIndexRouteImport.update({
   id: '/checkout/',
   path: '/checkout/',
@@ -273,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/sign-up/': typeof AuthSignUpIndexRoute
   '/cart/': typeof PublicCartIndexRoute
   '/checkout/': typeof PublicCheckoutIndexRoute
+  '/gift-card-checkout/': typeof PublicGiftCardCheckoutIndexRoute
   '/products/': typeof PublicProductsIndexRoute
   '/profile/': typeof PublicProfileIndexRoute
   '/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
@@ -310,6 +318,7 @@ export interface FileRoutesByTo {
   '/sign-up': typeof AuthSignUpIndexRoute
   '/cart': typeof PublicCartIndexRoute
   '/checkout': typeof PublicCheckoutIndexRoute
+  '/gift-card-checkout': typeof PublicGiftCardCheckoutIndexRoute
   '/products': typeof PublicProductsIndexRoute
   '/profile': typeof PublicProfileIndexRoute
   '/password-recovery/reset': typeof AuthPasswordRecoveryResetIndexRoute
@@ -351,6 +360,7 @@ export interface FileRoutesById {
   '/_auth/sign-up/': typeof AuthSignUpIndexRoute
   '/_public/cart/': typeof PublicCartIndexRoute
   '/_public/checkout/': typeof PublicCheckoutIndexRoute
+  '/_public/gift-card-checkout/': typeof PublicGiftCardCheckoutIndexRoute
   '/_public/products/': typeof PublicProductsIndexRoute
   '/_public/profile/': typeof PublicProfileIndexRoute
   '/_auth/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
@@ -392,6 +402,7 @@ export interface FileRouteTypes {
     | '/sign-up/'
     | '/cart/'
     | '/checkout/'
+    | '/gift-card-checkout/'
     | '/products/'
     | '/profile/'
     | '/password-recovery/reset/'
@@ -429,6 +440,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/cart'
     | '/checkout'
+    | '/gift-card-checkout'
     | '/products'
     | '/profile'
     | '/password-recovery/reset'
@@ -469,6 +481,7 @@ export interface FileRouteTypes {
     | '/_auth/sign-up/'
     | '/_public/cart/'
     | '/_public/checkout/'
+    | '/_public/gift-card-checkout/'
     | '/_public/products/'
     | '/_public/profile/'
     | '/_auth/password-recovery/reset/'
@@ -564,6 +577,13 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products/'
       preLoaderRoute: typeof PublicProductsIndexRouteImport
+      parentRoute: typeof PublicLayoutRoute
+    }
+    '/_public/gift-card-checkout/': {
+      id: '/_public/gift-card-checkout/'
+      path: '/gift-card-checkout'
+      fullPath: '/gift-card-checkout/'
+      preLoaderRoute: typeof PublicGiftCardCheckoutIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
     '/_public/checkout/': {
@@ -819,6 +839,7 @@ interface PublicLayoutRouteChildren {
   PublicIndexRoute: typeof PublicIndexRoute
   PublicCartIndexRoute: typeof PublicCartIndexRoute
   PublicCheckoutIndexRoute: typeof PublicCheckoutIndexRoute
+  PublicGiftCardCheckoutIndexRoute: typeof PublicGiftCardCheckoutIndexRoute
   PublicProductsIndexRoute: typeof PublicProductsIndexRoute
   PublicProductsProductIdIndexRoute: typeof PublicProductsProductIdIndexRoute
 }
@@ -828,6 +849,7 @@ const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
   PublicIndexRoute: PublicIndexRoute,
   PublicCartIndexRoute: PublicCartIndexRoute,
   PublicCheckoutIndexRoute: PublicCheckoutIndexRoute,
+  PublicGiftCardCheckoutIndexRoute: PublicGiftCardCheckoutIndexRoute,
   PublicProductsIndexRoute: PublicProductsIndexRoute,
   PublicProductsProductIdIndexRoute: PublicProductsProductIdIndexRoute,
 }

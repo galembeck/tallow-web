@@ -34,3 +34,22 @@ export interface PurchaseGiftCardDTO {
   dateOfExpiration?: string;
   description?: string;
 }
+
+export interface InitiateGiftCardDTO {
+  amount: number;
+}
+
+export interface PayGiftCardDTO {
+  paymentType: 'PIX' | 'CREDIT_CARD' | 'BOLETO';
+  token?: string | null;
+  installments?: number | null;
+  issuerId?: string | null;
+  paymentMethodId?: string | null;
+  payer: {
+    email: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    identification?: { type: string; number: string } | null;
+  };
+  dateOfExpiration?: string | null;
+}
