@@ -1,5 +1,5 @@
 import type { ProfileNavigationItem } from "@/pages/_public/profile/~components/-profile-navigation";
-import { Heart, MapPin, Package, Settings, User } from "lucide-react";
+import { Gift, Heart, MapPin, Package, Settings, User } from "lucide-react";
 
 export const navItems: ProfileNavigationItem[] = [
   {
@@ -28,6 +28,13 @@ export const navItems: ProfileNavigationItem[] = [
     path: "/profile/wishlist",
     label: "Lista de favoritos",
     icon: Heart,
+  },
+  {
+    id: "gift-cards",
+    path: "/profile/gift-cards",
+    aliases: ["/profile/gift-cards/$giftCardId"],
+    label: "Vales Presente",
+    icon: Gift,
   },
   {
     id: "preferences",

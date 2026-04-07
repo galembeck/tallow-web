@@ -76,6 +76,8 @@ function AdminLayout() {
     "/admin/admins/$adminId": "Detalhes do Administrador",
 
     "/admin/coupons": "Cupons de Desconto",
+
+    "/admin/gift-cards": "Vales Presente",
   };
 
   function derivativePaths(path: string) {

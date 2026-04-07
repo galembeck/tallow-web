@@ -1,5 +1,6 @@
 import {
   Banknote,
+  Gift,
   Package,
   ShieldCheck,
   ShoppingBag,
@@ -45,6 +46,12 @@ export const dashboardData = {
       description: "Crie e gerencie cupons de desconto para seus clientes",
       url: "/admin/coupons",
       icon: Tag,
+    },
+    {
+      title: "Vales Presente",
+      description: "Gerencie todos os vales presentes emitidos",
+      url: "/admin/gift-cards",
+      icon: Gift,
     },
     {
       title: "Usuários",

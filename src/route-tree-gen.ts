@@ -26,6 +26,7 @@ import { Route as AdminSystemSettingsIndexRouteImport } from './pages/admin/_sys
 import { Route as AdminPrimaryProductsIndexRouteImport } from './pages/admin/_primary/products/index'
 import { Route as AdminPrimaryPaymentsIndexRouteImport } from './pages/admin/_primary/payments/index'
 import { Route as AdminPrimaryOrdersIndexRouteImport } from './pages/admin/_primary/orders/index'
+import { Route as AdminPrimaryGiftCardsIndexRouteImport } from './pages/admin/_primary/gift-cards/index'
 import { Route as AdminPrimaryCouponsIndexRouteImport } from './pages/admin/_primary/coupons/index'
 import { Route as AdminPrimaryClientsIndexRouteImport } from './pages/admin/_primary/clients/index'
 import { Route as AdminPrimaryAdminsIndexRouteImport } from './pages/admin/_primary/admins/index'
@@ -33,6 +34,7 @@ import { Route as AdminOverviewDashboardIndexRouteImport } from './pages/admin/_
 import { Route as PublicProfileWishlistIndexRouteImport } from './pages/_public/profile/wishlist/index'
 import { Route as PublicProfileRegisteredAddressesIndexRouteImport } from './pages/_public/profile/registered-addresses/index'
 import { Route as PublicProfileOrdersHistoryIndexRouteImport } from './pages/_public/profile/orders-history/index'
+import { Route as PublicProfileGiftCardsIndexRouteImport } from './pages/_public/profile/gift-cards/index'
 import { Route as PublicProductsProductIdIndexRouteImport } from './pages/_public/products/$productId/index'
 import { Route as AuthPasswordRecoveryResetIndexRouteImport } from './pages/_auth/password-recovery/reset/index'
 import { Route as AdminPrimaryProductsProductIdIndexRouteImport } from './pages/admin/_primary/products/$productId/index'
@@ -42,6 +44,7 @@ import { Route as AdminPrimaryClientsClientIdIndexRouteImport } from './pages/ad
 import { Route as AdminPrimaryAdminsAdminIdIndexRouteImport } from './pages/admin/_primary/admins/$adminId/index'
 import { Route as PublicProfileRegisteredAddressesAddressIdIndexRouteImport } from './pages/_public/profile/registered-addresses/$addressId/index'
 import { Route as PublicProfileOrdersHistoryOrderIdIndexRouteImport } from './pages/_public/profile/orders-history/$orderId/index'
+import { Route as PublicProfileGiftCardsGiftCardIdIndexRouteImport } from './pages/_public/profile/gift-cards/$giftCardId/index'
 import { Route as PublicProfileRegistrationDataRegistrationIndexRouteImport } from './pages/_public/profile/_registration-data/registration/index'
 import { Route as PublicProfileRegistrationDataPasswordIndexRouteImport } from './pages/_public/profile/_registration-data/password/index'
 
@@ -133,6 +136,12 @@ const AdminPrimaryOrdersIndexRoute = AdminPrimaryOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const AdminPrimaryGiftCardsIndexRoute =
+  AdminPrimaryGiftCardsIndexRouteImport.update({
+    id: '/_primary/gift-cards/',
+    path: '/gift-cards/',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminPrimaryCouponsIndexRoute =
   AdminPrimaryCouponsIndexRouteImport.update({
     id: '/_primary/coupons/',
@@ -172,6 +181,12 @@ const PublicProfileOrdersHistoryIndexRoute =
   PublicProfileOrdersHistoryIndexRouteImport.update({
     id: '/orders-history/',
     path: '/orders-history/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
+const PublicProfileGiftCardsIndexRoute =
+  PublicProfileGiftCardsIndexRouteImport.update({
+    id: '/gift-cards/',
+    path: '/gift-cards/',
     getParentRoute: () => PublicProfileLayoutRoute,
   } as any)
 const PublicProductsProductIdIndexRoute =
@@ -228,6 +243,12 @@ const PublicProfileOrdersHistoryOrderIdIndexRoute =
     path: '/orders-history/$orderId/',
     getParentRoute: () => PublicProfileLayoutRoute,
   } as any)
+const PublicProfileGiftCardsGiftCardIdIndexRoute =
+  PublicProfileGiftCardsGiftCardIdIndexRouteImport.update({
+    id: '/gift-cards/$giftCardId/',
+    path: '/gift-cards/$giftCardId/',
+    getParentRoute: () => PublicProfileLayoutRoute,
+  } as any)
 const PublicProfileRegistrationDataRegistrationIndexRoute =
   PublicProfileRegistrationDataRegistrationIndexRouteImport.update({
     id: '/_registration-data/registration/',
@@ -256,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/profile/': typeof PublicProfileIndexRoute
   '/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId/': typeof PublicProductsProductIdIndexRoute
+  '/profile/gift-cards/': typeof PublicProfileGiftCardsIndexRoute
   '/profile/orders-history/': typeof PublicProfileOrdersHistoryIndexRoute
   '/profile/registered-addresses/': typeof PublicProfileRegisteredAddressesIndexRoute
   '/profile/wishlist/': typeof PublicProfileWishlistIndexRoute
@@ -263,12 +285,14 @@ export interface FileRoutesByFullPath {
   '/admin/admins/': typeof AdminPrimaryAdminsIndexRoute
   '/admin/clients/': typeof AdminPrimaryClientsIndexRoute
   '/admin/coupons/': typeof AdminPrimaryCouponsIndexRoute
+  '/admin/gift-cards/': typeof AdminPrimaryGiftCardsIndexRoute
   '/admin/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products/': typeof AdminPrimaryProductsIndexRoute
   '/admin/settings/': typeof AdminSystemSettingsIndexRoute
   '/profile/password/': typeof PublicProfileRegistrationDataPasswordIndexRoute
   '/profile/registration/': typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  '/profile/gift-cards/$giftCardId/': typeof PublicProfileGiftCardsGiftCardIdIndexRoute
   '/profile/orders-history/$orderId/': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   '/profile/registered-addresses/$addressId/': typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
   '/admin/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
@@ -290,6 +314,7 @@ export interface FileRoutesByTo {
   '/profile': typeof PublicProfileIndexRoute
   '/password-recovery/reset': typeof AuthPasswordRecoveryResetIndexRoute
   '/products/$productId': typeof PublicProductsProductIdIndexRoute
+  '/profile/gift-cards': typeof PublicProfileGiftCardsIndexRoute
   '/profile/orders-history': typeof PublicProfileOrdersHistoryIndexRoute
   '/profile/registered-addresses': typeof PublicProfileRegisteredAddressesIndexRoute
   '/profile/wishlist': typeof PublicProfileWishlistIndexRoute
@@ -297,12 +322,14 @@ export interface FileRoutesByTo {
   '/admin/admins': typeof AdminPrimaryAdminsIndexRoute
   '/admin/clients': typeof AdminPrimaryClientsIndexRoute
   '/admin/coupons': typeof AdminPrimaryCouponsIndexRoute
+  '/admin/gift-cards': typeof AdminPrimaryGiftCardsIndexRoute
   '/admin/orders': typeof AdminPrimaryOrdersIndexRoute
   '/admin/payments': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/products': typeof AdminPrimaryProductsIndexRoute
   '/admin/settings': typeof AdminSystemSettingsIndexRoute
   '/profile/password': typeof PublicProfileRegistrationDataPasswordIndexRoute
   '/profile/registration': typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  '/profile/gift-cards/$giftCardId': typeof PublicProfileGiftCardsGiftCardIdIndexRoute
   '/profile/orders-history/$orderId': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   '/profile/registered-addresses/$addressId': typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
   '/admin/admins/$adminId': typeof AdminPrimaryAdminsAdminIdIndexRoute
@@ -328,6 +355,7 @@ export interface FileRoutesById {
   '/_public/profile/': typeof PublicProfileIndexRoute
   '/_auth/password-recovery/reset/': typeof AuthPasswordRecoveryResetIndexRoute
   '/_public/products/$productId/': typeof PublicProductsProductIdIndexRoute
+  '/_public/profile/gift-cards/': typeof PublicProfileGiftCardsIndexRoute
   '/_public/profile/orders-history/': typeof PublicProfileOrdersHistoryIndexRoute
   '/_public/profile/registered-addresses/': typeof PublicProfileRegisteredAddressesIndexRoute
   '/_public/profile/wishlist/': typeof PublicProfileWishlistIndexRoute
@@ -335,12 +363,14 @@ export interface FileRoutesById {
   '/admin/_primary/admins/': typeof AdminPrimaryAdminsIndexRoute
   '/admin/_primary/clients/': typeof AdminPrimaryClientsIndexRoute
   '/admin/_primary/coupons/': typeof AdminPrimaryCouponsIndexRoute
+  '/admin/_primary/gift-cards/': typeof AdminPrimaryGiftCardsIndexRoute
   '/admin/_primary/orders/': typeof AdminPrimaryOrdersIndexRoute
   '/admin/_primary/payments/': typeof AdminPrimaryPaymentsIndexRoute
   '/admin/_primary/products/': typeof AdminPrimaryProductsIndexRoute
   '/admin/_system/settings/': typeof AdminSystemSettingsIndexRoute
   '/_public/profile/_registration-data/password/': typeof PublicProfileRegistrationDataPasswordIndexRoute
   '/_public/profile/_registration-data/registration/': typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  '/_public/profile/gift-cards/$giftCardId/': typeof PublicProfileGiftCardsGiftCardIdIndexRoute
   '/_public/profile/orders-history/$orderId/': typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   '/_public/profile/registered-addresses/$addressId/': typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
   '/admin/_primary/admins/$adminId/': typeof AdminPrimaryAdminsAdminIdIndexRoute
@@ -366,6 +396,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/password-recovery/reset/'
     | '/products/$productId/'
+    | '/profile/gift-cards/'
     | '/profile/orders-history/'
     | '/profile/registered-addresses/'
     | '/profile/wishlist/'
@@ -373,12 +404,14 @@ export interface FileRouteTypes {
     | '/admin/admins/'
     | '/admin/clients/'
     | '/admin/coupons/'
+    | '/admin/gift-cards/'
     | '/admin/orders/'
     | '/admin/payments/'
     | '/admin/products/'
     | '/admin/settings/'
     | '/profile/password/'
     | '/profile/registration/'
+    | '/profile/gift-cards/$giftCardId/'
     | '/profile/orders-history/$orderId/'
     | '/profile/registered-addresses/$addressId/'
     | '/admin/admins/$adminId/'
@@ -400,6 +433,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/password-recovery/reset'
     | '/products/$productId'
+    | '/profile/gift-cards'
     | '/profile/orders-history'
     | '/profile/registered-addresses'
     | '/profile/wishlist'
@@ -407,12 +441,14 @@ export interface FileRouteTypes {
     | '/admin/admins'
     | '/admin/clients'
     | '/admin/coupons'
+    | '/admin/gift-cards'
     | '/admin/orders'
     | '/admin/payments'
     | '/admin/products'
     | '/admin/settings'
     | '/profile/password'
     | '/profile/registration'
+    | '/profile/gift-cards/$giftCardId'
     | '/profile/orders-history/$orderId'
     | '/profile/registered-addresses/$addressId'
     | '/admin/admins/$adminId'
@@ -437,6 +473,7 @@ export interface FileRouteTypes {
     | '/_public/profile/'
     | '/_auth/password-recovery/reset/'
     | '/_public/products/$productId/'
+    | '/_public/profile/gift-cards/'
     | '/_public/profile/orders-history/'
     | '/_public/profile/registered-addresses/'
     | '/_public/profile/wishlist/'
@@ -444,12 +481,14 @@ export interface FileRouteTypes {
     | '/admin/_primary/admins/'
     | '/admin/_primary/clients/'
     | '/admin/_primary/coupons/'
+    | '/admin/_primary/gift-cards/'
     | '/admin/_primary/orders/'
     | '/admin/_primary/payments/'
     | '/admin/_primary/products/'
     | '/admin/_system/settings/'
     | '/_public/profile/_registration-data/password/'
     | '/_public/profile/_registration-data/registration/'
+    | '/_public/profile/gift-cards/$giftCardId/'
     | '/_public/profile/orders-history/$orderId/'
     | '/_public/profile/registered-addresses/$addressId/'
     | '/admin/_primary/admins/$adminId/'
@@ -590,6 +629,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPrimaryOrdersIndexRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/admin/_primary/gift-cards/': {
+      id: '/admin/_primary/gift-cards/'
+      path: '/gift-cards'
+      fullPath: '/admin/gift-cards/'
+      preLoaderRoute: typeof AdminPrimaryGiftCardsIndexRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/admin/_primary/coupons/': {
       id: '/admin/_primary/coupons/'
       path: '/coupons'
@@ -637,6 +683,13 @@ declare module '@tanstack/react-router' {
       path: '/orders-history'
       fullPath: '/profile/orders-history/'
       preLoaderRoute: typeof PublicProfileOrdersHistoryIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
+    '/_public/profile/gift-cards/': {
+      id: '/_public/profile/gift-cards/'
+      path: '/gift-cards'
+      fullPath: '/profile/gift-cards/'
+      preLoaderRoute: typeof PublicProfileGiftCardsIndexRouteImport
       parentRoute: typeof PublicProfileLayoutRoute
     }
     '/_public/products/$productId/': {
@@ -702,6 +755,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicProfileOrdersHistoryOrderIdIndexRouteImport
       parentRoute: typeof PublicProfileLayoutRoute
     }
+    '/_public/profile/gift-cards/$giftCardId/': {
+      id: '/_public/profile/gift-cards/$giftCardId/'
+      path: '/gift-cards/$giftCardId'
+      fullPath: '/profile/gift-cards/$giftCardId/'
+      preLoaderRoute: typeof PublicProfileGiftCardsGiftCardIdIndexRouteImport
+      parentRoute: typeof PublicProfileLayoutRoute
+    }
     '/_public/profile/_registration-data/registration/': {
       id: '/_public/profile/_registration-data/registration/'
       path: '/registration'
@@ -721,17 +781,20 @@ declare module '@tanstack/react-router' {
 
 interface PublicProfileLayoutRouteChildren {
   PublicProfileIndexRoute: typeof PublicProfileIndexRoute
+  PublicProfileGiftCardsIndexRoute: typeof PublicProfileGiftCardsIndexRoute
   PublicProfileOrdersHistoryIndexRoute: typeof PublicProfileOrdersHistoryIndexRoute
   PublicProfileRegisteredAddressesIndexRoute: typeof PublicProfileRegisteredAddressesIndexRoute
   PublicProfileWishlistIndexRoute: typeof PublicProfileWishlistIndexRoute
   PublicProfileRegistrationDataPasswordIndexRoute: typeof PublicProfileRegistrationDataPasswordIndexRoute
   PublicProfileRegistrationDataRegistrationIndexRoute: typeof PublicProfileRegistrationDataRegistrationIndexRoute
+  PublicProfileGiftCardsGiftCardIdIndexRoute: typeof PublicProfileGiftCardsGiftCardIdIndexRoute
   PublicProfileOrdersHistoryOrderIdIndexRoute: typeof PublicProfileOrdersHistoryOrderIdIndexRoute
   PublicProfileRegisteredAddressesAddressIdIndexRoute: typeof PublicProfileRegisteredAddressesAddressIdIndexRoute
 }
 
 const PublicProfileLayoutRouteChildren: PublicProfileLayoutRouteChildren = {
   PublicProfileIndexRoute: PublicProfileIndexRoute,
+  PublicProfileGiftCardsIndexRoute: PublicProfileGiftCardsIndexRoute,
   PublicProfileOrdersHistoryIndexRoute: PublicProfileOrdersHistoryIndexRoute,
   PublicProfileRegisteredAddressesIndexRoute:
     PublicProfileRegisteredAddressesIndexRoute,
@@ -740,6 +803,8 @@ const PublicProfileLayoutRouteChildren: PublicProfileLayoutRouteChildren = {
     PublicProfileRegistrationDataPasswordIndexRoute,
   PublicProfileRegistrationDataRegistrationIndexRoute:
     PublicProfileRegistrationDataRegistrationIndexRoute,
+  PublicProfileGiftCardsGiftCardIdIndexRoute:
+    PublicProfileGiftCardsGiftCardIdIndexRoute,
   PublicProfileOrdersHistoryOrderIdIndexRoute:
     PublicProfileOrdersHistoryOrderIdIndexRoute,
   PublicProfileRegisteredAddressesAddressIdIndexRoute:
@@ -777,6 +842,7 @@ interface AdminLayoutRouteChildren {
   AdminPrimaryAdminsIndexRoute: typeof AdminPrimaryAdminsIndexRoute
   AdminPrimaryClientsIndexRoute: typeof AdminPrimaryClientsIndexRoute
   AdminPrimaryCouponsIndexRoute: typeof AdminPrimaryCouponsIndexRoute
+  AdminPrimaryGiftCardsIndexRoute: typeof AdminPrimaryGiftCardsIndexRoute
   AdminPrimaryOrdersIndexRoute: typeof AdminPrimaryOrdersIndexRoute
   AdminPrimaryPaymentsIndexRoute: typeof AdminPrimaryPaymentsIndexRoute
   AdminPrimaryProductsIndexRoute: typeof AdminPrimaryProductsIndexRoute
@@ -794,6 +860,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminPrimaryAdminsIndexRoute: AdminPrimaryAdminsIndexRoute,
   AdminPrimaryClientsIndexRoute: AdminPrimaryClientsIndexRoute,
   AdminPrimaryCouponsIndexRoute: AdminPrimaryCouponsIndexRoute,
+  AdminPrimaryGiftCardsIndexRoute: AdminPrimaryGiftCardsIndexRoute,
   AdminPrimaryOrdersIndexRoute: AdminPrimaryOrdersIndexRoute,
   AdminPrimaryPaymentsIndexRoute: AdminPrimaryPaymentsIndexRoute,
   AdminPrimaryProductsIndexRoute: AdminPrimaryProductsIndexRoute,
